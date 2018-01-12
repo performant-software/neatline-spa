@@ -1,28 +1,16 @@
-import React from 'react';
-import ApiClient from './ApiClient';
+import React, { Component } from 'react';
 
-class ExhibitBrowse extends React.Component {
-  state = {
-    exhibits: []
-  };
-
-  constructor(props) {
-    super(props);
-
-    ApiClient.loadExhibits(exhibits => {
-      this.setState({
-        exhibits: exhibits
-      });
-    });
-  }
-
+class ExhibitBrowse extends Component {
   render() {
-    const { exhibits } = this.state;
+    const { exhibits, exhibitClick } = this.props;
 
     const exhibitRows = exhibits.map((exhibit, idx) => (
       <tr key={idx}>
-        <td>{exhibit.slug}</td>
-        <td>{exhibit.title}</td>
+        <td>{exhibit['o:title']}<br/>
+          <button onClick={() => exhibitClick(exhibit)}>Public View</button>
+        </td>
+        <td>{exhibit['o:added']}</td>
+        <td>{exhibit['o:public'] ? 'Yes' : 'No'}</td>
       </tr>
     ));
 
@@ -31,8 +19,9 @@ class ExhibitBrowse extends React.Component {
         <table>
           <thead>
             <tr>
-              <th>Slug</th>
               <th>Title</th>
+              <th>Created</th>
+              <th>Public</th>
             </tr>
           </thead>
           <tbody>

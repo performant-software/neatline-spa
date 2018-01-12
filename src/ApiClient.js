@@ -1,3 +1,5 @@
+import { format } from 'date-fns';
+
 function loadExhibits(callback) {
   return fetch('api/neatline_exhibits', {
     accept: 'application/json'
@@ -19,7 +21,13 @@ function checkStatus(response) {
 }
 
 function parseJSON(response) {
-  return response.json();
+  return response.json().then(exhibits => {
+    exhibits.forEach(exhibit => {
+      if ('o:owner' in exhibit) exhibit['o:owner'] = exhibit['o:owner']['@id'];
+      if ('o:added' in exhibit) exhibit['o:added'] = format(exhibit['o:added']['@value'], 'MMM D, YYYY');
+    });
+    return exhibits;
+  });
 }
 
 const ApiClient = { loadExhibits };
