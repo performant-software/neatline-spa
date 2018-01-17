@@ -9,9 +9,6 @@ class ExhibitPublic extends Component {
       <div className='exhibit-public'>
         <button onClick={returnClick}>Back to Exhibits</button>
         <h1>{exhibit['o:title']}</h1>
-        <div className='neatline-map-wrapper' style={{ marginLeft: '100px' }}>
-          <div id='neatline-map'></div>
-        </div>
         <ExhibitPublicMap exhibit={exhibit} />
       </div>
     );
