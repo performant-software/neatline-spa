@@ -1,25 +1,21 @@
-/* global OpenLayers */
-
 import React, { Component } from 'react';
+import { Map, TileLayer } from 'react-leaflet';
 
 class ExhibitPublicMap extends Component {
   componentDidMount() {
     const { exhibit } = this.props;
-
-    let map = new OpenLayers.Map('neatline-map');
-    let layer = new OpenLayers.Layer.OSM( "Simple OSM Map");
-    map.addLayer(layer);
-    map.setCenter(
-        new OpenLayers.LonLat(-95.234, 38.972).transform(
-            new OpenLayers.Projection("EPSG:4326"),
-            map.getProjectionObject()
-        ), 12
-    );
   }
 
   render() {
+    const position = [51.505, -0.09];
+
     return (
-      <div className='map-loaded'></div>
+      <Map center={position} zoom={13} style={{ height: '400px' }}>
+        <TileLayer
+          attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+      </Map>
     )
   }
 }
