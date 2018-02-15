@@ -18,7 +18,7 @@ const defaultValues = {
   'o:spatial_layers': [],
   'o:zoom_levels': 20,
   'o:spatial_querying': true
-}
+};
 
 const LayerTypeOptions = props => (
   <optgroup label='Default Layers'>
@@ -92,7 +92,7 @@ let ExhibitForm = props => {
         <button type='submit'>{submitLabel}</button>
       </fieldset>
     </form>
-  )
+  );
 }
 
 ExhibitForm = reduxForm({
@@ -105,5 +105,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  null,
+  null
 )(ExhibitForm);

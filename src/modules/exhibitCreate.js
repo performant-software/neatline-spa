@@ -7,7 +7,7 @@ export const EXHIBIT_POST_ERRORED = 'exhibitCreate/EXHIBIT_POST_ERRORED';
 export const NEW_EXHIBIT_RESET = 'exhibitCreate/NEW_EXHIBIT_RESET';
 
 const initialState = {
-  newExhbit: null,
+  newExhibit: null,
   loading: false,
   errored: false
 };
@@ -18,14 +18,14 @@ export default function(state = initialState, action) {
       return {
         ...state,
         loading: true,
-        newExhbit: action.exhibit
+        newExhibit: action.exhibit
       };
 
     case EXHIBIT_POST_SUCCESS:
       return {
         ...state,
         loading: false,
-        newExhibit: initialState.newExhbit
+        newExhibit: initialState.newExhibit
       };
 
     case EXHIBIT_POST_ERRORED:
