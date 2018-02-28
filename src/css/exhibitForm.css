@@ -1,0 +1,12 @@
+.exhibit-form label {
+  display: block;
+}
+
+.exhibit-form fieldset > div {
+  margin-bottom: 1em;
+}
+
+.exhibit-form input, .exhibit-form textarea, .exhibit-form select {
+  max-width: 400px;
+  width: 100%;
+}
