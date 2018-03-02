@@ -75,12 +75,12 @@ let ExhibitForm = props => {
           <Field name='o:wms_address' component='input' type='text' />
         </div>
         <div>
-          <label htmlFor='o:wms_layers'>WMS Layers</label>
-          <Field name='o:wms_layers' component='input' type='text' />
+			<Field name='o:wms_layers' component='input' type='text' />
+          	<label htmlFor='o:wms_layers'>WMS Layers</label>
         </div>
         <div>
-          <label htmlFor='o:spatial_querying'>Spatial Querying</label>
-          <Field name='o:spatial_querying' component='input' type='checkbox' />
+			<label htmlFor='o:spatial_querying'>Spatial Querying</label>
+			<Field name='o:spatial_querying' component='input' type='checkbox' />
         </div>
         <div>
           <label htmlFor='o:public'>Public</label>

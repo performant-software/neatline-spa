@@ -1,5 +1,5 @@
 # Neatline 3
-React app and API providing map and markup support, standalone but intended to be used embedded in Omeka (or similar), built around Leaflet.
+React app and API providing map and markup support, standalone but intended to be embedded in Omeka (or similar CMS), built around Leaflet.
 
 NB: This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app). If you want the guide for that it's [here](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md).
 

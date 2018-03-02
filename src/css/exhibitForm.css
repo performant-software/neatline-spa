@@ -1,5 +1,5 @@
 .exhibit-form label {
-  display: block;
+  display: inline-block;
 }
 
 .exhibit-form fieldset > div {
