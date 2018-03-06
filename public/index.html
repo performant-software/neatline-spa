@@ -9,17 +9,32 @@
 
 	<link rel="manifest" href="%PUBLIC_URL%/manifest.json">
 	<link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
-
-	<!-- FIXME: External stylesheets, probably a more react-way to do this instead of a normal include -->
-	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css">
 
 	<!-- Shim for JWT when this is called standalone -->
 	<script>
-		window.jwt = getParameterByName('jwt');
-		window.baseRoute = '';
-		if (typeof window.jwt === 'undefined' || window.jwt == null || window.jwt.length == 0) {
-			alert("Please provide a valid JWT as a GET param, ?jwt=...");
+		window.baseRoute="";
+
+		// Retrieve jwt from GET param
+		jwt = getParameterByName('jwt');
+
+		// If not what we expect, get it from localstore
+		if(typeof jwt === 'undefined' || jwt === 'null' || jwt == null || jwt.length == 0){
+			jwt = localStorage.getItem('jwt');
 		}
+
+		// If still not what we expect, complain
+		if(typeof jwt === 'undefined' || jwt === 'null' || jwt == null || jwt.length == 0){
+			alert("Please provide a valid JWT as a GET param, /index.html?jwt=...");
+
+		// We're good
+		}else{
+			localStorage.setItem('jwt', jwt);
+			window.jwt = jwt;
+			console.log("JWT: "+jwt+"\nIf page is empty or otherwise unexpected, JWT is likely bad/stale, check and set again: ?jwt=");
+		}
+
+		// Helper: parse GET params
 		function getParameterByName(name, url) {
 			if (!url) url = window.location.href;
 			name = name.replace(/[\[\]]/g, "\\$&");
