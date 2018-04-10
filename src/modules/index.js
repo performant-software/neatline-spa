@@ -10,6 +10,7 @@ import exhibitDelete from './exhibitDelete';
 import recordCreate from './recordCreate';
 import recordUpdate from './recordUpdate';
 import recordDelete from './recordDelete';
+import recordMapLayers from './recordMapLayers';
 
 export default combineReducers({
   routing: routerReducer,
@@ -22,5 +23,6 @@ export default combineReducers({
   exhibitDelete,
   recordCreate,
   recordUpdate,
-  recordDelete
+  recordDelete,
+  recordMapLayers
 });
