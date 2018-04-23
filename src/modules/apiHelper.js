@@ -27,11 +27,20 @@ export const parseExhibitsJSON = response => {
 
 export const parseRecordsJSON = response => {
   return response.json().then(records => {
-    records.forEach(record => {
-      if ('o:owner' in record) record['o:owner'] = record['o:owner']['@id'];
-      if ('o:added' in record) record['o:added'] = format(record['o:added']['@value'], 'MMM D, YYYY');
-      if ('o:coverage' in record) record['o:coverage'] = JSON.parse(record['o:coverage']);
-    });
+    records.forEach(formatRecord);
     return records;
   });
+}
+
+export const parseRecordJSON = response => {
+  return response.json().then(record => {
+    formatRecord(record);
+    return record;
+  });
+}
+
+const formatRecord = record => {
+  if ('o:owner' in record) record['o:owner'] = record['o:owner']['@id'];
+  if ('o:added' in record) record['o:added'] = format(record['o:added']['@value'], 'MMM D, YYYY');
+  if ('o:coverage' in record) record['o:coverage'] = JSON.parse(record['o:coverage']);
 }

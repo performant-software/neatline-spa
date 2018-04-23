@@ -7,6 +7,9 @@ import exhibitShow from './exhibitShow';
 import exhibitCreate from './exhibitCreate';
 import exhibitUpdate from './exhibitUpdate';
 import exhibitDelete from './exhibitDelete';
+import recordCreate from './recordCreate';
+import recordUpdate from './recordUpdate';
+import recordDelete from './recordDelete';
 
 export default combineReducers({
   routing: routerReducer,
@@ -16,5 +19,8 @@ export default combineReducers({
   exhibitShow,
   exhibitCreate,
   exhibitUpdate,
-  exhibitDelete
+  exhibitDelete,
+  recordCreate,
+  recordUpdate,
+  recordDelete
 });
