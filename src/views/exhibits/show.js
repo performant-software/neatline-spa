@@ -13,6 +13,7 @@ import RecordCreate from '../records/create';
 import RecordUpdate from '../records/update';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
+import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
 const ExhibitShowHeader = props => (
   <div style={{ marginBottom: '1.5em' }}>
@@ -46,7 +47,7 @@ class ExhibitShow extends Component {
     const props = this.props;
     const { exhibit } = props;
 
-    let refreshButton = <button onClick={() => props.fetchExhibitWithRecords(props.match.params.slug)}>Refresh exhibit</button>
+    let refreshButton = <button onClick={() => props.fetchExhibitWithRecords(props.match.params.slug)}><FontAwesomeIcon icon="undo"/></button>
     let exhibitDisplay = <ExhibitShowHeader refreshButton={refreshButton}>Loading...</ExhibitShowHeader>;
     if (exhibit) {
       exhibitDisplay = (

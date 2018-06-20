@@ -152,6 +152,7 @@ let RecordForm = props => {
           </fieldset>
         </TabPanel>
       </Tabs>
+	  <Field name='o:coverage' component='input' type='hidden'/>
       <Field name='o:exhibit_id' component='input' type='hidden' />
       <button type='submit'>{submitLabel}</button>
       {showDelete &&

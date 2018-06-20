@@ -1,46 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="theme-color" content="#000000">
-    <!--
-      manifest.json provides metadata used when your web app is added to the
-      homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
-    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>React App</title>
-  </head>
-  <body>
-    <noscript>
-      You need to enable JavaScript to run this app.
-    </noscript>
-    <div id="content" role="main">
-      <div id="root"></div>
-      <script>
-        window.jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxfQ.EfqYTmOmaRZpb3eJjYWWznkOhMlUkEYEYtqrg4Uuhos';
-        window.baseRoute = '';
-      </script>
-    </div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+<head>
+	<title>Neatline 3</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="theme-color" content="#000000">
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+	<link rel="manifest" href="%PUBLIC_URL%/manifest.json">
+	<link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css">
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-  </body>
+	<!-- Shim for JWT when this is called standalone -->
+	<script>
+		window.baseRoute="";
+
+		// Retrieve jwt from GET param
+		jwt = getParameterByName('jwt');
+
+		// If not what we expect, get it from localstore
+		if(typeof jwt === 'undefined' || jwt === 'null' || jwt == null || jwt.length == 0){
+			jwt = localStorage.getItem('jwt');
+		}
+
+		// If still not what we expect, complain
+		if(typeof jwt === 'undefined' || jwt === 'null' || jwt == null || jwt.length == 0){
+			alert("Please provide a valid JWT as a GET param, /index.html?jwt=...");
+
+		// We're good
+		}else{
+			localStorage.setItem('jwt', jwt);
+			window.jwt = jwt;
+			console.log("JWT: "+jwt+"\nIf page is empty or otherwise unexpected, JWT is likely bad/stale, check and set again: ?jwt=");
+		}
+
+		// Helper: parse GET params
+		function getParameterByName(name, url) {
+			if (!url) url = window.location.href;
+			name = name.replace(/[\[\]]/g, "\\$&");
+			var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+				results = regex.exec(url);
+			if (!results) return null;
+			if (!results[2]) return '';
+			return decodeURIComponent(results[2].replace(/\+/g, " "));
+		}
+	</script>
+</head>
+
+<body>
+	<noscript>You need to enable JavaScript to run this app.</noscript>
+	<div id="content" role="main">
+		<div id="root"></div>
+	</div>
+</body>
+
 </html>
