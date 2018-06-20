@@ -39,6 +39,7 @@ export default function(state = initialState, action) {
 }
 
 export function updateRecord(record) {
+  console.log(record);
   return function(dispatch) {
     dispatch({
       type: RECORD_UPDATED,
@@ -53,8 +54,9 @@ export function updateRecord(record) {
       method: 'PATCH',
       body: JSON.stringify(record)
     })
-      .then(response => {
+      .then((response, error) => {
         if (!response.ok) {
+          console.log(error);
           throw Error(response.statusText);
         }
         return response;

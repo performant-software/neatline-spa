@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-
+import { change } from 'redux-form';
 // Makes availabe to mapStateToProps
-import { selectRecord, deselectRecord, previewRecord, unpreviewRecord, setCurrentRecordCoverage } from '../modules/exhibitShow';
+import { selectRecord, deselectRecord, previewRecord, unpreviewRecord } from '../modules/exhibitShow';
+import { addLayer, resetLayers } from '../modules/recordMapLayers';
 
 import { Map, LayersControl, TileLayer, WMSTileLayer, GeoJSON, FeatureGroup } from 'react-leaflet';
 import L from 'leaflet';
@@ -26,7 +27,6 @@ class ExhibitPublicMap extends Component {
 	//////////////////////////////////////////////////
 	// Event handlers for map editing
 	//////////////////////////////////////////////////
-	fg_layers = [];
 
 	_onEdited = (e) => {
 		/*
@@ -49,7 +49,11 @@ class ExhibitPublicMap extends Component {
 			console.log("_onCreated: something else (not a marker) created:", type, e);
 		}
 		*/
-		this.fg_layers.push(e);
+		// this.fg_layers.push(e.layer);
+    console.log(e.layer);
+    const { editorRecord } = this.props;
+    const recordId = editorRecord ? editorRecord['o:id'] : null;
+    if (recordId) this.props.addLayer(recordId, e.layer);
 		this._onChange();
 	}
 
@@ -61,11 +65,11 @@ class ExhibitPublicMap extends Component {
 		})
 		console.log(`onDeleted: removed ${numDeleted} layers`, e);
 		*/
-		var layerToRemove_idx = this.fg_layers.indexOf(e);
-		if (layerToRemove_idx > -1) {
-    		this.fg_layers.splice(layerToRemove_idx, 1);
-		}
-		this._onChange();
+		// var layerToRemove_idx = this.fg_layers.indexOf(e);
+		// if (layerToRemove_idx > -1) {
+    // 		this.fg_layers.splice(layerToRemove_idx, 1);
+		// }
+		// this._onChange();
 	}
 
 	_onMounted = (drawControl) => {
@@ -92,9 +96,18 @@ class ExhibitPublicMap extends Component {
 	}
 	*/
 	_onChange = () => {
-		var featureGroup = L.featureGroup(this.fg_layers);
-		const geojsonData = featureGroup.toGeoJSON();
-		this.props.setCurrentRecordCoverage(geojsonData);
+    // console.log(this.fg_layers);
+    // if (this.fg_layers.length  > 0) {
+  		// var featureGroup = L.featureGroup(this.fg_layers);
+    const { editorRecord, recordLayers } = this.props;
+    const recordId = editorRecord ? editorRecord['o:id'] : null;
+    const layersForRecord = recordLayers[recordId];
+    if (layersForRecord && layersForRecord.length > 0) {
+      const featureGroup = L.featureGroup(layersForRecord)
+  		const geojsonData = featureGroup.toGeoJSON();
+      this.props.change('record', 'o:coverage', geojsonData);
+      this.props.change('record', 'o:is_coverage', true);
+    }
 	}
 
 	//////////////////////////////////////////////////
@@ -127,23 +140,25 @@ class ExhibitPublicMap extends Component {
 							onDeleteStart={this._onDeleteStart}
 							onDeleteStop={this._onDeleteStop}
 							draw={{
-							rectangle: false
+							  rectangle: false,
+                marker: false
 							}}/>
 						</FeatureGroup>
 					}
 
 
-				  	{records.map(record => {
-					    const isSelected = record === selectedRecord,
+			  	{records.map(record => {
+				    const isSelected = record === selectedRecord,
 						isPreviewed = record === previewedRecord;
+            // this.props.resetLayers(record['o:id']);
 						if (record['o:is_wms']) {
 							return (
 								<LayersControl.Overlay name={record['o:title']} checked={true} key={record['o:id'] + '_wms'}>
 									<WMSTileLayer url={record['o:wms_address']} layers={record['o:wms_layers']} transparent={true} format='image/png' opacity={0.8} />
 								</LayersControl.Overlay>
 							)
-						}else if (record['o:is_coverage']) {
-					    	return (
+						} else if (record['o:is_coverage']) {
+					    return (
 								<GeoJSON style={
 								  	function(feature) {
 										return {
@@ -151,17 +166,20 @@ class ExhibitPublicMap extends Component {
 											color: '#000000',
 											weight: 2,
 											opacity: isSelected ? 1.0 : 0.6,
-											fill: true,
+											fill: feature.geometry.type !== 'LineString',
 											fillColor: '#00aeff',
 											fillOpacity: isPreviewed ? 0.9 : isSelected ? 0.6 : 0.3
 										};
 									}}
 									onClick={() => recordClick(record)}
 									onMouseover={() => recordMouseEnter(record)}
-									onMouseout={recordMouseLeave} data={record['o:coverage']}
+									onMouseout={recordMouseLeave}
+                  data={record['o:coverage']}
 									pointToLayer={function(point, latlng) { return circleMarker(latlng); }}
-									key={record['o:id'] + '_coverage'}/>
-							)
+                  onEachFeature={function(feature, layer) { this.props.addLayer(record['o:id'], layer); }.bind(this)}
+									key={record['o:id'] + '_coverage'}
+                />
+							);
 				    }
 
 				    return null;
@@ -179,16 +197,18 @@ const mapStateToProps = state => ({
 	selectedRecord: state.exhibitShow.selectedRecord,
 	previewedRecord: state.exhibitShow.previewedRecord,
 	editorRecord: state.exhibitShow.editorRecord,
-	editorNewRecord: state.exhibitShow.editorNewRecord
+	editorNewRecord: state.exhibitShow.editorNewRecord,
+  recordLayers: state.recordMapLayers.recordLayers
 });
 
-// this.props.recordClick()
 const mapDispatchToProps = dispatch => bindActionCreators({
 	recordClick: record => selectRecord(record),
 	mapClick: deselectRecord,
 	recordMouseEnter: record => previewRecord(record),
 	recordMouseLeave: unpreviewRecord,
-	setCurrentRecordCoverage: coverage => setCurrentRecordCoverage(coverage)
+  change,
+  addLayer,
+  resetLayers
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExhibitPublicMap);

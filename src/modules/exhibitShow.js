@@ -27,7 +27,7 @@ export const TAB_INDEX_SET = 'exhibitShow/TAB_INDEX';
 export const RECORD_ADDED = 'exhibitShow/RECORD_ADDED';
 export const RECORD_REPLACED = 'exhibitShow/RECORD_REPLACED';
 export const RECORD_REMOVED = 'exhibitShow/RECORD_REMOVED';
-export const RECORD_COVERAGE_SET = 'exhibitShow/RECORD_COVERAGE_SET';
+// export const RECORD_COVERAGE_SET = 'exhibitShow/RECORD_COVERAGE_SET';
 
 const initialState = {
 	records: [],
@@ -159,13 +159,14 @@ export default function(state = initialState, action) {
 				records: state.records.filter(r => r['o:id'].toString() !== action.record['o:id'].toString())
 			}
 
-		case RECORD_COVERAGE_SET:
-			var thisRecord = state.editorRecord;
-			thisRecord['o:coverage'] = action.coverage;
-			return {
-				...state,
-				editorRecord: thisRecord
-			}
+		// case RECORD_COVERAGE_SET:
+		// 	let thisRecord = state.editorRecord ? Object.assign({}, state.editorRecord) : null;
+    //   if (thisRecord)
+		// 	   thisRecord['o:coverage'] = action.coverage;
+		// 	return {
+		// 		...state,
+		// 		editorRecord: thisRecord
+		// 	}
 
 		default:
 			return state;
@@ -323,12 +324,11 @@ export function setTabIndex(tabIndex) {
 	}
 }
 
-export function setCurrentRecordCoverage(coverage) {
-	return function(dispatch) {
-		dispatch({
-			type: RECORD_COVERAGE_SET,
-			coverage:coverage
-		});
-	}
-
-}
+// export function setCurrentRecordCoverage(coverage) {
+// 	return function(dispatch) {
+// 		dispatch({
+// 			type: RECORD_COVERAGE_SET,
+// 			coverage:coverage
+// 		});
+// 	}
+// }
