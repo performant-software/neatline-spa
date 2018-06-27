@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { setEditorRecordById, openEditorToNewRecord } from '../modules/exhibitShow';
+import { setEditorRecordById, openEditorToNewRecord } from '../reducers/not_refactored/exhibitShow';
 
 class RecordEditorLoader extends Component {
   componentWillMount() {
@@ -17,7 +17,7 @@ class RecordEditorLoader extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapPreviewoProps = state => ({
   record: state.exhibitShow.editorRecord
 });
 
@@ -27,6 +27,6 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 }, dispatch);
 
 export default connect(
-  mapStateToProps,
+  mapPreviewoProps,
   mapDispatchToProps
 )(RecordEditorLoader);

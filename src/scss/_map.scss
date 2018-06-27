@@ -1,0 +1,19 @@
+.mapStatus_warning:before {
+	font-family: FontAwesome;
+	content: "\f071";
+}
+
+.mapStatus_warning {
+	z-index: 9000;
+	position: fixed;
+	top: 0;
+	left: 20rem;
+	width: 100vw;
+	height: 0.5rem;
+	font-size: 1rem;
+	padding: 0.5rem 0 1.5rem 1rem;
+	background-color: rgba(255, 255, 173, 0.92);
+	-webkit-box-shadow: 8px -1px 21px 0 rgba(0,0,0,0.75);
+	-moz-box-shadow: 8px -1px 21px 0 rgba(0,0,0,0.75);
+	box-shadow: 8px -1px 21px 0 rgba(0,0,0,0.75);
+}

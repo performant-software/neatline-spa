@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import { push } from 'react-router-redux';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { fetchExhibits } from '../../modules/exhibits';
-import { resetExhibit } from '../../modules/exhibitShow';
-import { deleteExhibit } from '../../modules/exhibitDelete';
+import { fetchExhibits } from '../../reducers/not_refactored/exhibits';
+import { resetExhibit } from '../../reducers/not_refactored/exhibitShow';
+import { deleteExhibit } from '../../reducers/not_refactored/exhibitDelete';
 
 class Exhibits extends Component {
   componentWillMount() {
@@ -60,7 +60,7 @@ class Exhibits extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapPreviewoProps = state => ({
   userSignedIn: state.user.userSignedIn,
   exhibits: state.exhibits.exhibits,
   exhibitsLoading: state.exhibits.loading,
@@ -77,6 +77,6 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 }, dispatch);
 
 export default connect(
-  mapStateToProps,
+  mapPreviewoProps,
   mapDispatchToProps
 )(Exhibits);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { deselectRecord } from '../modules/exhibitShow';
+import { deselectRecord } from '../reducers/not_refactored/exhibitShow';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -27,7 +27,7 @@ function RecordInfoPanel(props) {
   return null;
 }
 
-const mapStateToProps = state => ({
+const mapPreviewoProps = state => ({
   selectedRecord: state.exhibitShow.selectedRecord,
   previewedRecord: state.exhibitShow.previewedRecord
 });
@@ -37,6 +37,6 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 }, dispatch);
 
 export default connect(
-  mapStateToProps,
+  mapPreviewoProps,
   mapDispatchToProps,
 )(RecordInfoPanel);
