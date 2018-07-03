@@ -1,0 +1,33 @@
+/*
+	This will all get compiled into main.css and published on build as main.css.
+
+	Number of files will not change performance, so by all means make logical
+	divisions - I recommend names that match the component they style or the source
+	file to which the style applies, but other groupings also might make sense.
+
+	Please note this is very slowly being converted from some older styles,
+	you might see other things but going forward:
+
+	- Always use relative units (rem or % if it makes sense)
+
+	- Never use !important, figure out the load order instead
+
+	- Specify colors as rgba() or 6 digit hex (avoid 8) for maximum compatibility
+
+	- Please specify compact dimensions in full box model format to avoid
+	  ambiguity, IE "1rem 0rem 1rem 0rem." Fine to leave off units for 0.
+
+	- Prefix with ps_n3_ to namespace our settings because we never know what context this might appear
+	  but we DO want to allow end user overrides, for example theming.
+*/
+@import "https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css";
+@import "https://use.fontawesome.com/releases/v5.1.0/css/all.css";
+@import "https://unpkg.com/leaflet@1.3.1/dist/leaflet.css";
+@import "https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css";
+@import "https://unpkg.com/react-rangeslider/umd/rangeslider.min.css";
+
+@import 'base';
+@import 'exhibitForm';
+@import 'map';
+@import 'tabs';
+@import 'styleEditor';

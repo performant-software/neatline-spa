@@ -3,9 +3,9 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { fetchExhibitWithRecords, setTabIndex, unsetEditorRecord } from '../../modules/exhibitShow';
+import { fetchExhibitWithRecords, setTabIndex, unsetEditorRecord } from '../../reducers/not_refactored/exhibitShow';
 import ExhibitUpdate from './update';
-import ExhibitPublicMap from '../../components/map';
+import ExhibitPublicMap from '../../components/ExhibitPublicMap';
 import RecordInfoPanel from '../../components/info';
 import RecordEditorLoader from '../../components/recordEditorLoader';
 import Records from '../records';
@@ -13,7 +13,6 @@ import RecordCreate from '../records/create';
 import RecordUpdate from '../records/update';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
-import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
 const ExhibitShowHeader = props => (
   <div style={{ marginBottom: '1.5em' }}>
@@ -47,7 +46,7 @@ class ExhibitShow extends Component {
     const props = this.props;
     const { exhibit } = props;
 
-    let refreshButton = <button onClick={() => props.fetchExhibitWithRecords(props.match.params.slug)}><FontAwesomeIcon icon="undo"/></button>
+    let refreshButton = <div className="ps_n3_refreshButton"><button onClick={() => props.fetchExhibitWithRecords(props.match.params.slug)}><div className="fas fa-undo"/></button></div>
     let exhibitDisplay = <ExhibitShowHeader refreshButton={refreshButton}>Loading...</ExhibitShowHeader>;
     if (exhibit) {
       exhibitDisplay = (
@@ -59,7 +58,7 @@ class ExhibitShow extends Component {
               <RecordEditorLoader {...props} />
             )}} />
           }
-          <div style={{ gridRow: '1', gridColumn: '1', padding: '1em', maxHeight: '100%', overflow: 'scroll' }}>
+          <div style={{ gridRow: '1', gridColumn: '1', maxHeight: '100%'}}>
             <ExhibitShowHeader refreshButton={refreshButton}>{exhibit['o:title']}</ExhibitShowHeader>
             <Tabs selectedIndex={props.tabIndex} onSelect={tabIndex => props.setTabIndex(tabIndex)}>
               <TabList>

@@ -6,9 +6,6 @@ import store, { history } from './store';
 import App from './views/app';
 // import registerServiceWorker from './registerServiceWorker';
 
-import './index.css';
-import 'leaflet/dist/leaflet.css';
-
 // registerServiceWorker();
 
 const target = document.getElementById('root');

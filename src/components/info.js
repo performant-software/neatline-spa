@@ -1,5 +1,5 @@
 import React from 'react';
-import { deselectRecord } from '../modules/exhibitShow';
+import { deselectRecord } from '../reducers/not_refactored/exhibitShow';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
