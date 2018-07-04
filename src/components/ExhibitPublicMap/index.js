@@ -20,6 +20,8 @@ import L from 'leaflet';
 import {EditControl} from "react-leaflet-draw"
 import {circleMarker} from 'leaflet';
 import AlertBar from './alertBar.js';
+export const TEMPORARY = -1;
+
 // FIXME: workaround broken icons when using webpack, see https://github.com/PaulLeCam/react-leaflet/issues/255
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0/images/marker-icon.png', iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0/images/marker-icon.png', shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0/images/marker-shadow.png'});
@@ -35,13 +37,15 @@ class ExhibitPublicMap extends Component {
 	}
 
 	_onCreated = (e) => {
-		console.log(e.layer);
+		// Save geometry when it is created - if we don't have a record ID yet, use -1
 		const {editorRecord} = this.props;
 		const recordId = editorRecord
 			? editorRecord['o:id']
-			: null;
-		if (recordId)
+			: TEMPORARY;
+
+		if (recordId){
 			this.props.addLayer(recordId, e.layer);
+		}
 		this._onChange();
 	}
 
@@ -53,12 +57,7 @@ class ExhibitPublicMap extends Component {
 		const {editorRecord, recordLayers} = this.props;
 		const recordId = editorRecord
 			? editorRecord['o:id']
-			: '-1';
-
-		/*
-		if(!(-1 in recordLayers)){
-			recordLayers[-1]=[];
-		}*/
+			: TEMPORARY;
 
 		const layersForRecord = recordLayers[recordId];
 		if (layersForRecord && layersForRecord.length > 0) {
@@ -69,24 +68,26 @@ class ExhibitPublicMap extends Component {
 		}
 	}
 
-	// FIXME: This should be moved out of this component entirely and put in a saga or reducer
+	// FIXME: This lifecycle method is going to be deprecated, so we should re-write this,
+	// but don't stress right now. Premature optimization isn't cool.
 	componentWillReceiveProps(nextprops){
+
+		// Update live preview object with known values if they're not present
 		for(let x=0;x<nextprops.records.length;x++){
+			// FIXME: This should be moved out of this component entirely and put in a saga or reducer
 			let record =nextprops.records[x];
 			if (record['o:is_coverage']) {
 				let record_id = record['o:id'];
 				if(!(record_id in this.props.mapPreview.current.geometryStyle)){
-					// Update live preview object with known values if they're not present
 					this.props.dispatch(this.preview_init(record));
 				}
 			}
 		}
-	}
 
+	}
 
 	constructor(props) {
 		super(props);
-		// Mapping to this
 		this.preview_init=preview_init.bind(this);
 	}
 
@@ -172,6 +173,7 @@ class ExhibitPublicMap extends Component {
 
 								// Use preview
 								let record_id = record['o:id'];
+
 								let previewStyle = this.props.mapPreview.current.geometryStyle['default'];
 								if(record_id in this.props.mapPreview.current.geometryStyle){
 									previewStyle = this.props.mapPreview.current.geometryStyle[record_id];
@@ -191,17 +193,29 @@ class ExhibitPublicMap extends Component {
 									});
 								};
 
-								//console.log("Updating with: "+JSON.stringify(coverageStyle()));
 								return (
 									<GeoJSON
-										style={coverageStyle}
+										style={
+											function(feature, layer) {
+												// If the geometry is a line, get rid of fill
+												let style=coverageStyle();
+												if(feature.geometry.type === 'LineString'){
+														style.fillColor='transparent';
+												}
+												return style;
+											}.bind(this)
+										}
 										onClick={() => recordClick(record)}
 										onMouseover={() => recordMouseEnter(record)}
 										onMouseout={recordMouseLeave}
 										data={recordToUse}
 										pointToLayer={function(point, latlng) {return circleMarker(latlng);}}
-										onEachFeature={function(feature, layer) {this.props.addLayer(record['o:id'], layer);
-									}.bind(this)} key={record['o:id'] + '_coverage'}/>);
+										onEachFeature={
+											function(feature, layer) {
+												this.props.addLayer(record['o:id'], layer);
+											}.bind(this)} key={record['o:id'] + '_coverage'
+										}/>);
+
 							}
 
 							return null;

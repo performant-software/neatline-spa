@@ -1,4 +1,5 @@
 export default {
+	selectedRecordID:null,
 	isEditingWithPreview: true,
 	hasUnsavedChanges: false,
 	current: {
@@ -15,8 +16,8 @@ export default {
 
 				stroke: true,
 
-				stroke_color: '#FF00FF',
-				stroke_color_selected: '#FF00FF',
+				strokeColor: '#FF00FF',
+				strokeColor_selected: '#FF00FF',
 				stroke_opacity: 1.0,
 				stroke_opacity_selected: 0.6,
 				stroke_weight: 2,

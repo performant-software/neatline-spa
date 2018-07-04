@@ -1,7 +1,7 @@
-.ps_n3_recordFormContainer{
-	height:calc(100vh - 11rem);
+.ps_n3_recordFormContainer {
+	height: calc(100vh - 11rem);
 	overflow: scroll;
-	border:0;
+	border: 0;
 }
 
 .ps_n3_inputColorSwatch {
@@ -19,7 +19,7 @@ input.styleEditor_input {
 	width: 98% !important;
 }
 
-#ps_n3_colorPickerComponent{}
+#ps_n3_colorPickerComponent {}
 
 .ps_n3_colorPicker_picker {
 	position: fixed;
@@ -30,15 +30,9 @@ input.styleEditor_input {
 	font-weight: bold;
 }
 
-.inputColorSwatch {
-	padding: 0;
-	margin: 0 0 -1.5rem;
-	position: relative;
-	left: 18rem;
-	height: 1.37rem;
-	width: 1.36rem;
-	background-color: white;
-	border: 1px solid grey;
+.ps_n3_highlight {
+	background-color: #fffee1;
+	padding: 1rem;
+	margin: 1rem -1rem -1rem -1rem;
+	border-radius: 0.3rem;
 }
-
-input.styleEditor_input {}

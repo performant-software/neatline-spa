@@ -42,12 +42,13 @@ class RecordForm extends Component {
 			colorPickerCurrentField:'',
 			colorPickerDefaultColor:'#000000'
 		};
+		this.previewInitialized=false;
 	}
 
 	// After mount
 	componentWillReceiveProps(nextprops){
 		// Populate the live preview object with the form fields if the record changed
-		//if(nextprops.initialValues['o:id'] !== this.props.initialValues['o:id']){
+		if(!this.previewInitialized || nextprops.initialValues['o:id'] !== this.props.initialValues['o:id']){
 			this.props.dispatch(this.preview_init(nextprops.initialValues));
 			this.setState({
 				recordID:nextprops.initialValues['o:id'],
@@ -56,7 +57,8 @@ class RecordForm extends Component {
 				strokeColor:nextprops.initialValues['o:stroke_color'],
 				strokeColor_selected:nextprops.initialValues['o:stroke_color_select']
 			});
-		//}
+			this.previewInitialized=true;
+		}
 	}
 
 	// Color picker
@@ -246,8 +248,8 @@ class RecordForm extends Component {
 	}
 
 	render(){
+		let isSelected = (this.props.selectedRecord && this.state.recordID === this.props.selectedRecord["o:id"]);
 		return (
-
 			<form className='ps_n3_exhibit-form' onSubmit={this.handleSubmit}>
 
 			<ColorPicker color={this.state.colorPickerCurrentColor}
@@ -287,116 +289,118 @@ class RecordForm extends Component {
 						<div>
 							<fieldset id="scrollArea_stylePropertyPicker" className="ps_n3_recordFormContainer" disabled={this.disabled}>
 
-								<div className="ps_n3_optionHeader">Colors</div>
-								<div>
-									<label 	htmlFor='o:fill_color'>Fill Color</label>
+								<div className={!isSelected?"ps_n3_highlight":""}>
+									<div className="ps_n3_optionHeader">Colors</div>
+									<div>
+										<label 	htmlFor='o:fill_color'>Fill Color</label>
 
-									<div 	className="ps_n3_inputColorSwatch"
-											data-initialcolor={this.state.fillColor}
-											data-fieldname='o:fill_color'
-											onClick={(event)=>this.showColorPicker(event,'fillColor')}
-											style={{backgroundColor:this.state.fillColor}}/>
+										<div 	className="ps_n3_inputColorSwatch"
+												data-initialcolor={this.state.fillColor}
+												data-fieldname='o:fill_color'
+												onClick={(event)=>this.showColorPicker(event,'fillColor')}
+												style={{backgroundColor:this.state.fillColor}}/>
 
-									<Field 	className="styleEditor_input"
-											name='o:fill_color'
-											component='input'
-											type='text'
-											data-enforce='hex'
-											onBlur={this.onFieldBlur}
-											onChange={this.inputEnforce}/>
+										<Field 	className="styleEditor_input"
+												name='o:fill_color'
+												component='input'
+												type='text'
+												data-enforce='hex'
+												onBlur={this.onFieldBlur}
+												onChange={this.inputEnforce}/>
+									</div>
+
+									<div>
+										<label 	htmlFor='o:stroke_color'>Stroke Color</label>
+										<div 	className="ps_n3_inputColorSwatch"
+												data-fieldname='o:stroke_color'
+												data-initialcolor={this.state.strokeColor}
+												onClick={(event)=>this.showColorPicker(event,'strokeColor')}
+												style={{backgroundColor:this.state.strokeColor}}/>
+
+										<Field 	className="styleEditor_input"
+												name='o:stroke_color'
+												component='input'
+												type='text'
+												data-enforce='hex'
+												onBlur={this.onFieldBlur}
+												onChange={this.inputEnforce}/>
+									</div>
+
+									<div>
+										<label 	htmlFor='o:fill_opacity'>Fill Opacity</label>
+										<Field 	className="styleEditor_input"
+												name='o:fill_opacity'
+												component='input'
+												type='text'
+												data-enforce='normal'
+												onBlur={this.onFieldBlur}
+												onChange={this.inputEnforce}/>
+									</div>
+									<div>
+										<label 	htmlFor='o:stroke_opacity'>Stroke Opacity</label>
+										<Field 	className="styleEditor_input"
+												name='o:stroke_opacity'
+												component='input'
+												type='text'
+												data-enforce='normal'
+												onBlur={this.onFieldBlur}
+												onChange={this.inputEnforce}/>
+									</div>
 								</div>
+								<div className={isSelected?"ps_n3_highlight":""}>
+									<div className="ps_n3_optionHeader">Selected</div>
+									<div>
+										<label 	htmlFor='o:fill_color_select'>Selected - Fill Color</label>
 
-								<div>
-									<label 	htmlFor='o:stroke_color'>Stroke Color</label>
-									<div 	className="ps_n3_inputColorSwatch"
-											data-fieldname='o:stroke_color'
-											data-initialcolor={this.state.strokeColor}
-											onClick={(event)=>this.showColorPicker(event,'strokeColor')}
-											style={{backgroundColor:this.state.strokeColor}}/>
+										<div 	onClick={(event)=>this.showColorPicker(event,'fillColor_selected')}
+												className="ps_n3_inputColorSwatch"
+												data-initialcolor={this.state.fillColor_selected}
+												data-fieldname='o:fill_color_select'
+												style={{backgroundColor:this.state.fillColor_selected}}></div>
 
-									<Field 	className="styleEditor_input"
-											name='o:stroke_color'
-											component='input'
-											type='text'
-											data-enforce='hex'
-											onBlur={this.onFieldBlur}
-											onChange={this.inputEnforce}/>
-								</div>
-
-								<div>
-									<label 	htmlFor='o:fill_opacity'>Fill Opacity</label>
-									<Field 	className="styleEditor_input"
-											name='o:fill_opacity'
-											component='input'
-											type='text'
-											data-enforce='normal'
-											onBlur={this.onFieldBlur}
-											onChange={this.inputEnforce}/>
-								</div>
-								<div>
-									<label 	htmlFor='o:stroke_opacity'>Stroke Opacity</label>
-									<Field 	className="styleEditor_input"
-											name='o:stroke_opacity'
-											component='input'
-											type='text'
-											data-enforce='normal'
-											onBlur={this.onFieldBlur}
-											onChange={this.inputEnforce}/>
-								</div>
-
-
-								<div className="ps_n3_optionHeader">Selected</div>
-								<div>
-									<label 	htmlFor='o:fill_color_select'>Selected - Fill Color</label>
-
-									<div 	onClick={(event)=>this.showColorPicker(event,'fillColor_selected')}
-											className="ps_n3_inputColorSwatch"
-											data-initialcolor={this.state.fillColor_selected}
-											data-fieldname='o:fill_color_select'
-											style={{backgroundColor:this.state.fillColor_selected}}></div>
-
-									<Field 	className="styleEditor_input"
-											name='o:fill_color_select'
-											component='input'
-											type='text'
-											data-enforce='hex'
-											onBlur={this.onFieldBlur}
-											onChange={this.inputEnforce}/>
-								</div>
-								<div>
-									<label 	htmlFor='o:stroke_color_select'>Selected - Stroke Color</label>
-									<div 	onClick={(event)=>this.showColorPicker(event,'strokeColor_selected')}
-											className="ps_n3_inputColorSwatch"
-											data-initialcolor={this.state.strokeColor_selected}
-											data-fieldname='o:stroke_color_select'
-											style={{backgroundColor:this.state.strokeColor_selected}}></div>
-									<Field 	className="styleEditor_input"
-											name='o:stroke_color_select'
-											component='input'
-											type='text'
-											data-enforce='hex'
-											onBlur={this.onFieldBlur}
-											onChange={this.inputEnforce}/>
-								</div>
-								<div>
-									<label 	htmlFor='o:stroke_opacity_selected'>Selected - Stroke Opacity</label>
-									<Field 	className="styleEditor_input"
-											name='o:stroke_opacity_selected'
-											component='input'
-											type='text'
-											data-enforce='normal'
-											onBlur={this.onFieldBlur}
-											onChange={this.inputEnforce}/>
-								</div>
-								<div>
-									<label 	htmlFor='o:fill_opacity_select'>Selected - Fill Opacity</label>
-									<Field 	className="styleEditor_input"
-											name='o:fill_opacity_selected'
-											component='input'
-											type='text'
-											data-enforce='normal'
-											onBlur={this.onFieldBlur}
-											onChange={this.inputEnforce}/>
+										<Field 	className="styleEditor_input"
+												name='o:fill_color_select'
+												component='input'
+												type='text'
+												data-enforce='hex'
+												onBlur={this.onFieldBlur}
+												onChange={this.inputEnforce}/>
+									</div>
+									<div>
+										<label 	htmlFor='o:stroke_color_select'>Selected - Stroke Color</label>
+										<div 	onClick={(event)=>this.showColorPicker(event,'strokeColor_selected')}
+												className="ps_n3_inputColorSwatch"
+												data-initialcolor={this.state.strokeColor_selected}
+												data-fieldname='o:stroke_color_select'
+												style={{backgroundColor:this.state.strokeColor_selected}}></div>
+										<Field 	className="styleEditor_input"
+												name='o:stroke_color_select'
+												component='input'
+												type='text'
+												data-enforce='hex'
+												onBlur={this.onFieldBlur}
+												onChange={this.inputEnforce}/>
+									</div>
+									<div>
+										<label 	htmlFor='o:stroke_opacity_selected'>Selected - Stroke Opacity</label>
+										<Field 	className="styleEditor_input"
+												name='o:stroke_opacity_selected'
+												component='input'
+												type='text'
+												data-enforce='normal'
+												onBlur={this.onFieldBlur}
+												onChange={this.inputEnforce}/>
+									</div>
+									<div>
+										<label 	htmlFor='o:fill_opacity_select'>Selected - Fill Opacity</label>
+										<Field 	className="styleEditor_input"
+												name='o:fill_opacity_selected'
+												component='input'
+												type='text'
+												data-enforce='normal'
+												onBlur={this.onFieldBlur}
+												onChange={this.inputEnforce}/>
+									</div>
 								</div>
 
 								<div className="ps_n3_optionHeader">Dimensions</div>
@@ -543,6 +547,8 @@ class RecordForm extends Component {
 
 RecordForm = reduxForm({form: 'record'})(RecordForm);
 const mapStateToProps = state => ({
+	mapPreview: state.mapPreview,
+	selectedRecord: state.exhibitShow.selectedRecord,
 	initialValues: state.exhibitShow.editorRecord
 		? state.exhibitShow.editorRecord
 		: {

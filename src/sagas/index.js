@@ -22,7 +22,6 @@ export default function* rootSaga() {
 
 // Create a record
 function* createRecord(action) {
-	console.log(action);
 	// Make API call
 	try{
 		let url = urlFormat(recordsEndpoint);
@@ -96,7 +95,6 @@ function* deleteRecordResponseReceived(action){
 
 // Update a record
 function* updateRecord(action) {
-	console.log(action);
 	let record = action.payload;
 	try{
 		let url = urlFormat(recordsEndpoint, {}, record['o:id']);

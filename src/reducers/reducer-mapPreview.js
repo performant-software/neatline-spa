@@ -4,6 +4,12 @@ import * as actionType from '../actions/action-types';
 export default function app(state = initialState, action) {
 
 	switch (action.type) {
+
+		case actionType.PREVIEW_MARKSELECTED:
+			return {
+				...state,
+				selectedRecordID:action.payload
+			}
 		case actionType.PREVIEW_INIT:
 			return {
 				...state,
@@ -16,8 +22,8 @@ export default function app(state = initialState, action) {
 						[action.payload["o:id"]]: {
 							...state.current.geometryStyle['default'],
 
-							stroke_color: action.payload['o:stroke_color'],
-							stroke_color_selected: action.payload['o:stroke_color_select'],
+							strokeColor: action.payload['o:stroke_color'],
+							strokeColor_selected: action.payload['o:stroke_color_select'],
 							stroke_opacity: action.payload['o:stroke_opacity'],
 							stroke_opacity_selected: action.payload['o:stroke_opacity_select'],
 							stroke_weight: action.payload['o:stroke_width'],
