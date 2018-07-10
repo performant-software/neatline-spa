@@ -1,3 +1,20 @@
+/*
+	There is a "deprecated" flag for basemap options which will allow them to remain
+	in this file but they will not appear in the UI.
+
+	At the moment this is the case for the google basemaps - enabling them here
+	WILL function correctly, but per the Google user agreement it is no longer
+	allowed to access maps in this way.
+
+	https://cloud.google.com/maps-platform/maps/
+
+	In order to use the google maps correctly, they should be accessed via an
+	API key associated with a credit card that can be charged for usage. As of
+	this writing, google grants a $200/month credit, but the logistics of credit
+	card and API key setup are outside the scope of this repo and depend on your
+	organization. 
+*/
+
 export default {
 	selectedRecordID:null,
 	isEditingWithPreview: true,
