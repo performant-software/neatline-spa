@@ -3,7 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-import { fetchExhibitWithRecords, setTabIndex, unsetEditorRecord } from '../../modules/exhibitShow';
+import { fetchExhibitWithRecords, setTabIndex, unsetEditorRecord } from '../../reducers/not_refactored/exhibitShow';
 import ExhibitUpdate from './update';
 import ExhibitPublicMap from '../../components/map';
 import RecordInfoPanel from '../../components/info';
@@ -13,7 +13,6 @@ import RecordCreate from '../records/create';
 import RecordUpdate from '../records/update';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
-import FontAwesomeIcon from '@fortawesome/react-fontawesome';
 
 const ExhibitShowHeader = props => (
   <div style={{ marginBottom: '1.5em' }}>
@@ -47,7 +46,7 @@ class ExhibitShow extends Component {
     const props = this.props;
     const { exhibit } = props;
 
-    let refreshButton = <button onClick={() => props.fetchExhibitWithRecords(props.match.params.slug)}><FontAwesomeIcon icon="undo"/></button>
+    let refreshButton = <button onClick={() => props.fetchExhibitWithRecords(props.match.params.slug)}><div className="fas fa-undo"/></button>
     let exhibitDisplay = <ExhibitShowHeader refreshButton={refreshButton}>Loading...</ExhibitShowHeader>;
     if (exhibit) {
       exhibitDisplay = (
@@ -102,7 +101,7 @@ class ExhibitShow extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapPreviewoProps = state => ({
   userSignedIn: state.user.userSignedIn,
   exhibit: state.exhibitShow.exhibit,
   records: state.exhibitShow.records,
@@ -122,6 +121,6 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 }, dispatch);
 
 export default connect(
-  mapStateToProps,
+  mapPreviewoProps,
   mapDispatchToProps
 )(ExhibitShow);

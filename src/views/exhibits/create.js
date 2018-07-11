@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import ExhibitForm from '../../components/exhibitForm';
-import { createExhibit } from '../../modules/exhibitCreate';
+import { createExhibit } from '../../reducers/not_refactored/exhibitCreate';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -15,7 +15,7 @@ const ExhibitCreate = props => (
   </div>
 )
 
-const mapStateToProps = state => ({
+const mapPreviewoProps = state => ({
   newExhibit: state.exhibitCreate.newExhibit,
   loading: state.exhibitCreate.loading,
   errored: state.exhibitCreate.errored
@@ -26,6 +26,6 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 }, dispatch);
 
 export default connect(
-  mapStateToProps,
+  mapPreviewoProps,
   mapDispatchToProps,
 )(ExhibitCreate);
