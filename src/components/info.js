@@ -27,7 +27,7 @@ function RecordInfoPanel(props) {
   return null;
 }
 
-const mapPreviewoProps = state => ({
+const mapStateToProps = state => ({
   selectedRecord: state.exhibitShow.selectedRecord,
   previewedRecord: state.exhibitShow.previewedRecord
 });
@@ -37,6 +37,6 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 }, dispatch);
 
 export default connect(
-  mapPreviewoProps,
+  mapStateToProps,
   mapDispatchToProps,
 )(RecordInfoPanel);

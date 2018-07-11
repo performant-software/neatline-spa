@@ -13,7 +13,7 @@ const ExhibitUpdate = props => (
   </div>
 )
 
-const mapPreviewoProps = state => ({
+const mapStateToProps = state => ({
   loading: state.exhibitUpdate.loading,
   errored: state.exhibitUpdate.errored
 });
@@ -23,6 +23,6 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 }, dispatch);
 
 export default connect(
-  mapPreviewoProps,
+  mapStateToProps,
   mapDispatchToProps,
 )(ExhibitUpdate);

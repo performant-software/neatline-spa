@@ -1,46 +1,84 @@
+/*
+	This will all get compiled into main.css and published on build as main.css.
+
+	Number of files will not change performance, so by all means make logical
+	divisions - I recommend names that match the component they style or the source
+	file to which the style applies, but other groupings also might make sense.
+
+	Please note this is very slowly being converted from some older styles,
+	you might see other things but going forward:
+
+	- Always use relative units (rem or % if it makes sense)
+
+	- Never use !important, figure out the load order instead
+
+	- Specify colors as rgba() or 6 digit hex (avoid 8) for maximum compatibility
+
+	- Please specify compact dimensions in full box model format to avoid
+	  ambiguity, IE "1rem 0rem 1rem 0rem." Fine to leave off units for 0.
+
+	- Prefix with ps_n3_ to namespace our settings because we never know what context this might appear
+	  but we DO want to allow end user overrides, for example theming.
+*/
 @import "https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css";
 @import "https://use.fontawesome.com/releases/v5.1.0/css/all.css";
 @import "https://unpkg.com/leaflet@1.3.1/dist/leaflet.css";
 @import "https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css";
-#content,
-#root,
-body,
-html,
-main {
-  height: 100%; }
-
+@import "https://unpkg.com/react-rangeslider/umd/rangeslider.min.css";
 body {
-  margin: 0;
-  padding: 0;
+  overflow: hidden;
+  height: 100%;
   font-family: sans-serif; }
 
-.hidden {
+#ps_n3_main {
+  height: 100vh;
+  padding: 0 0rem 6rem 0; }
+
+.ps_n3_hidden {
   display: none; }
 
-.invisible {
+.ps_n3_invisible {
   opacity: 0; }
 
-.scrollable_content {
-  overflow: scroll;
-  height: 50rem; }
+.ps_n3_exhibitFormContainer {
+  background-color: #ffffff;
+  height: calc(100vh - 8rem);
+  overflow: scroll; }
 
-.exhibit-form label {
-  display: inline-block; }
+.ps_n3_refreshButton {
+  position: fixed;
+  left: 17.8rem;
+  top: 0.2rem; }
 
-.exhibit-form fieldset > div {
+.ps_n3_exhibit-form {
+  height: 100%; }
+
+.ps_n3_exhibit-form fieldset > div {
   margin-bottom: 1em; }
 
-.exhibit-form input,
-.exhibit-form select,
-.exhibit-form textarea {
+.ps_n3_exhibit-form input,
+.ps_n3_exhibit-form select,
+.ps_n3_exhibit-form textarea {
   max-width: 400px;
-  width: 100%; }
+  width: 100%;
+  display: inline; }
 
-.mapStatus_warning:before {
+.ps_n3_checkboxPair {
+  height: 1rem; }
+
+.ps_n3_checkboxPair input {
+  position: relative;
+  margin: 0;
+  top: -1.25rem; }
+
+.ps_n3_checkboxPair label {
+  margin: 0 0 0 1.4rem; }
+
+.ps_n3_mapStatus_warning:before {
   font-family: FontAwesome;
   content: "\f071"; }
 
-.mapStatus_warning {
+.ps_n3_mapStatus_warning {
   z-index: 9000;
   position: fixed;
   top: 0;
