@@ -20,7 +20,6 @@ export default combineReducers({
   exhibitCreate,
   exhibitUpdate,
   exhibitDelete,
-
   record: recordReducer,
   mapPreview: mapPreviewReducer,
   recordMapLayers:recordMapLayers

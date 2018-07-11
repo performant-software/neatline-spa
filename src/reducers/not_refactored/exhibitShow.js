@@ -5,9 +5,7 @@ import {
 	parseRecordsJSON,
 	parseExhibitsJSON
 } from '../../sagas/api_helper.js';
-import {
-	push
-} from 'react-router-redux';
+import {push} from 'react-router-redux';
 
 import * as actionType from '../../actions/action-types';
 
@@ -148,6 +146,7 @@ export default function(state = initialState, action) {
 				tabIndex:1
 			}
 
+		// Remove this and have map use hidden form
 		case actionType.RECORD_COVERAGE_SET:
 			if( state.editorRecord !== null){
 				var thisRecord = state.editorRecord;

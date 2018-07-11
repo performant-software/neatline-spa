@@ -1,5 +1,24 @@
+/*
+	There is a "deprecated" flag for basemap options which will allow them to remain
+	in this file but they will not appear in the UI.
+
+	At the moment this is the case for the google basemaps - enabling them here
+	WILL function correctly, but per the Google user agreement it is no longer
+	allowed to access maps in this way.
+
+	https://cloud.google.com/maps-platform/maps/
+
+	In order to use the google maps correctly, they should be accessed via an
+	API key associated with a credit card that can be charged for usage. As of
+	this writing, google grants a $200/month credit, but the logistics of credit
+	card and API key setup are outside the scope of this repo and depend on your
+	organization.
+*/
+
 export default {
-	hasUnsavedChanges:false,
+	selectedRecordID:null,
+	isEditingWithPreview: true,
+	hasUnsavedChanges: false,
 	current: {
 		tileLayer: {
 			slug: "OpenStreetMap",
@@ -9,14 +28,22 @@ export default {
 			url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 		},
 		geometryStyle: {
-			stroke: true,
-			color: '#FF00FF',
-			weight: 2,
-			fillColor: '#FF00FF',
+			default: {
+				hasUnsavedChanges:false,
 
-			fillColor_selected:'#FF00FF',
-			strokeColor:'#FF00FF',
-			strokeColor_selected:'#FF00FF'
+				stroke: true,
+
+				strokeColor: '#FF00FF',
+				strokeColor_selected: '#FF00FF',
+				stroke_opacity: 1.0,
+				stroke_opacity_selected: 0.6,
+				stroke_weight: 2,
+
+				fillColor: '#FF00FF',
+				fillColor_selected: '#FF00FF',
+				fill_opacity: 0.3,
+				fill_opacity_selected: 0.6
+			}
 		},
 		basemapOptions: [
 			{

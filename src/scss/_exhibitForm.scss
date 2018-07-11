@@ -1,14 +1,41 @@
-.exhibit-form label {
-	display: inline-block;
+.ps_n3_exhibitFormContainer {
+	background-color: #ffffff;
+	height: calc(100vh - 8rem);
+	overflow: scroll;
 }
 
-.exhibit-form fieldset > div {
+.ps_n3_refreshButton {
+	position: fixed;
+	left: 17.8rem;
+	top: 0.2rem;
+}
+
+.ps_n3_exhibit-form {
+	height: 100%;
+}
+
+.ps_n3_exhibit-form fieldset > div {
 	margin-bottom: 1em;
 }
 
-.exhibit-form input,
-.exhibit-form select,
-.exhibit-form textarea {
+.ps_n3_exhibit-form input,
+.ps_n3_exhibit-form select,
+.ps_n3_exhibit-form textarea {
 	max-width: 400px;
 	width: 100%;
+	display: inline;
+}
+
+.ps_n3_checkboxPair {
+	height: 1rem;
+}
+
+.ps_n3_checkboxPair input {
+	position: relative;
+	margin: 0;
+	top: -1.25rem;
+}
+
+.ps_n3_checkboxPair label {
+	margin: 0 0 0 1.4rem;
 }
