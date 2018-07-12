@@ -5,15 +5,15 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 const ExhibitUpdate = props => (
-  <div>
-    <ExhibitForm exhibit={props.exhibit} onSubmit={props.submit} submitLabel='Save' disabled={props.loading} />
+  <div className="ps_n3_exhibitFormContainer">
+    <ExhibitForm exhibit={props.exhibit} onSubmit={props.submit} submitLabel='Save Exhibit' disabled={props.loading} />
     {props.errored &&
       <p>Error: failed to update exhibit</p>
     }
   </div>
 )
 
-const mapPreviewoProps = state => ({
+const mapStateToProps = state => ({
   loading: state.exhibitUpdate.loading,
   errored: state.exhibitUpdate.errored
 });
@@ -23,6 +23,6 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 }, dispatch);
 
 export default connect(
-  mapPreviewoProps,
+  mapStateToProps,
   mapDispatchToProps,
 )(ExhibitUpdate);

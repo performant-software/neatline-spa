@@ -1,26 +1,17 @@
-#content,
-#root,
-body,
-html,
-main {
-	height: 100%;
-}
-
-body {
-	margin: 0;
-	padding: 0;
+body{
+	overflow: hidden;
+	height:100%;
 	font-family: sans-serif;
 }
+#ps_n3_main {
+	height: 100vh;
+	padding:0 0rem 6rem 0;
+}
 
-.hidden{
+.ps_n3_hidden{
 	display:none;
 }
 
-.invisible{
+.ps_n3_invisible{
 	opacity: 0;
-}
-
-.scrollable_content{
-	overflow:scroll;
-	height:50rem;
 }

@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 const ExhibitCreate = props => (
-  <div>
+  <div className="ps_n3_exhibitFormContainer">
     <h3><Link to={`${window.baseRoute}/`}>Neatline</Link> | Create an Exhibit</h3>
     <ExhibitForm onSubmit={props.submit} submitLabel='Create exhibit' disabled={props.loading} />
     {props.errored &&
@@ -15,7 +15,7 @@ const ExhibitCreate = props => (
   </div>
 )
 
-const mapPreviewoProps = state => ({
+const mapStateToProps = state => ({
   newExhibit: state.exhibitCreate.newExhibit,
   loading: state.exhibitCreate.loading,
   errored: state.exhibitCreate.errored
@@ -26,6 +26,6 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 }, dispatch);
 
 export default connect(
-  mapPreviewoProps,
+  mapStateToProps,
   mapDispatchToProps,
 )(ExhibitCreate);

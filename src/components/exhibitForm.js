@@ -60,7 +60,7 @@ class ExhibitForm extends Component {
 	}
 	render() {
 		return (
-			<form className='exhibit-form' onSubmit={this.handleSubmit}>
+			<form className='ps_n3_exhibit-form' onSubmit={this.handleSubmit}>
 			<fieldset disabled={this.disabled} style={{
 					border: 'none',
 					padding: '0'
@@ -82,12 +82,6 @@ class ExhibitForm extends Component {
 					<Field name='o:accessible_url' component='input' type='text'/>
 				</div>
 				<div>
-					<label htmlFor='o:spatial_layers'>Enabled Spatial Layers</label>
-					<Field name='o:spatial_layers' component='select' multiple="multiple" onChange={this.enabledSpatialLayerPreview}>
-						{this.layerTypeOptions}
-					</Field>
-				</div>
-				<div>
 					<label htmlFor='o:spatial_layer'>Default Spatial Layer</label>
 					<Field name='o:spatial_layer' component='select' onChange={this.spatialLayerPreview}>
 						<optgroup label='Default Layers'>
@@ -96,6 +90,13 @@ class ExhibitForm extends Component {
 						<option value='no_spatial_layer'>None (Image or WMS as Default)</option>
 					</Field>
 				</div>
+				<div>
+					<label htmlFor='o:spatial_layers'>Additional Spatial Layers</label>
+					<Field name='o:spatial_layers' component='select' multiple="multiple" onChange={this.enabledSpatialLayerPreview}>
+						{this.layerTypeOptions}
+					</Field>
+				</div>
+
 				<div>
 					<label htmlFor='o:image_layer'>Image Layer</label>
 					<Field name='o:image_layer' component='input' type='text'/>
@@ -109,19 +110,21 @@ class ExhibitForm extends Component {
 					<Field name='o:wms_address' component='input' type='text'/>
 				</div>
 				<div>
-					<Field name='o:wms_layers' component='input' type='text'/>
 					<label htmlFor='o:wms_layers'>WMS Layers</label>
+					<Field name='o:wms_layers' component='input' type='text'/>
 				</div>
-				<div>
+				<div className="ps_n3_checkboxPair">
 					<label htmlFor='o:spatial_querying'>Spatial Querying</label>
 					<Field name='o:spatial_querying' component='input' type='checkbox'/>
 				</div>
-				<div>
+				<div className="ps_n3_checkboxPair">
 					<label htmlFor='o:public'>Public</label>
 					<Field name='o:public' component='input' type='checkbox'/>
 				</div>
 				{this.exhibit && this.exhibit['o:id'] && <Field name='o:id' component='input' type='hidden'/>}
-				<button type='submit'>{this.submitLabel}</button>
+				<div className="ps_n3_form_buttons">
+					<button type='submit'>{this.submitLabel}</button>
+				</div>
 			</fieldset>
 		</form>);
 	}
@@ -129,11 +132,11 @@ class ExhibitForm extends Component {
 
 ExhibitForm = reduxForm({form: 'exhibit'})(ExhibitForm);
 
-const mapPreviewoProps = state => ({
+const mapStateToProps = state => ({
 	mapPreview: state.mapPreview,
 	initialValues: state.exhibitShow.exhibit
 		? state.exhibitShow.exhibit
 		: defaultValues
 });
 
-export default connect(mapPreviewoProps, null)(ExhibitForm);
+export default connect(mapStateToProps, null)(ExhibitForm);

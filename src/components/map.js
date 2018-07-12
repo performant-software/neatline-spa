@@ -3,7 +3,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {change} from 'redux-form';
 
-// Makes availabe to mapPreviewoProps
+// Makes availabe to mapStateToProps
 import {selectRecord, deselectRecord, previewRecord, unpreviewRecord} from '../reducers/not_refactored/exhibitShow';
 import {addLayer, resetLayers} from '../reducers/not_refactored/recordMapLayers';
 
@@ -178,7 +178,7 @@ class ExhibitPublicMap extends Component {
 }
 
 // maps this.props.*
-const mapPreviewoProps = state => ({
+const mapStateToProps = state => ({
 	mapPreview: state.mapPreview,
 	exhibit: state.exhibitShow.exhibit,
 	records: state.exhibitShow.records,
@@ -199,4 +199,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 	resetLayers
 }, dispatch);
 
-export default connect(mapPreviewoProps, mapDispatchToProps)(ExhibitPublicMap);
+export default connect(mapStateToProps, mapDispatchToProps)(ExhibitPublicMap);

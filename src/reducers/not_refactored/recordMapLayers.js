@@ -10,7 +10,6 @@ const initialState = {
 export default function(state = initialState, action) {
 	let updatedRecordLayers = {};
 	let updatedLayersForRecord = [];
-
 	switch (action.type) {
 		case LAYER_ADDED:
 			const layersForRecord = state.recordLayers[action.recordId] || [];

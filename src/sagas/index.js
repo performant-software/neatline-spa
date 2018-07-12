@@ -22,7 +22,6 @@ export default function* rootSaga() {
 
 // Create a record
 function* createRecord(action) {
-
 	// Make API call
 	try{
 		let url = urlFormat(recordsEndpoint);

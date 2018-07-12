@@ -273,7 +273,7 @@ class RecordForm extends Component {
 
 RecordForm = reduxForm({form: 'record'})(RecordForm);
 
-const mapPreviewoProps = state => ({
+const mapStateToProps = state => ({
 	initialValues: state.exhibitShow.editorRecord
 		? state.exhibitShow.editorRecord
 		: {
@@ -284,4 +284,4 @@ const mapPreviewoProps = state => ({
 		}
 });
 
-export default connect(mapPreviewoProps, null)(RecordForm);
+export default connect(mapStateToProps, null)(RecordForm);
