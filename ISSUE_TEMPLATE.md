@@ -1,7 +1,8 @@
-If you know that this issue is connected to another issue, pull request, or item, please link it by adding a hash(#) and the number of the related content.
-
 ## Prerequisites
 Before you begin submitting an issue, please make sure to read the following questions. **You may delete the Prerequisites section.**
+- If you know that this issue is connected to another issue, pull 
+  request, or item, please link it by adding a hash(#) and the number of 
+  the related content.
 - *I am reporting the issue to the correct repository.*
   This is the single page application for Neatline 3. For other issues, please see these related repositories: [Omeka S](https://github.com/omeka/omeka-s) or the [Neatline 3 API](https://github.com/performant-software/neatline-omeka-s).
 - *I checked to make sure that this issue has not already been reported.*
