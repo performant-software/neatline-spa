@@ -3,9 +3,10 @@ import {Link} from 'react-router-dom';
 import {selectRecord} from '../../reducers/not_refactored/exhibitShow';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import {strings} from '../../i18nLibrary';
 
 const Records = props => (<div>
-	<Link to={`${props.exhibitShowURL}/edit/new`}>New Record</Link>
+	<Link to={`${props.exhibitShowURL}/edit/new`}>{strings.new_record}</Link>
 	<ul>
 		{
 			props.records.map(record => (<li key={'record-' + record['o:id']} style={{

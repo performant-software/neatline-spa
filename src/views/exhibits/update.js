@@ -3,12 +3,13 @@ import ExhibitForm from '../../components/exhibitForm';
 import { updateExhibit } from '../../reducers/not_refactored/exhibitUpdate';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import {strings} from '../../i18nLibrary';
 
 const ExhibitUpdate = props => (
   <div className="ps_n3_exhibitFormContainer">
-    <ExhibitForm exhibit={props.exhibit} onSubmit={props.submit} submitLabel='Save Exhibit' disabled={props.loading} />
+    <ExhibitForm exhibit={props.exhibit} onSubmit={props.submit} submitLabel={strings.save_exhibit} disabled={props.loading} />
     {props.errored &&
-      <p>Error: failed to update exhibit</p>
+      <p>{strings.update_exhibit_error}</p>
     }
   </div>
 )

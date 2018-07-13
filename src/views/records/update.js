@@ -3,6 +3,7 @@ import RecordForm from '../../components/RecordForm';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {updateRecord, deleteRecord} from '../../actions';
+import {strings} from '../../i18nLibrary'
 
 class RecordUpdate extends Component {
 	render() {
@@ -11,7 +12,7 @@ class RecordUpdate extends Component {
 		if (record) {
 			return (
 			<div>
-				<RecordForm onSubmit={submit} submitLabel='Save Record' disabled={loading} showDelete={true} handleDelete={() => deleteRecord(record)}/>
+				<RecordForm onSubmit={submit} submitLabel={strings.save_record} disabled={loading} showDelete={true} handleDelete={() => deleteRecord(record)}/>
 				<p>{this.props.record.error}</p>
 			</div>);
 		} else {

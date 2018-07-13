@@ -13,6 +13,8 @@ import RecordCreate from '../records/create';
 import RecordUpdate from '../records/update';
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
+import {strings} from '../../i18nLibrary';
+
 export const TEMPORARY = -1;
 
 const ExhibitShowHeader = props => (<div style={{
@@ -43,6 +45,7 @@ const RecordEditor = props => {
 class ExhibitShow extends Component {
 	componentWillMount() {
 		this.props.fetchExhibitWithRecords(this.props.match.params.slug);
+
 	}
 
 	componentWillReceiveProps(nextprops) {
@@ -58,11 +61,13 @@ class ExhibitShow extends Component {
 	render() {
 		const props = this.props;
 		const {exhibit} = props;
+	
+
 
 		let refreshButton = <div className="ps_n3_refreshButton">
 			<button onClick={() => props.fetchExhibitWithRecords(props.match.params.slug)}><div className="fas fa-undo"/></button>
 		</div>
-		let exhibitDisplay = <ExhibitShowHeader refreshButton={refreshButton}>Loading...</ExhibitShowHeader>;
+		let exhibitDisplay = <ExhibitShowHeader refreshButton={refreshButton}>{strings.loading}</ExhibitShowHeader>;
 		if (exhibit) {
 			exhibitDisplay = (<div className='exhibit-public' style={{
 					height: '100%',
@@ -81,11 +86,12 @@ class ExhibitShow extends Component {
 						gridColumn: '1',
 						maxHeight: '100%'
 					}}>
+
 					<ExhibitShowHeader refreshButton={refreshButton}>{exhibit['o:title']}</ExhibitShowHeader>
 					<Tabs selectedIndex={props.tabIndex} onSelect={tabIndex => props.setTabIndex(tabIndex)}>
 						<TabList>
-							<Tab>Exhibit</Tab>
-							<Tab>Records</Tab>
+							<Tab>{strings.exhibit}</Tab>
+							<Tab>{strings.records}</Tab>
 							<Tab style={{
 									visibility: props.editorRecord || props.editorNewRecord
 										? 'visible'
@@ -94,7 +100,7 @@ class ExhibitShow extends Component {
 								}}>
 								{
 									props.editorNewRecord
-										? 'New record'
+										? strings.new_record
 										: props.editorRecord
 											? props.editorRecord['o:title']
 											: ''

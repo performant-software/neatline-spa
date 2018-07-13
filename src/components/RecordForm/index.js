@@ -3,7 +3,8 @@ import {Field, reduxForm, change} from 'redux-form';
 import {Tabs, TabList, Tab, TabPanel} from 'react-tabs';
 import {connect} from 'react-redux';
 import {preview_update,preview_init} from '../../actions';
-import ColorPicker from './colorPicker.js'
+import ColorPicker from './colorPicker.js';
+import {strings} from '../../i18nLibrary';
 
 
 
@@ -40,7 +41,8 @@ class RecordForm extends Component {
 			colorPickerTop:0,
 			colorPickerCurrentColor:'000000',
 			colorPickerCurrentField:'',
-			colorPickerDefaultColor:'#000000'
+			colorPickerDefaultColor:'#000000',
+			strings
 		};
 		this.previewInitialized=false;
 	}
@@ -249,6 +251,8 @@ class RecordForm extends Component {
 
 	render(){
 		let isSelected = (this.props.selectedRecord && this.state.recordID === this.props.selectedRecord["o:id"]);
+	
+
 		return (
 			<form className='ps_n3_exhibit-form' onSubmit={this.handleSubmit}>
 
@@ -258,28 +262,28 @@ class RecordForm extends Component {
 					 	 handleChange={this.handleColorChange}/>
 			<Tabs>
 				<TabList>
-					<Tab>Text</Tab>
-					<Tab>Style</Tab>
+					<Tab>{strings.text}</Tab>
+					<Tab>{strings.style}</Tab>
 				</TabList>
 
 				<div onScroll={this.hideColorPicker}>
 					<TabPanel>
 						<div id="scrollArea_stylePropertyPicker" className="ps_n3_recordFormContainer">
-							<div className="ps_n3_optionHeader">Text Description</div>
+							<div className="ps_n3_optionHeader">{strings.text_description}</div>
 							<fieldset disabled={this.disabled} style={{
 									border: 'none',
 									padding: '0'
 								}}>
 								<div>
-									<label htmlFor='o:title'>Title</label>
+									<label htmlFor='o:title'>{strings.title}</label>
 									<Field name='o:title' component='textarea'/>
 								</div>
 								<div>
-									<label htmlFor='o:slug'>Slug</label>
+									<label htmlFor='o:slug'>{strings.slug}</label>
 									<Field name='o:slug' component='input' type='text'/>
 								</div>
 								<div>
-									<label htmlFor='o:body'>Body</label>
+									<label htmlFor='o:body'>{strings.body}</label>
 									<Field name='o:body' component='textarea'/>
 								</div>
 							</fieldset>
@@ -290,9 +294,9 @@ class RecordForm extends Component {
 							<fieldset id="scrollArea_stylePropertyPicker" className="ps_n3_recordFormContainer" disabled={this.disabled}>
 
 								<div className={!isSelected?"ps_n3_highlight":""}>
-									<div className="ps_n3_optionHeader">Colors</div>
+									<div className="ps_n3_optionHeader">{strings.colors}</div>
 									<div>
-										<label 	htmlFor='o:fill_color'>Fill Color</label>
+										<label 	htmlFor='o:fill_color'>{strings.fill_color}</label>
 
 										<div 	className="ps_n3_inputColorSwatch"
 												data-initialcolor={this.state.fillColor}
@@ -310,7 +314,7 @@ class RecordForm extends Component {
 									</div>
 
 									<div>
-										<label 	htmlFor='o:stroke_color'>Stroke Color</label>
+										<label 	htmlFor='o:stroke_color'>{strings.stroke_color}</label>
 										<div 	className="ps_n3_inputColorSwatch"
 												data-fieldname='o:stroke_color'
 												data-initialcolor={this.state.strokeColor}
@@ -327,7 +331,7 @@ class RecordForm extends Component {
 									</div>
 
 									<div>
-										<label 	htmlFor='o:fill_opacity'>Fill Opacity</label>
+										<label 	htmlFor='o:fill_opacity'>{strings.fill_opacity}</label>
 										<Field 	className="styleEditor_input"
 												name='o:fill_opacity'
 												component='input'
@@ -337,7 +341,7 @@ class RecordForm extends Component {
 												onChange={this.inputEnforce}/>
 									</div>
 									<div>
-										<label 	htmlFor='o:stroke_opacity'>Stroke Opacity</label>
+										<label 	htmlFor='o:stroke_opacity'>{strings.stroke_opacity}</label>
 										<Field 	className="styleEditor_input"
 												name='o:stroke_opacity'
 												component='input'
@@ -348,9 +352,9 @@ class RecordForm extends Component {
 									</div>
 								</div>
 								<div className={isSelected?"ps_n3_highlight":""}>
-									<div className="ps_n3_optionHeader">Selected</div>
+									<div className="ps_n3_optionHeader">{strings.selected}</div>
 									<div>
-										<label 	htmlFor='o:fill_color_select'>Selected - Fill Color</label>
+										<label 	htmlFor='o:fill_color_select'>{strings.selected_fill_color}</label>
 
 										<div 	onClick={(event)=>this.showColorPicker(event,'fillColor_selected')}
 												className="ps_n3_inputColorSwatch"
@@ -367,7 +371,7 @@ class RecordForm extends Component {
 												onChange={this.inputEnforce}/>
 									</div>
 									<div>
-										<label 	htmlFor='o:stroke_color_select'>Selected - Stroke Color</label>
+										<label 	htmlFor='o:stroke_color_select'>{strings.selected_stroke_color}</label>
 										<div 	onClick={(event)=>this.showColorPicker(event,'strokeColor_selected')}
 												className="ps_n3_inputColorSwatch"
 												data-initialcolor={this.state.strokeColor_selected}
@@ -382,7 +386,7 @@ class RecordForm extends Component {
 												onChange={this.inputEnforce}/>
 									</div>
 									<div>
-										<label 	htmlFor='o:stroke_opacity_selected'>Selected - Stroke Opacity</label>
+										<label 	htmlFor='o:stroke_opacity_selected'>{strings.selected_stroke_opacity}</label>
 										<Field 	className="styleEditor_input"
 												name='o:stroke_opacity_selected'
 												component='input'
@@ -392,7 +396,7 @@ class RecordForm extends Component {
 												onChange={this.inputEnforce}/>
 									</div>
 									<div>
-										<label 	htmlFor='o:fill_opacity_select'>Selected - Fill Opacity</label>
+										<label 	htmlFor='o:fill_opacity_select'>{strings.selected_fill_opacity}</label>
 										<Field 	className="styleEditor_input"
 												name='o:fill_opacity_selected'
 												component='input'
@@ -403,9 +407,9 @@ class RecordForm extends Component {
 									</div>
 								</div>
 
-								<div className="ps_n3_optionHeader">Dimensions</div>
+								<div className="ps_n3_optionHeader">{strings.dimensions}</div>
 								<div>
-									<label 	htmlFor='o:stroke_width'>Stroke Width</label>
+									<label 	htmlFor='o:stroke_width'>{strings.stroke_width}</label>
 									<Field 	className="styleEditor_input"
 											name='o:stroke_width'
 											component='input'
@@ -417,7 +421,7 @@ class RecordForm extends Component {
 
 								</div>
 								<div>
-									<label 	htmlFor='o:point_radius'>Point Radius</label>
+									<label 	htmlFor='o:point_radius'>{strings.point_radius}</label>
 									<Field 	className="styleEditor_input"
 											name='o:point_radius'
 											component='input'
@@ -426,7 +430,7 @@ class RecordForm extends Component {
 											onChange={this.inputEnforce}/>
 								</div>
 								<div>
-									<label 	htmlFor='o:zindex'>Z-Index</label>
+									<label 	htmlFor='o:zindex'>{strings.z_index}</label>
 									<Field 	className="styleEditor_input"
 											name='o:zindex'
 											component='input'
@@ -435,7 +439,7 @@ class RecordForm extends Component {
 											onChange={this.inputEnforce}/>
 								</div>
 								<div>
-									<label	htmlFor='o:weight'>Order / Weight</label>
+									<label	htmlFor='o:weight'>{strings.order_weight}</label>
 									<Field 	className="styleEditor_input"
 											name='o:weight'
 											component='input'
@@ -444,76 +448,76 @@ class RecordForm extends Component {
 											onChange={this.inputEnforce}/>
 								</div>
 
-								<div className="ps_n3_optionHeader">Dates</div>
+								<div className="ps_n3_optionHeader">{strings.dates}</div>
 								<div>
-									<label 	htmlFor='o:start_date'>Start Date</label>
+									<label 	htmlFor='o:start_date'>{strings.start_date}</label>
 									<Field 	className="styleEditor_input"
 											name='o:start_date'
 											component='input'
 											type='text'/>
 								</div>
 								<div>
-									<label 	htmlFor='o:end_date'>End Date</label>
+									<label 	htmlFor='o:end_date'>{strings.end_date}</label>
 									<Field 	className="styleEditor_input"
 											name='o:end_date'
 											component='input'
 											type='text'/>
 								</div>
 								<div>
-									<label 	htmlFor='o:after_date'>After Date</label>
+									<label 	htmlFor='o:after_date'>{strings.after_date}</label>
 									<Field 	className="styleEditor_input"
 											name='o:after_date'
 											component='input'
 											type='text'/>
 								</div>
 								<div>
-									<label 	htmlFor='o:before_date'>Before Date</label>
+									<label 	htmlFor='o:before_date'>{strings.before_date}</label>
 									<Field 	className="styleEditor_input"
 											name='o:before_date'
 											component='input'
 											type='text'/>
 								</div>
 
-								<div className="ps_n3_optionHeader">Imagery</div>
+								<div className="ps_n3_optionHeader">{strings.imagery}</div>
 								<div>
-									<label 	htmlFor='o:point_image'>Point Image</label>
+									<label 	htmlFor='o:point_image'>{strings.point_image}</label>
 									<Field 	className="styleEditor_input"
 											name='o:point_image'
 											component='input'
 											type='text'/>
 								</div>
 								<div>
-									<label 	htmlFor='o:wms_address'>WMS Address</label>
+									<label 	htmlFor='o:wms_address'>{strings.wms_address}</label>
 									<Field 	className="styleEditor_input"
 											name='o:wms_address'
 											component='input'
 											type='text'/>
 								</div>
 								<div>
-									<label 	htmlFor='o:wms_layers'>WMS Layers</label>
+									<label 	htmlFor='o:wms_layers'>{strings.wms_layers}</label>
 									<Field 	className="styleEditor_input"
 											name='o:wms_layers'
 											component='input'
 											type='text'/>
 								</div>
 
-								<div className="ps_n3_optionHeader">Visibility</div>
+								<div className="ps_n3_optionHeader">{strings.visibility}</div>
 								<div>
-									<label 	htmlFor='o:min_zoom'>Min Zoom</label>
+									<label 	htmlFor='o:min_zoom'>{strings.min_zoom}</label>
 									<Field 	className="styleEditor_input"
 											name='o:min_zoom'
 											component='input'
 											type='number'/>
 								</div>
 								<div>
-									<label 	htmlFor='o:max_zoom'>Max Zoom</label>
+									<label 	htmlFor='o:max_zoom'>{strings.max_zoom}</label>
 									<Field 	className="styleEditor_input"
 											name='o:max_zoom'
 											component='input'
 											type='number'/>
 								</div>
 								<div>
-									<label 	htmlFor='o:map_zoom'>Default Zoom</label>
+									<label 	htmlFor='o:map_zoom'>{strings.default_zoom}</label>
 									<Field 	className="styleEditor_input"
 											name='o:map_zoom'
 											component='input'
@@ -521,7 +525,7 @@ class RecordForm extends Component {
 								</div>
 
 								<div>
-									<label 	htmlFor='o:map_focus'>Default Focus</label>
+									<label 	htmlFor='o:map_focus'>{strings.default_focus}</label>
 									<Field 	className="styleEditor_input"
 											name='o:map_focus'
 											component='input'

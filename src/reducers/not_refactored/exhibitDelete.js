@@ -1,5 +1,6 @@
 import { urlFormat, exhibitsEndpoint } from '../../sagas/api_helper.js';
 import { fetchExhibits } from './exhibits';
+import {strings} from '../../i18nLibrary';
 
 export const EXHIBIT_DELETED = 'exhibitDelete/EXHIBIT_DELETED';
 export const EXHIBIT_DELETE_SUCCESS = 'exhibitDelete/EXHIBIT_DELETE_SUCCESS';
@@ -37,7 +38,7 @@ export default function(state = initialState, action) {
 
 export function deleteExhibit(exhibit) {
   return function(dispatch) {
-    if (window.confirm(`Are you sure you want to delete the Neatline exhibit "${exhibit['o:title']}"? This will delete the exhibit and its associated metadata.`)) {
+    if (window.confirm( strings.formatString(strings.exhibit_delete_confirmation, exhibit['o:title']) )) {
       dispatch({
         type: EXHIBIT_DELETED,
         exhibit
