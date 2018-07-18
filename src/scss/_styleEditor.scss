@@ -1,38 +1,24 @@
 .ps_n3_recordFormContainer {
-	height: calc(100vh - 11rem);
+	height: calc(100vh - 13rem);
 	overflow: scroll;
 	border: 0;
-}
-
-.ps_n3_inputColorSwatch {
-	padding: 0;
-	margin: 0 0 -1.5rem;
-	position: relative;
-	left: 16.5rem;
-	height: 1.38rem;
-	width: 1.36rem;
-	background-color: white;
-	border: 1px solid grey;
-}
-/* FIXME: this is a patch until we sort out the parent CSS, don't use !important, kids */
-input.styleEditor_input {
-	width: 98% !important;
-}
-
-#ps_n3_colorPickerComponent {}
-
-.ps_n3_colorPicker_picker {
-	position: fixed;
-	color: white;
+	margin:0 0 0 0;
 }
 
 .ps_n3_optionHeader {
 	font-weight: bold;
+	border-bottom: 1px #c2c0ba dashed;
+	margin:0 0 1rem 0;
 }
 
 .ps_n3_highlight {
 	background-color: #fffee1;
 	padding: 1rem;
-	margin: 1rem -1rem -1rem -1rem;
+	margin: -.5rem -1rem -1rem -1rem;
 	border-radius: 0.3rem;
+}
+
+.ps_n3_sub_options{
+	margin:0 1.5rem 0 1rem;
+	font-size: .9rem;
 }

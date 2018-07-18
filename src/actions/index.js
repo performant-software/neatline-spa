@@ -6,7 +6,7 @@ function action(type, payload = {}) {
 }
 
 // Action dispatchers
-export const set_tileLayer = (payload) => action(types.SET_TILELAYER, payload);
+export const preview_baseLayer = (payload) => action(types.PREVIEW_BASELAYER, payload);
 export const set_availableTileLayers = (payload) => action(types.SET_AVAILABLE_TILELAYERS, payload);
 
 export const createRecord = (payload) => action(types.RECORD_CREATE, payload);

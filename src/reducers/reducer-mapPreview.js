@@ -73,18 +73,19 @@ export default function app(state = initialState, action) {
 				hasUnsavedChanges: false
 			}
 
-			// Set the tilelayer object based on an ID (array position)
-		case actionType.SET_TILELAYER:
+		// Set the tilelayer object based on an ID (array position)
+		case actionType.PREVIEW_BASELAYER:
 			return {
 				...state,
 				hasUnsavedChanges: true,
 				current: {
 					...state.current,
+					...action.payload,
 					tileLayer: state.available.baseMaps[action.payload.id]
 				}
 			};
 
-			// Create a subset of tilelayer objects based on array of IDs
+		// Create a subset of tilelayer objects based on array of IDs
 		case actionType.SET_AVAILABLE_TILELAYERS:
 			let availableOptions = [];
 			action.payload.ids.forEach((thisID, key, map) => {

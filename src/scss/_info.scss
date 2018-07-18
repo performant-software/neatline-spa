@@ -1,0 +1,29 @@
+.ps_n3_info_component, .ps_n3_info_component_withWarning{
+	 position: absolute;
+	 top: .7rem;
+	 left: 54px;
+	 max-width: 400px;
+	 background-color: white;
+	 opacity: 0.9;
+	 text-align: left;
+	 padding: 10px;
+	 z-index: 999;
+	 border-radius: 0.3rem;
+	 border:2px solid #c2c0ba;
+}
+.ps_n3_info_component_withWarning{
+	top:3.5rem;
+}
+.ps_n3_info_component hr{
+	height:1px;
+	border-width:0;
+	color:gray;
+	background-color:gray
+}
+
+.ps_n3_closeButton{
+	position: relative;
+	margin:-.7rem -.5rem -.5rem -.5rem;
+	float: right;
+	cursor: pointer;
+}

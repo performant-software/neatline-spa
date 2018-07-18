@@ -251,7 +251,7 @@ class RecordForm extends Component {
 
 	render(){
 		let isSelected = (this.props.selectedRecord && this.state.recordID === this.props.selectedRecord["o:id"]);
-	
+
 
 		return (
 			<form className='ps_n3_exhibit-form' onSubmit={this.handleSubmit}>
@@ -261,15 +261,21 @@ class RecordForm extends Component {
 						 top={this.state.colorPickerTop}
 					 	 handleChange={this.handleColorChange}/>
 			<Tabs>
+
+				{/* Form buttons */}
+				<div className="ps_n3_buttonGroup">
+					<button className="ps_n3_button" type='submit'>{this.submitLabel}</button>
+					{this.showDelete && <button className="ps_n3_button" onClick={this.handleDelete} type='button'>Delete</button>}
+				</div>
+
 				<TabList>
 					<Tab>{strings.text}</Tab>
 					<Tab>{strings.style}</Tab>
 				</TabList>
 
-				<div onScroll={this.hideColorPicker}>
+				<div>
 					<TabPanel>
 						<div id="scrollArea_stylePropertyPicker" className="ps_n3_recordFormContainer">
-							<div className="ps_n3_optionHeader">{strings.text_description}</div>
 							<fieldset disabled={this.disabled} style={{
 									border: 'none',
 									padding: '0'
@@ -417,8 +423,6 @@ class RecordForm extends Component {
 											data-enforce='float'
 											onChange={this.inputEnforce}
 											onBlur={this.onFieldBlur}/>
-
-
 								</div>
 								<div>
 									<label 	htmlFor='o:point_radius'>{strings.point_radius}</label>
@@ -534,16 +538,15 @@ class RecordForm extends Component {
 							</fieldset>
 						</div>
 					</TabPanel>
+
+
 				</div>
 
 			</Tabs>
 			<Field className="styleEditor_input" name='o:coverage' component='input' type='hidden'/>
 			<Field className="styleEditor_input" name='o:is_coverage' component='input' type='hidden'/>
 			<Field className="styleEditor_input" name='o:exhibit_id' component='input' type='hidden'/>
-			<div className="ps_n3_form_buttons">
-				<button type='submit'>{this.submitLabel}</button>
-				{this.showDelete && <button onClick={this.handleDelete} type='button'>Delete</button>}
-			</div>
+
 		</form>
 		)
 	}
