@@ -1,3 +1,8 @@
+export const EXHIBIT_TYPE = Object.freeze({
+	UNDEFINED: -1,
+	MAP: 0,
+	IMAGE: 1,
+});
 export const BASELAYER_TYPE = Object.freeze({
 	MAP: "MAP",
 	IMAGE: "IMAGE",
