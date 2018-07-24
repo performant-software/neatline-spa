@@ -17,7 +17,7 @@ class ExhibitForm extends Component {
 		this.disabled = props.disabled;
 		this.layerTypeOptions = this.buildLayerTypeOptions();
 		this.state={
-			exhibitType:types.EXHIBIT_TYPE.UNDEFINED,
+			exhibitType:types.EXHIBIT_TYPE.MAP,
 			baseLayerType:types.BASELAYER_TYPE.MAP,
 			isNewExhibit:true
 		};
@@ -193,13 +193,13 @@ class ExhibitForm extends Component {
 						{(this.state.isNewExhibit) &&
 							<div className="ps_n3_radioSet">
 								<input 	data-type="map"
-										checked={this.state.baseLayerType !== types.BASELAYER_TYPE.IMAGE}
+										checked={this.state.exhibitType === types.EXHIBIT_TYPE.MAP}
 										type="radio"
 										onChange={this.exhibitTypeSwitch}/>
 										<label>Map</label>
 
 								<input 	data-type="image"
-										checked={this.state.baseLayerType === types.BASELAYER_TYPE.IMAGE}
+										checked={this.state.exhibitType === types.EXHIBIT_TYPE.IMAGE}
 										type="radio"
 										onChange={this.exhibitTypeSwitch}/>
 										<label>Image</label>
