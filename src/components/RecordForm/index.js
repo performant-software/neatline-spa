@@ -37,6 +37,7 @@ class RecordForm extends Component {
 		this.preview_init=preview_init.bind(this);
 		this.preview_update = preview_update.bind(this);
 		this.state={
+			exhibitType:'map',
 			colorPickerVisible:false,
 			colorPickerTop:0,
 			colorPickerCurrentColor:'000000',
