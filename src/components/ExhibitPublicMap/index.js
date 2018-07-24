@@ -189,8 +189,10 @@ class ExhibitPublicMap extends Component {
 			// https://leafletjs.com/examples/crs-simple/crs-simple.html
 			case types.BASELAYER_TYPE.IMAGE:
 
-				// This kicks off an image overlay that is incorrect (bounds 0,0,0,0),
-				// It is used just as a hook and then corrected in the onload handler
+				// This kicks off an image overlay that is not drawn correctly,
+				// so we zero the bounds and use it as a hook to an onload handler
+				// This is awkward but not wasted - we need to load the image to get
+				// the dimensions anyway.
 				crs = L.CRS.Simple;
 				baseLayers.push(
 					<LayersControl.BaseLayer key={types.BASELAYER_TYPE.IMAGE}
