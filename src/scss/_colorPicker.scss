@@ -1,17 +1,15 @@
-
 .ps_n3_inputColorSwatch {
-box-sizing: content-box;
-  top: 0rem;
-  margin:-2rem 0 0 0;
-  padding: 0;
-  position: relative;
-  left: 16rem;
-  top:2.4rem;
-  height: 2.3rem;
-  width: 2.2rem;
-  background-color: white;
-  border: 1px solid grey; }
-
+	box-sizing: content-box;
+	top: 0;
+	margin: -2rem 0 0;
+	padding: 0;
+	position: relative;
+	left: 16rem;
+	top: 2.4rem;
+	height: 2.3rem;
+	width: 2.2rem;
+	border: 1px solid grey;
+}
 
 /* FIXME: this is a patch until we sort out the parent CSS, don't use !important, kids */
 input.styleEditor_input {
@@ -19,7 +17,7 @@ input.styleEditor_input {
 }
 
 #ps_n3_colorPickerComponent {
-	left:3rem;
+	left: 3rem;
 }
 
 .ps_n3_colorPicker_picker {

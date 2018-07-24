@@ -16,7 +16,10 @@ class ExhibitForm extends Component {
 		this.submitLabel = props.submitLabel;
 		this.disabled = props.disabled;
 		this.layerTypeOptions = this.buildLayerTypeOptions();
-		this.state={baseLayerType:types.BASELAYER_TYPE.MAP};
+		this.state={
+			exhibitType:'map',
+			baseLayerType:types.BASELAYER_TYPE.MAP
+		};
 	}
 
 	componentDidMount(){
@@ -53,6 +56,11 @@ class ExhibitForm extends Component {
 			tile_address:(event.target.name === "o:tile_address")?event.target.value:formSelector(this.props.state, 'o:tile_address'),
 			tile_attribution:(event.target.name === "o:tile_attribution")?event.target.value:formSelector(this.props.state, 'o:tile_attribution')
 		};
+
+		// If we're editing a property of image, ensure that's what baselayer we're on
+		if((event.target.name === "o:image_layer") ||(event.target.name === "o:image_attribution")){
+			payload.spatial_layer=types.BASELAYER_TYPE.IMAGE;
+		}
 		this.updateLayerPreview(payload);
 	}
 
@@ -88,6 +96,18 @@ class ExhibitForm extends Component {
 	enabledSpatialLayerPreview = (event) => {
 		let arrayOfIDs = [...event.target.options].filter(({selected}) => selected).map(({value}) => value);
 		this.props.dispatch(this.set_availableTileLayers({ids: arrayOfIDs}));
+	}
+
+	// Switches between map and image
+	exhibitTypeSwitch = (event) => {
+		if(event.target.dataset.type === 'image'){
+			this.setState({baseLayerType:types.BASELAYER_TYPE.IMAGE});
+			this.onSpatialLayerInfoChange({target:{name:'o:spatial_layer',value:types.BASELAYER_TYPE.IMAGE}});
+		}else{
+			this.setState({baseLayerType:types.BASELAYER_TYPE.MAP});
+			this.onSpatialLayerInfoChange({target:{name:'o:spatial_layer',value:0}});
+		}
+
 	}
 
 	// Build layertypes from the set of non-deprecated maps
@@ -146,35 +166,47 @@ class ExhibitForm extends Component {
 					<Field name='o:accessible_url' component='input' type='text'/>
 				</div>
 
-				<div>
-					<label 	htmlFor='o:spatial_layer'>{strings.default_spatial_layer}</label>
-					<Field 	name='o:spatial_layer'
-							component='select'
-							onChange={this.onSpatialLayerInfoChange}>
-							<optgroup label='Default Layers'>
-								{this.layerTypeOptions}
-								<option value={types.BASELAYER_TYPE.TILE}>Custom: Tile Layer</option>
-								<option value={types.BASELAYER_TYPE.IMAGE}>Custom: Image Layer</option>
-								<option value={types.BASELAYER_TYPE.WMS}>Custom: WMS Layer</option>
-							</optgroup>
-					</Field>
+
+				<div className="ps_n3_radioSet">
+					<input data-type="map" checked={this.state.baseLayerType !== types.BASELAYER_TYPE.IMAGE} type="radio" onChange={this.exhibitTypeSwitch}/>
+					<label>Map</label>
+
+					<input data-type="image" checked={this.state.baseLayerType === types.BASELAYER_TYPE.IMAGE} type="radio" onChange={this.exhibitTypeSwitch}/>
+					<label>Image</label>
 				</div>
 
+				{(this.state.baseLayerType !== types.BASELAYER_TYPE.IMAGE) &&
+					<div>
+						<label 	htmlFor='o:spatial_layer'>Base Layer</label>
+						<Field 	name='o:spatial_layer'
+								component='select'
+								onChange={this.onSpatialLayerInfoChange}>
+								<optgroup label='Default Layers'>
+									{this.layerTypeOptions}
+									<option value={types.BASELAYER_TYPE.TILE}>Custom: Tile Layer</option>
+									<option value={types.BASELAYER_TYPE.WMS}>Custom: WMS Layer</option>
+								</optgroup>
+						</Field>
+					</div>
+				}
+
 				{(this.state.baseLayerType === types.BASELAYER_TYPE.IMAGE) &&
-					<div className="ps_n3_sub_options">
+					<div>
 						<div>
-							<label 	htmlFor='o:image_layer'>Image Layer</label>
-							<Field 	name='o:image_layer'
-									component='input'
-									type='text'
-									onChange={this.onSpatialLayerInfoChange}/>
-						</div>
-						<div>
-							<label 	htmlFor='o:image_attribution'>Attribution</label>
-							<Field 	name='o:image_attribution'
-									component='input'
-									type='text'
-									onChange={this.onSpatialLayerInfoChange}/>
+							<div>
+								<label 	htmlFor='o:image_layer'>Image URL</label>
+								<Field 	name='o:image_layer'
+										component='input'
+										type='text'
+										onChange={this.onSpatialLayerInfoChange}/>
+							</div>
+							<div>
+								<label 	htmlFor='o:image_attribution'>Attribution</label>
+								<Field 	name='o:image_attribution'
+										component='input'
+										type='text'
+										onChange={this.onSpatialLayerInfoChange}/>
+							</div>
 						</div>
 					</div>
 				}
@@ -182,7 +214,7 @@ class ExhibitForm extends Component {
 				{(this.state.baseLayerType === types.BASELAYER_TYPE.TILE) &&
 					<div className="ps_n3_sub_options">
 						<div>
-							<label 	htmlFor='o:tile_address'>Tile Layer</label>
+							<label 	htmlFor='o:tile_address'>Tile URL</label>
 							<Field 	name='o:tile_address'
 									component='input'
 									type='text'
@@ -200,7 +232,7 @@ class ExhibitForm extends Component {
 				{(this.state.baseLayerType === types.BASELAYER_TYPE.WMS) &&
 					<div className="ps_n3_sub_options">
 						<div>
-							<label	htmlFor='o:wms_address'>WMS Address</label>
+							<label	htmlFor='o:wms_address'>WMS URL</label>
 							<Field 	name='o:wms_address'
 									component='input'
 									type='text'
@@ -223,22 +255,27 @@ class ExhibitForm extends Component {
 					</div>
 				}
 
-				<div>
-					<label 	htmlFor='o:spatial_layers'>{strings.additional_spatial_layers}</label>
-					<Field 	name='o:spatial_layers'
-							component='select'
-							multiple="multiple"
-							onChange={this.enabledSpatialLayerPreview}>
-						{this.layerTypeOptions}
-					</Field>
-				</div>
+				{(this.state.baseLayerType !== types.BASELAYER_TYPE.IMAGE) &&
+					<div>
+						<div>
+							<label 	htmlFor='o:spatial_layers'>Additional Layers</label>
+							<Field 	name='o:spatial_layers'
+									component='select'
+									multiple="multiple"
+									onChange={this.enabledSpatialLayerPreview}>
+								{this.layerTypeOptions}
+							</Field>
+						</div>
 
-				<div>
-					<label 	htmlFor='o:zoom_levels'>{strings.zoom_levels}</label>
-					<Field 	name='o:zoom_levels'
-							component='input'
-							type='number'/>
-				</div>
+						<div>
+							<label 	htmlFor='o:zoom_levels'>{strings.zoom_levels}</label>
+							<Field 	name='o:zoom_levels'
+									component='input'
+									type='number'/>
+						</div>
+					</div>
+				}
+
 				<div className="ps_n3_checkboxPair">
 					<Field 	name='o:spatial_querying'
 							component='input'

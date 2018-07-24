@@ -1,7 +1,8 @@
 
 .ps_n3_exhibitFormContainer {
-	height: calc(100vh - 10rem);
+	height: calc(100vh - 6rem);
 	overflow: scroll;
+	width:19.3rem;
 }
 
 .ps_n3_exhibitShowContainer {
@@ -71,4 +72,15 @@
 
 .ps_n3_checkboxPair label {
 	margin: 0 0 0 1rem;
+}
+
+.ps_n3_radioSet label{
+	margin: 0 1rem 0 0;
+}
+.ps_n3_radioSet input{
+	position: relative;
+	margin: 0;
+	top: 0 !important;
+	max-height: 1rem !important;
+	max-width: 1rem !important;
 }
