@@ -146,7 +146,8 @@ h3 {
   max-width: 19.2rem !important; }
 
 .ps_n3_exhibit-form select[multiple] {
-  height: 4rem; }
+  height: 4rem;
+  margin: 0 0 .9rem 0; }
 
 .ps_n3_exhibit-form textarea {
   height: 4rem;
@@ -163,7 +164,7 @@ h3 {
   max-width: 1rem !important; }
 
 .ps_n3_checkboxPair label {
-  margin: 0 0 0 1rem; }
+  margin: 0 0 0 .5rem; }
 
 .ps_n3_radioSet label {
   margin: 0 1rem 0 0; }
@@ -239,7 +240,10 @@ input.styleEditor_input {
   max-width: 19rem; }
 
 .ps_n3_buttonGroup {
-  margin: .5rem 0 .8rem -.1rem; }
+  margin: .5rem 0 .8rem .2rem; }
+
+.ps_n3_buttonGroup button {
+  margin-right: 0.5rem; }
 
 .ps_n3_buttonGroup_exhibitForm {
   margin: .5rem 0 .8rem .2rem; }

@@ -28,13 +28,13 @@ class Exhibits extends Component {
     );
     return (
       <div>
-        <div>{lngButtons}</div>
         <h3><Link to={`${window.baseRoute}/`}>Neatline</Link> | {strings.browseExhibit}</h3>
-        {props.userSignedIn &&
-          <button onClick={props.createExhibitView} style={{ marginRight: '0.5em' }}>{strings.createExhibit}</button>
-        }
-        <button onClick={props.fetchExhibits} disabled={props.exhibitsLoading}>{strings.refreshExhibits}</button>
-
+		<div className="ps_n3_buttonGroup">
+	        {props.userSignedIn &&
+	          <button onClick={props.createExhibitView}>{strings.createExhibit}</button>
+	        }
+	        <button onClick={props.fetchExhibits} disabled={props.exhibitsLoading}>{strings.refreshExhibits}</button>
+		</div>
         <table>
           <thead>
             <tr>

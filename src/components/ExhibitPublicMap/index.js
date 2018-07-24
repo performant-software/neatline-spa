@@ -18,8 +18,8 @@ import {
 	WMSTileLayer,
 	GeoJSON,
 	FeatureGroup,
-	ImageOverlay,
-	Marker
+	ImageOverlay
+
 } from 'react-leaflet';
 import L from 'leaflet';
 import {circleMarker} from 'leaflet';
@@ -102,7 +102,7 @@ class ExhibitPublicMap extends Component {
 				switch (this.props.mapPreview.current.type) {
 
 					// Map layer
-					case types.BASELAYER_TYPE.MAP:
+					case types.BASELAYER_TYPE.MAP: default:
 						// Remove existing image layers
 						mapInstance.eachLayer(function(layer){
 							if(layer._image){
@@ -111,7 +111,7 @@ class ExhibitPublicMap extends Component {
 						});
 						break;
 
-					// Map layer
+					// WMS layer
 					case types.BASELAYER_TYPE.WMS:
 						// Remove existing image layers
 						mapInstance.eachLayer(function(layer){
@@ -168,12 +168,10 @@ class ExhibitPublicMap extends Component {
 
 		// Default CRS (per leaflet docs)
 		// NOTE: CRS can only be set on <MAP> creation, changing it after the fact won't do anything
-		let crs = L.CRS.EPSG3857;
 		switch (this.props.mapPreview.current.type) {
 
 			// Map layer
 			case types.BASELAYER_TYPE.MAP:
-				crs = L.CRS.EPSG3857;
 				baseLayers.push(
 					<LayersControl.BaseLayer key={this.props.mapPreview.current.tileLayer.slug}
 											 name={this.props.mapPreview.current.tileLayer.displayName}
@@ -193,7 +191,6 @@ class ExhibitPublicMap extends Component {
 				// so we zero the bounds and use it as a hook to an onload handler
 				// This is awkward but not wasted - we need to load the image to get
 				// the dimensions anyway.
-				crs = L.CRS.Simple;
 				baseLayers.push(
 					<LayersControl.BaseLayer key={types.BASELAYER_TYPE.IMAGE}
 											 name={this.props.mapPreview.current.image_address}
@@ -208,7 +205,6 @@ class ExhibitPublicMap extends Component {
 
 			// Custom tile (same as map), FIXME: factor into map case?
 		 	case types.BASELAYER_TYPE.TILE:
-				crs = L.CRS.EPSG3857;
 				baseLayers.push(
 					<LayersControl.BaseLayer key={types.BASELAYER_TYPE.TILE}
 											 name={this.props.mapPreview.current.tile_attribution}
@@ -222,7 +218,6 @@ class ExhibitPublicMap extends Component {
 
 			// WMS
 			case types.BASELAYER_TYPE.WMS:
-				crs = L.CRS.EPSG3857;
 				baseLayers.push(
 					<LayersControl.BaseLayer key={types.BASELAYER_TYPE.WMS}
 											 name={this.props.mapPreview.current.wms_address}
@@ -268,7 +263,6 @@ class ExhibitPublicMap extends Component {
 					<Map ref='map'
 						 center={position}
 						 zoom={13}
-						 crs={L.CRS.EPSG3857}
 						 className={this.props.mapPreview.hasUnsavedChanges?"ps_n3_mapComponent_withWarning":"ps_n3_mapComponent"}
 						 onClick={(event) => {
 							if (event.originalEvent.target === event.target.getContainer())
