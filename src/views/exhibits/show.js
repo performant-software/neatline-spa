@@ -17,14 +17,15 @@ import {strings} from '../../i18nLibrary';
 
 export const TEMPORARY = -1;
 
-const ExhibitShowHeader = props => (<div style={{
-		marginBottom: '1.5em'
-	}}>
-	<div>
-		<Link to={`${window.baseRoute}/`}>Neatline</Link>
-		| {props.children}</div>
-	{props.refreshButton}
-</div>)
+const ExhibitShowHeader = props => (
+
+	<h3>
+		<Link to={`${window.baseRoute}/`}>Neatline</Link> | {props.children}
+	</h3>
+);
+
+
+
 
 const ExhibitPanelContent = props => {
 	if (props.userSignedIn) {
@@ -61,13 +62,10 @@ class ExhibitShow extends Component {
 	render() {
 		const props = this.props;
 		const {exhibit} = props;
-	
 
 
-		let refreshButton = <div className="ps_n3_refreshButton">
-			<button onClick={() => props.fetchExhibitWithRecords(props.match.params.slug)}><div className="fas fa-undo"/></button>
-		</div>
-		let exhibitDisplay = <ExhibitShowHeader refreshButton={refreshButton}>{strings.loading}</ExhibitShowHeader>;
+
+		let exhibitDisplay = <ExhibitShowHeader>{strings.loading}</ExhibitShowHeader>;
 		if (exhibit) {
 			exhibitDisplay = (<div className='exhibit-public' style={{
 					height: '100%',
@@ -81,13 +79,8 @@ class ExhibitShow extends Component {
 								return (<RecordEditorLoader {...props}/>)
 							}}/>
 				}
-				<div style={{
-						gridRow: '1',
-						gridColumn: '1',
-						maxHeight: '100%'
-					}}>
-
-					<ExhibitShowHeader refreshButton={refreshButton}>{exhibit['o:title']}</ExhibitShowHeader>
+				<div className="ps_n3_exhibitShowContainer">
+					<ExhibitShowHeader>{exhibit['o:title']}</ExhibitShowHeader>
 					<Tabs selectedIndex={props.tabIndex} onSelect={tabIndex => props.setTabIndex(tabIndex)}>
 						<TabList>
 							<Tab>{strings.exhibit}</Tab>
@@ -135,11 +128,11 @@ class ExhibitShow extends Component {
 				</div>
 			</div>);
 		} else if (props.exhibitsLoading) {
-			exhibitDisplay = <ExhibitShowHeader refreshButton={refreshButton}>Loading...</ExhibitShowHeader>;
+			exhibitDisplay = <ExhibitShowHeader>Loading...</ExhibitShowHeader>;
 		} else if (props.exhibitsErrored) {
-			exhibitDisplay = <ExhibitShowHeader refreshButton={refreshButton}>Loading...</ExhibitShowHeader>;
+			exhibitDisplay = <ExhibitShowHeader>Loading...</ExhibitShowHeader>;
 		} else if (props.exhibitNotFound) {
-			exhibitDisplay = <ExhibitShowHeader refreshButton={refreshButton}>Exhibit with identifier "{props.match.params.slug}" not found</ExhibitShowHeader>;
+			exhibitDisplay = <ExhibitShowHeader>Exhibit with identifier "{props.match.params.slug}" not found</ExhibitShowHeader>;
 		}
 		return (<div style={{
 				height: '100%'

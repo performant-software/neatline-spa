@@ -7,22 +7,10 @@
 	max-width: 19rem;
 }
 
-.ps_n3_form_buttons {
-	position: fixed;
-	margin: 0;
-	width: 20rem;
-	padding: .5rem 0 .5rem 0;
-	left: 0;
-	bottom: 0;
-	text-align: center;
-	background-color: #FFFFFF;
-	-webkit-box-shadow: -2px -4px 13px -5px rgba(0,0,0,0.75);
-	-moz-box-shadow: -2px -4px 13px -5px rgba(0,0,0,0.75);
-	box-shadow: -2px -4px 13px -5px rgba(0,0,0,0.75);
-	z-index: 100;
-
+.ps_n3_buttonGroup {
+	margin: 0 0 .8rem -.1rem;
 }
 
-.ps_n3_form_buttons button {
-	margin: 0 1rem 0 0;
+.ps_n3_buttonGroup_exhibitForm{
+	margin: 0 0 .8rem .2rem;
 }

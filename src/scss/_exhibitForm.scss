@@ -1,8 +1,16 @@
+
 .ps_n3_exhibitFormContainer {
-	background-color: #ffffff;
-	height: calc(100vh - 8rem);
+	height: calc(100vh - 10rem);
 	overflow: scroll;
 }
+
+.ps_n3_exhibitShowContainer {
+	gridRow: 1;
+	gridColumn: 1;
+	maxHeight: 100%;
+	border-right: 2px solid #c2c0ba;
+}
+
 
 .ps_n3_refreshButton {
 	position: fixed;
@@ -21,9 +29,32 @@
 .ps_n3_exhibit-form input,
 .ps_n3_exhibit-form select,
 .ps_n3_exhibit-form textarea {
-	max-width: 400px;
 	width: 100%;
+	max-width: 18.5rem !important;
 	display: inline;
+	border-radius: 0;
+	border: 1px solid #dedede;
+	padding: 0 0 0 0.5rem;
+}
+
+.ps_n3_exhibit-form input {
+	height: 2.3rem;
+}
+
+.ps_n3_exhibit-form select {
+	height: 3rem;
+	background-color: white;
+	border-radius: 0;
+	max-width: 19.2rem !important;
+}
+
+.ps_n3_exhibit-form select[multiple] {
+	height: 4rem;
+}
+
+.ps_n3_exhibit-form textarea {
+	height: 4rem;
+	padding: 0.5rem 0 0 0.5rem;
 }
 
 .ps_n3_checkboxPair {
@@ -33,9 +64,11 @@
 .ps_n3_checkboxPair input {
 	position: relative;
 	margin: 0;
-	top: -1.25rem;
+	top: 0 !important;
+	max-height: 1rem !important;
+	max-width: 1rem !important;
 }
 
 .ps_n3_checkboxPair label {
-	margin: 0 0 0 1.4rem;
+	margin: 0 0 0 1rem;
 }
