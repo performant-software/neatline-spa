@@ -14,7 +14,7 @@ import Records from '../records';
 import RecordCreate from '../records/create';
 import RecordUpdate from '../records/update';
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
-
+import { strings } from '../../i18nLibrary';
 const ExhibitShowHeader = props => (
 	<div>
 		<h3><Link to={`${window.baseRoute}/`}>Neatline</Link> | {props.children}</h3>
