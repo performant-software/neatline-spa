@@ -1,3 +1,5 @@
+import 'react-tabs/style/react-tabs.css';
+import * as TYPE from '../../types';
 import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
@@ -12,18 +14,13 @@ import Records from '../records';
 import RecordCreate from '../records/create';
 import RecordUpdate from '../records/update';
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
-import 'react-tabs/style/react-tabs.css';
-import * as TYPE from '../../types';
 
 const ExhibitShowHeader = props => (
 	<div>
-		<div className="ps_n3_button" onClick={this.saveAll}>Save</div>
 		<h3><Link to={`${window.baseRoute}/`}>Neatline</Link> | {props.children}</h3>
+		<div className="ps_n3_button save" onClick={props.onSave}>Save</div>
 	</div>
 );
-
-
-
 
 const ExhibitPanelContent = props => {
 	if (props.userSignedIn) {
@@ -58,7 +55,8 @@ class ExhibitShow extends Component {
 	}
 
 	saveAll = (event) => {
-		document.dispatchEvent(new Event(TYPE.EVENT.SAVE_ALL));
+		console.log("Exhibit: "+this.props.exhibitPreview.cache);
+		console.log("Map: "+JSON.stringify(this.props.mapPreview.cache));
 	}
 
 	render() {
@@ -82,7 +80,7 @@ class ExhibitShow extends Component {
 							}}/>
 				}
 				<div className="ps_n3_exhibitShowContainer">
-					<ExhibitShowHeader>{exhibit['o:title']}</ExhibitShowHeader>
+					<ExhibitShowHeader onSave={this.saveAll}>{exhibit['o:title']}</ExhibitShowHeader>
 					<Tabs selectedIndex={props.tabIndex} onSelect={tabIndex => props.setTabIndex(tabIndex)}>
 						<TabList>
 							<Tab>{strings.exhibit}</Tab>
@@ -136,11 +134,7 @@ class ExhibitShow extends Component {
 		} else if (props.exhibitNotFound) {
 			exhibitDisplay = <ExhibitShowHeader>Exhibit with identifier "{props.match.params.slug}" not found</ExhibitShowHeader>;
 		}
-		return (<div style={{
-				height: '100%'
-			}}>
-			{exhibitDisplay}
-		</div>);
+		return (<div style={{height: '100%'}}>{exhibitDisplay}</div>);
 	}
 }
 
@@ -155,7 +149,10 @@ const mapStateToProps = state => ({
 	selectedRecord: state.exhibitShow.selectedRecord,
 	editorRecord: state.exhibitShow.editorRecord,
 	editorNewRecord: state.exhibitShow.editorNewRecord,
-	tabIndex: state.exhibitShow.tabIndex
+	tabIndex: state.exhibitShow.tabIndex,
+
+	mapPreview: state.mapPreview,
+	exhibitPreview: state.exhibitPreview
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -165,6 +162,6 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 }, dispatch);
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+	mapStateToProps,
+	mapDispatchToProps
 )(ExhibitShow);

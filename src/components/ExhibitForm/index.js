@@ -2,7 +2,11 @@ import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {Field, reduxForm, change, formValueSelector} from 'redux-form'
 import {connect} from 'react-redux';
-import {preview_baseLayer, set_availableTileLayers, setUnsavedChanges} from '../../actions';
+import {
+	preview_baseLayer,
+	set_availableTileLayers,
+	setUnsavedChanges,
+	updateExhibitCache} from '../../actions';
 import * as TYPE from '../../types';
 
 class ExhibitForm extends Component {
@@ -24,7 +28,6 @@ class ExhibitForm extends Component {
 	}
 
 	componentDidMount(){
-
 		// Is this a new (add) or existing (edit) version of this form?
 		let isNewExhibit = (typeof this.props.initialValues['o:exhibit_type'] === 'undefined');
 		let exhibitType = (typeof this.props.initialValues['o:exhibit_type'] === 'undefined')?TYPE.EXHIBIT_TYPE.MAP:this.props.initialValues['o:exhibit_type'];
@@ -55,20 +58,9 @@ class ExhibitForm extends Component {
 			isNewExhibit:isNewExhibit
 		});
 
-		// Register event listener for global save
-	 	document.addEventListener(TYPE.EVENT.SAVE_ALL, this.invokeSave);
-	}
+		// Cache intial values
+		this.props.dispatch(updateExhibitCache({setValues:this.props.initialValues}));
 
-	invokeSave = () => {
-		console.log("Exhibit Save! (NOTE: I didn't really save yet!)");
-		this.props.dispatch(
-			setUnsavedChanges({hasUnsavedChanges:false})
-		);
-	}
-
-	componentWillUnmount() {
-		// Remove event listener
-		document.removeEventListener(TYPE.EVENT.SAVE_ALL, this.invokeSave);
 	}
 
 	// Update the live-preview of the spatial layer
@@ -183,7 +175,6 @@ class ExhibitForm extends Component {
 	};
 
 	render() {
-		console.log(`New Exhibit: ${this.state.isNewExhibit}`);
 		return (
 			<div>
 				<form className='ps_n3_exhibit-form' onSubmit={this.handleSubmit}>

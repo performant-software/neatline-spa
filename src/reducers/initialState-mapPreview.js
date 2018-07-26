@@ -16,6 +16,7 @@
 */
 import * as TYPE from '../types';
 export default {
+	cache:[],
 	selectedRecordID:null,
 	isEditingWithPreview: true,
 	hasUnsavedChanges: false,

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Field, reduxForm, change} from 'redux-form';
 import {Tabs, TabList, Tab, TabPanel} from 'react-tabs';
 import {connect} from 'react-redux';
-import {preview_update,preview_init,setUnsavedChanges} from '../../actions';
+import {preview_update,preview_init,setUnsavedChanges,updateRecordCache} from '../../actions';
 import ColorPicker from './colorPicker.js'
 import {strings} from '../../i18nLibrary';
 import * as TYPE from '../../types';
@@ -47,18 +47,8 @@ class RecordForm extends Component {
 	}
 
 	componentDidMount(){
-		// Register event listener for global save
-		document.addEventListener(TYPE.EVENT.SAVE_ALL, this.invokeSave);
-	}
-
-	invokeSave = () => {
-		console.log("Record Save! (NOTE: I didn't really save yet!)");
-
-	}
-
-	componentWillUnmount() {
-		// Remove event listener
-		document.removeEventListener(TYPE.EVENT.SAVE_ALL, this.invokeSave);
+		// Cache intial values
+		this.props.dispatch(updateRecordCache({setValues:this.props.initialValues}));
 	}
 
 	// Sets the unsaved changes flag

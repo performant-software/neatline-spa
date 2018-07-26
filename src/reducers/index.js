@@ -11,6 +11,8 @@ import recordMapLayers from './not_refactored/recordMapLayers';
 
 import recordReducer from './reducer-record.js';
 import mapPreviewReducer from './reducer-mapPreview.js';
+import exhibitPreviewReducer from './reducer-exhibitPreview.js';
+
 export default combineReducers({
   routing: routerReducer,
   form: formReducer,
@@ -22,5 +24,6 @@ export default combineReducers({
   exhibitDelete,
   record: recordReducer,
   mapPreview: mapPreviewReducer,
+  exhibitPreview: exhibitPreviewReducer,
   recordMapLayers:recordMapLayers
 });

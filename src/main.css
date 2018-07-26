@@ -78,9 +78,6 @@
 .ps_n3_hidden {
   display: none; }
 
-.ps_n3_shifted {
-  margin: 2.3rem 0 0 0; }
-
 .ps_n3_invisible {
   opacity: 0; }
 
@@ -95,6 +92,17 @@
   border: 0;
   cursor: pointer;
   margin: 0 0 0 .3rem; }
+
+.ps_n3_button:hover {
+  background-color: #cdcdcd;
+  color: black;
+  border: 1px solid #dedede; }
+
+.ps_n3_button.save {
+  float: right;
+  top: .5rem;
+  left: 16.5rem;
+  position: absolute; }
 
 label {
   padding: 0;
@@ -114,11 +122,6 @@ h3 {
   gridColumn: 1;
   maxHeight: 100%;
   border-right: 2px solid #c2c0ba; }
-
-.ps_n3_refreshButton {
-  position: fixed;
-  left: 17.8rem;
-  top: 0.2rem; }
 
 .ps_n3_exhibit-form {
   height: 100%; }

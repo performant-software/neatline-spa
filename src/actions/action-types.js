@@ -2,6 +2,7 @@
 // if this gets unweildy, it can be split into multiple files
 
 // Map preview
+export const RECORD_CACHE_UPDATE = 'RECORD_CACHE_UPDATE';
 export const PREVIEW_FILLCOLOR = 'PREVIEW_FILLCOLOR';
 export const PREVIEW_BASELAYER = 'PREVIEW_BASELAYER';
 export const SET_AVAILABLE_TILELAYERS = 'SET_AVAILABLE_TILELAYERS';
@@ -12,6 +13,7 @@ export const PREVIEW_MARKSELECTED = 'PREVIEW_MARKSELECTED';
 export const HAS_UNSAVED_CHANGES = 'HAS_UNSAVED_CHANGES';
 
 // Exhibits
+export const EXHIBIT_CACHE_UPDATE = 'EXHIBIT_CACHE_UPDATE';
 export const EXHIBIT_LOADING = 'exhibitShow/EXHIBIT_LOADING';
 export const EXHIBIT_ERRORED = 'exhibitShow/EXHIBIT_ERRORED';
 export const EXHIBIT_FETCH_SUCCESS = 'exhibitShow/EXHIBIT_FETCH_SUCCESS';

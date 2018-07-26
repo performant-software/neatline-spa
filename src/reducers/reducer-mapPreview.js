@@ -6,6 +6,32 @@ export default function app(state = initialState, action) {
 
 	switch (action.type) {
 
+		// Accepts an object of kvps, replaces existing values
+		// Ignores keys that don't start with 'o:'
+		case ACTION_TYPE.RECORD_CACHE_UPDATE:
+			let recordID = action.payload.setValues["o:id"];
+			let newCache = state.cache;
+
+			if(typeof newCache[recordID] === 'undefined'){
+				newCache[recordID] = {};
+			}
+
+			// Loop over and overwrite any o: values
+			let newValues=action.payload.setValues;
+			let keys = Object.keys(newValues);
+			for (let idx=0; idx < keys.length;idx++) {
+				let key = keys[idx];
+				let value = newValues[key];
+				if(key.substring(0, 2) === 'o:'){
+					newCache[recordID][key]=value;
+				}
+			}
+			return{
+				...state,
+				cache:newCache
+			}
+
+
 		case ACTION_TYPE.PREVIEW_MARKSELECTED:
 			return {
 				...state,

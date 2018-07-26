@@ -20,3 +20,6 @@ export const preview_update = (payload) => action(ACTION_TYPE.PREVIEW_UPDATE, pa
 export const preview_markSelected = (payload) => action(ACTION_TYPE.PREVIEW_MARKSELECTED, payload);
 
 export const setUnsavedChanges = (payload) => action(ACTION_TYPE.HAS_UNSAVED_CHANGES,payload);
+
+export const updateRecordCache = (payload) => action(ACTION_TYPE.RECORD_CACHE_UPDATE,payload);
+export const updateExhibitCache = (payload) => action(ACTION_TYPE.EXHIBIT_CACHE_UPDATE,payload);
