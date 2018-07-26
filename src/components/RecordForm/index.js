@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Field, reduxForm, change} from 'redux-form';
 import {Tabs, TabList, Tab, TabPanel} from 'react-tabs';
 import {connect} from 'react-redux';
-import {preview_update,preview_init} from '../../actions';
+import {preview_update,preview_init,setUnsavedChanges} from '../../actions';
 import ColorPicker from './colorPicker.js';
 import {strings} from '../../i18nLibrary';
 
@@ -46,6 +46,13 @@ class RecordForm extends Component {
 			strings
 		};
 		this.previewInitialized=false;
+	}
+
+	// Sets the unsaved changes flag
+	markUnsaved = () => {
+		this.props.dispatch(
+			setUnsavedChanges({hasUnsavedChanges:true})
+		);
 	}
 
 	// After mount
@@ -248,6 +255,7 @@ class RecordForm extends Component {
 			setTimeout(()=> { this.props.dispatch(this.change(this.props.form,currentField,forcedValue)); }, 100);
 
 		}
+		this.markUnsaved();
 	}
 
 	render(){
@@ -283,15 +291,22 @@ class RecordForm extends Component {
 								}}>
 								<div>
 									<label htmlFor='o:title'>{strings.title}</label>
-									<Field name='o:title' component='textarea'/>
+									<Field 	name='o:title'
+											component='textarea'
+											onChange={this.markUnsaved}/>
 								</div>
 								<div>
 									<label htmlFor='o:slug'>{strings.slug}</label>
-									<Field name='o:slug' component='input' type='text'/>
+									<Field 	name='o:slug'
+											component='input'
+											type='text'
+											onChange={this.markUnsaved}/>
 								</div>
 								<div>
 									<label htmlFor='o:body'>{strings.body}</label>
-									<Field name='o:body' component='textarea'/>
+									<Field 	name='o:body'
+											component='textarea'
+											onChange={this.markUnsaved}/>
 								</div>
 							</fieldset>
 						</div>
@@ -459,14 +474,16 @@ class RecordForm extends Component {
 									<Field 	className="styleEditor_input"
 											name='o:start_date'
 											component='input'
-											type='text'/>
+											type='text'
+											onChange={this.markUnsaved}/>
 								</div>
 								<div>
 									<label 	htmlFor='o:end_date'>{strings.end_date}</label>
 									<Field 	className="styleEditor_input"
 											name='o:end_date'
 											component='input'
-											type='text'/>
+											type='text'
+											onChange={this.markUnsaved}/>
 								</div>
 								<div>
 									<label 	htmlFor='o:after_date'>{strings.after_date}</label>
@@ -480,7 +497,8 @@ class RecordForm extends Component {
 									<Field 	className="styleEditor_input"
 											name='o:before_date'
 											component='input'
-											type='text'/>
+											type='text'
+											onChange={this.markUnsaved}/>
 								</div>
 
 								<div className="ps_n3_optionHeader">{strings.imagery}</div>
@@ -489,21 +507,24 @@ class RecordForm extends Component {
 									<Field 	className="styleEditor_input"
 											name='o:point_image'
 											component='input'
-											type='text'/>
+											type='text'
+											onChange={this.markUnsaved}/>
 								</div>
 								<div>
 									<label 	htmlFor='o:wms_address'>{strings.wms_address}</label>
 									<Field 	className="styleEditor_input"
 											name='o:wms_address'
 											component='input'
-											type='text'/>
+											type='text'
+											onChange={this.markUnsaved}/>
 								</div>
 								<div>
 									<label 	htmlFor='o:wms_layers'>{strings.wms_layers}</label>
 									<Field 	className="styleEditor_input"
 											name='o:wms_layers'
 											component='input'
-											type='text'/>
+											type='text'
+											onChange={this.markUnsaved}/>
 								</div>
 
 								<div className="ps_n3_optionHeader">{strings.visibility}</div>
@@ -512,21 +533,24 @@ class RecordForm extends Component {
 									<Field 	className="styleEditor_input"
 											name='o:min_zoom'
 											component='input'
-											type='number'/>
+											type='number'
+											onChange={this.markUnsaved}/>
 								</div>
 								<div>
 									<label 	htmlFor='o:max_zoom'>{strings.max_zoom}</label>
 									<Field 	className="styleEditor_input"
 											name='o:max_zoom'
 											component='input'
-											type='number'/>
+											type='number'
+											onChange={this.markUnsaved}/>
 								</div>
 								<div>
 									<label 	htmlFor='o:map_zoom'>{strings.default_zoom}</label>
 									<Field 	className="styleEditor_input"
 											name='o:map_zoom'
 											component='input'
-											type='number'/>
+											type='number'
+											onChange={this.markUnsaved}/>
 								</div>
 
 								<div>
@@ -534,7 +558,8 @@ class RecordForm extends Component {
 									<Field 	className="styleEditor_input"
 											name='o:map_focus'
 											component='input'
-											type='text'/>
+											type='text'
+											onChange={this.markUnsaved}/>
 								</div>
 							</fieldset>
 						</div>

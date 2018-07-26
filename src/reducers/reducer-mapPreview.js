@@ -2,6 +2,7 @@ import initialState from './initialState-mapPreview';
 import * as actionType from '../actions/action-types';
 
 export default function app(state = initialState, action) {
+	let newState;
 
 	switch (action.type) {
 
@@ -14,7 +15,6 @@ export default function app(state = initialState, action) {
 			return {
 				...state,
 				isEditingWithPreview: true,
-				hasUnsavedChanges: false,
 				current: {
 					...state.current,
 					geometryStyle: {
@@ -40,7 +40,6 @@ export default function app(state = initialState, action) {
 		case actionType.PREVIEW_UPDATE_BULK:
 			return {
 				...state,
-				hasUnsavedChanges: true,
 				current: {
 					...state.current,
 					geometryStyle: {
@@ -50,8 +49,15 @@ export default function app(state = initialState, action) {
 				}
 			}
 
+		case actionType.HAS_UNSAVED_CHANGES:
+			newState = {
+				...state,
+				hasUnsavedChanges:action.payload.hasUnsavedChanges
+			};
+			return newState;
+
 		case actionType.PREVIEW_UPDATE:
-			let newState = {
+			newState = {
 				...state,
 				current: {
 					...state.current,
@@ -59,7 +65,6 @@ export default function app(state = initialState, action) {
 						...state.current.geometryStyle,
 						[action.payload.recordID]:{
 								...state.current.geometryStyle[action.payload.recordID],
-								hasUnsavedChanges:true,
 								[action.payload.property]:action.payload.value
 						}
 					}
@@ -77,7 +82,6 @@ export default function app(state = initialState, action) {
 		case actionType.PREVIEW_BASELAYER:
 			return {
 				...state,
-				hasUnsavedChanges: true,
 				current: {
 					...state.current,
 					...action.payload,
@@ -93,7 +97,6 @@ export default function app(state = initialState, action) {
 			});
 			return {
 				...state,
-				hasUnsavedChanges: true,
 				current: {
 					...state.current,
 					basemapOptions: availableOptions
