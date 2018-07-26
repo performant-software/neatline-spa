@@ -14,13 +14,13 @@
 	card and API key setup are outside the scope of this repo and depend on your
 	organization.
 */
-import * as types from '../components/types';
+import * as TYPE from '../types';
 export default {
 	selectedRecordID:null,
 	isEditingWithPreview: true,
 	hasUnsavedChanges: false,
 	current: {
-		type: types.BASELAYER_TYPE.MAP,
+		type: TYPE.BASELAYER_TYPE.MAP,
 		tileLayer: {
 			tile_address:'',
 			slug: "OpenStreetMap",
@@ -60,56 +60,56 @@ export default {
 	available: {
 		baseMaps: [
 			{
-				type: types.BASELAYER_TYPE.MAP,
+				type: TYPE.BASELAYER_TYPE.MAP,
 				slug: "OpenStreetMap",
 				displayName: "Open Street Map",
 				deprecated: false,
 				attribution: '&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors',
 				url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 			}, {
-				type: types.BASELAYER_TYPE.MAP,
+				type: TYPE.BASELAYER_TYPE.MAP,
 				slug: "StamenToner",
 				displayName: "Stamen: Toner",
 				deprecated: false,
 				attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
 				url: 'http://tile.stamen.com/toner/{z}/{x}/{y}.png'
 			}, {
-				type: types.BASELAYER_TYPE.MAP,
+				type: TYPE.BASELAYER_TYPE.MAP,
 				slug: "StamenWatercolor",
 				displayName: "Stamen: Watercolor",
 				deprecated: false,
 				attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.',
 				url: 'http://tile.stamen.com/watercolor/{z}/{x}/{y}.png'
 			}, {
-				type: types.BASELAYER_TYPE.MAP,
+				type: TYPE.BASELAYER_TYPE.MAP,
 				slug: "StamenTerrain",
 				displayName: "Stamen: Terrain",
 				deprecated: false,
 				attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
 				url: 'http://tile.stamen.com/terrain/{z}/{x}/{y}.png'
 			}, {
-				type: types.BASELAYER_TYPE.MAP,
+				type: TYPE.BASELAYER_TYPE.MAP,
 				slug: "GooglePhysical",
 				displayName: "Google: Physical",
 				deprecated: true,
 				attribution: '&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors',
 				url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 			}, {
-				type: types.BASELAYER_TYPE.MAP,
+				type: TYPE.BASELAYER_TYPE.MAP,
 				slug: "GoogleStreets",
 				displayName: "Google: Streets",
 				deprecated: true,
 				attribution: '&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors',
 				url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 			}, {
-				type: types.BASELAYER_TYPE.MAP,
+				type: TYPE.BASELAYER_TYPE.MAP,
 				slug: "GoogleHybrid",
 				displayName: "Google: Hybrid",
 				deprecated: true,
 				attribution: '&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors',
 				url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 			}, {
-				type: types.BASELAYER_TYPE.MAP,
+				type: TYPE.BASELAYER_TYPE.MAP,
 				slug: "GoogleSatellite",
 				displayName: "Google: Satellite",
 				deprecated: true,

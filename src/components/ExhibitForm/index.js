@@ -3,7 +3,7 @@ import {bindActionCreators} from 'redux';
 import {Field, reduxForm, change, formValueSelector} from 'redux-form'
 import {connect} from 'react-redux';
 import {preview_baseLayer, set_availableTileLayers, setUnsavedChanges} from '../../actions';
-import * as types from '../types';
+import * as TYPE from '../../types';
 
 class ExhibitForm extends Component {
 
@@ -17,8 +17,8 @@ class ExhibitForm extends Component {
 		this.disabled = props.disabled;
 		this.layerTypeOptions = this.buildLayerTypeOptions();
 		this.state={
-			exhibitType:types.EXHIBIT_TYPE.MAP,
-			baseLayerType:types.BASELAYER_TYPE.MAP,
+			exhibitType:TYPE.EXHIBIT_TYPE.MAP,
+			baseLayerType:TYPE.BASELAYER_TYPE.MAP,
 			isNewExhibit:true
 		};
 	}
@@ -27,7 +27,7 @@ class ExhibitForm extends Component {
 
 		// Is this a new (add) or existing (edit) version of this form?
 		let isNewExhibit = (typeof this.props.initialValues['o:exhibit_type'] === 'undefined');
-		let exhibitType = (typeof this.props.initialValues['o:exhibit_type'] === 'undefined')?types.EXHIBIT_TYPE.MAP:this.props.initialValues['o:exhibit_type'];
+		let exhibitType = (typeof this.props.initialValues['o:exhibit_type'] === 'undefined')?TYPE.EXHIBIT_TYPE.MAP:this.props.initialValues['o:exhibit_type'];
 
 		// Init form field
 		this.props.change('o:exhibit_type', exhibitType);
@@ -35,7 +35,7 @@ class ExhibitForm extends Component {
 		// Update the layer preview with initial values
 		this.updateLayerPreview({
 			exhibit_type:this.props.initialValues['o:exhibit_type'],
-			spatial_layer:(exhibitType === types.EXHIBIT_TYPE.MAP)?this.props.initialValues['o:spatial_layer']:types.BASELAYER_TYPE.IMAGE,
+			spatial_layer:(exhibitType === TYPE.EXHIBIT_TYPE.MAP)?this.props.initialValues['o:spatial_layer']:TYPE.BASELAYER_TYPE.IMAGE,
 
 			wms_address:this.props.initialValues['o:wms_address'],
 			wms_layers:this.props.initialValues['o:wms_layers'],
@@ -55,6 +55,20 @@ class ExhibitForm extends Component {
 			isNewExhibit:isNewExhibit
 		});
 
+		// Register event listener for global save
+	 	document.addEventListener(TYPE.EVENT.SAVE_ALL, this.invokeSave);
+	}
+
+	invokeSave = () => {
+		console.log("Exhibit Save! (NOTE: I didn't really save yet!)");
+		this.props.dispatch(
+			setUnsavedChanges({hasUnsavedChanges:false})
+		);
+	}
+
+	componentWillUnmount() {
+		// Remove event listener
+		document.removeEventListener(TYPE.EVENT.SAVE_ALL, this.invokeSave);
 	}
 
 	// Update the live-preview of the spatial layer
@@ -75,7 +89,7 @@ class ExhibitForm extends Component {
 
 		// If we're editing a property of image, ensure that's what baselayer we're on
 		if((event.target.name === "o:image_layer") || (event.target.name === "o:image_attribution")){
-			payload.spatial_layer=types.BASELAYER_TYPE.IMAGE;
+			payload.spatial_layer=TYPE.BASELAYER_TYPE.IMAGE;
 		}
 		this.updateLayerPreview(payload);
 		this.markUnsaved();
@@ -86,7 +100,7 @@ class ExhibitForm extends Component {
 		// If it's a number, it's an id of a map, otherwise it's IMAGE or WMS
 		let baseLayerType=payload.spatial_layer;
 		if(!isNaN(payload.spatial_layer)){
-			baseLayerType=types.BASELAYER_TYPE.MAP;
+			baseLayerType=TYPE.BASELAYER_TYPE.MAP;
 		}
 
 		// Update local state and preview via redux
@@ -119,19 +133,19 @@ class ExhibitForm extends Component {
 	exhibitTypeSwitch = (event) => {
 		if(event.target.dataset.type === 'image'){
 			this.setState({
-				baseLayerType:types.BASELAYER_TYPE.IMAGE,
-				exhibitType:types.EXHIBIT_TYPE.IMAGE
+				baseLayerType:TYPE.BASELAYER_TYPE.IMAGE,
+				exhibitType:TYPE.EXHIBIT_TYPE.IMAGE
 			});
-			this.onSpatialLayerInfoChange({target:{name:'o:spatial_layer',value:types.BASELAYER_TYPE.IMAGE}});
-			this.props.change('o:exhibit_type', types.EXHIBIT_TYPE.IMAGE);
+			this.onSpatialLayerInfoChange({target:{name:'o:spatial_layer',value:TYPE.BASELAYER_TYPE.IMAGE}});
+			this.props.change('o:exhibit_type', TYPE.EXHIBIT_TYPE.IMAGE);
 
 		}else{
 			this.setState({
-				baseLayerType:types.BASELAYER_TYPE.MAP,
-				exhibitType:types.EXHIBIT_TYPE.MAP
+				baseLayerType:TYPE.BASELAYER_TYPE.MAP,
+				exhibitType:TYPE.EXHIBIT_TYPE.MAP
 			});
 			this.onSpatialLayerInfoChange({target:{name:'o:spatial_layer',value:0}});
-			this.props.change('o:exhibit_type', types.EXHIBIT_TYPE.MAP);
+			this.props.change('o:exhibit_type', TYPE.EXHIBIT_TYPE.MAP);
 		}
 
 	}
@@ -143,8 +157,8 @@ class ExhibitForm extends Component {
 		);
 	}
 
-	// Build layertypes from the set of non-deprecated maps
-	layerTypes = () => {
+	// Build layerTYPE from the set of non-deprecated maps
+	layerTYPE = () => {
 		let retval = [];
 		var availableBaseMaps = this.props.mapPreview.available.baseMaps;
 		Object.keys(availableBaseMaps).forEach(function(key) {
@@ -158,16 +172,15 @@ class ExhibitForm extends Component {
 
 	buildLayerTypeOptions = () => {
 		var retval = [];
-		//this.layerTypes().map((layerType) => {
-		let layerTypes = this.layerTypes();
-		Object.keys(layerTypes).forEach(function(key) {
-			let layerType = layerTypes[key];
+		//this.layerTYPE().map((layerType) => {
+		let layerTYPE = this.layerTYPE();
+		Object.keys(layerTYPE).forEach(function(key) {
+			let layerType = layerTYPE[key];
 			let opt_key = `layerTypeOption-${key}`;
 			retval.push(<option value={key} key={opt_key}>{layerType.displayName}</option>);
 		});
 		return retval;
 	};
-
 
 	render() {
 		console.log(`New Exhibit: ${this.state.isNewExhibit}`);
@@ -216,20 +229,20 @@ class ExhibitForm extends Component {
 						{(this.state.isNewExhibit) &&
 							<div className="ps_n3_radioSet">
 								<input 	data-type="map"
-										checked={this.state.exhibitType === types.EXHIBIT_TYPE.MAP}
+										checked={this.state.exhibitType === TYPE.EXHIBIT_TYPE.MAP}
 										type="radio"
 										onChange={this.exhibitTypeSwitch}/>
 										<label>Map</label>
 
 								<input 	data-type="image"
-										checked={this.state.exhibitType === types.EXHIBIT_TYPE.IMAGE}
+										checked={this.state.exhibitType === TYPE.EXHIBIT_TYPE.IMAGE}
 										type="radio"
 										onChange={this.exhibitTypeSwitch}/>
 										<label>Image</label>
 							</div>
 						}
 
-						{(this.state.exhibitType === types.EXHIBIT_TYPE.MAP) &&
+						{(this.state.exhibitType === TYPE.EXHIBIT_TYPE.MAP) &&
 							<div>
 								<label 	htmlFor='o:spatial_layer'>Base Layer</label>
 								<Field 	name='o:spatial_layer'
@@ -237,14 +250,14 @@ class ExhibitForm extends Component {
 										onChange={this.onSpatialLayerInfoChange}>
 										<optgroup label='Default Layers'>
 											{this.layerTypeOptions}
-											<option value={types.BASELAYER_TYPE.TILE}>Custom: Tile Layer</option>
-											<option value={types.BASELAYER_TYPE.WMS}>Custom: WMS Layer</option>
+											<option value={TYPE.BASELAYER_TYPE.TILE}>Custom: Tile Layer</option>
+											<option value={TYPE.BASELAYER_TYPE.WMS}>Custom: WMS Layer</option>
 										</optgroup>
 								</Field>
 							</div>
 						}
 
-						{(this.state.exhibitType === types.EXHIBIT_TYPE.IMAGE) &&
+						{(this.state.exhibitType === TYPE.EXHIBIT_TYPE.IMAGE) &&
 							<div>
 								<div>
 									<div>
@@ -265,7 +278,7 @@ class ExhibitForm extends Component {
 							</div>
 						}
 
-						{(this.state.baseLayerType === types.BASELAYER_TYPE.TILE) &&
+						{(this.state.baseLayerType === TYPE.BASELAYER_TYPE.TILE) &&
 							<div className="ps_n3_sub_options">
 								<div>
 									<label 	htmlFor='o:tile_address'>Tile URL</label>
@@ -283,7 +296,7 @@ class ExhibitForm extends Component {
 							</div>
 						}
 
-						{(this.state.baseLayerType === types.BASELAYER_TYPE.WMS) &&
+						{(this.state.baseLayerType === TYPE.BASELAYER_TYPE.WMS) &&
 							<div className="ps_n3_sub_options">
 								<div>
 									<label	htmlFor='o:wms_address'>WMS URL</label>
@@ -309,7 +322,7 @@ class ExhibitForm extends Component {
 							</div>
 						}
 
-						{(this.state.exhibitType === types.EXHIBIT_TYPE.MAP) &&
+						{(this.state.exhibitType === TYPE.EXHIBIT_TYPE.MAP) &&
 							<div>
 								<div>
 									<label 	htmlFor='o:spatial_layers'>Additional Layers</label>
@@ -372,7 +385,7 @@ const mapStateToProps = state => ({
 	mapPreview: state.mapPreview,
 	initialValues: state.exhibitShow.exhibit
 		? state.exhibitShow.exhibit
-		: types.EXHIBIT_DEFAULT_VALUES
+		: TYPE.EXHIBIT_DEFAULT_VALUES
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

@@ -7,7 +7,7 @@ import {
 } from '../../sagas/api_helper.js';
 import {push} from 'react-router-redux';
 
-import * as actionType from '../../actions/action-types';
+import * as ACTION_TYPE from '../../actions/action-types';
 
 const initialState = {
 	records: [],
@@ -24,65 +24,65 @@ const initialState = {
 
 export default function(state = initialState, action) {
 	switch (action.type) {
-		case actionType.EXHIBIT_LOADING:
+		case ACTION_TYPE.EXHIBIT_LOADING:
 			return {
 				...state,
 				loading: action.loading
 			};
 
-		case actionType.EXHIBIT_ERRORED:
+		case ACTION_TYPE.EXHIBIT_ERRORED:
 			return {
 				...state,
 				errored: action.errored
 			};
 
-		case actionType.EXHIBIT_FETCH_SUCCESS:
+		case ACTION_TYPE.EXHIBIT_FETCH_SUCCESS:
 			return {
 				...state,
 				records: action.records
 			};
 
-		case actionType.EXHIBIT_RESET:
+		case ACTION_TYPE.EXHIBIT_RESET:
 			return initialState;
 
-		case actionType.EXHIBIT_LOADED:
+		case ACTION_TYPE.EXHIBIT_LOADED:
 			return {
 				...state,
 				exhibit: action.exhibit,
 				exhibitNotFound: false
 			};
 
-		case actionType.EXHIBIT_NOT_FOUND:
+		case ACTION_TYPE.EXHIBIT_NOT_FOUND:
 			return {
 				...state,
 				exhibitNotFound: true
 			};
 
-		case actionType.RECORD_SELECTED:
+		case ACTION_TYPE.RECORD_SELECTED:
 			return {
 				...state,
 				selectedRecord: action.record
 			};
 
-		case actionType.RECORD_DESELECTED:
+		case ACTION_TYPE.RECORD_DESELECTED:
 			return {
 				...state,
 				selectedRecord: null
 			};
 
-		case actionType.RECORD_PREVIEWED:
+		case ACTION_TYPE.RECORD_PREVIEWED:
 			return {
 				...state,
 				previewedRecord: action.record
 			};
 
-		case actionType.RECORD_UNPREVIEWED:
+		case ACTION_TYPE.RECORD_UNPREVIEWED:
 			return {
 				...state,
 				previewedRecord: null
 			};
 
-		case actionType.EDITOR_RECORD_SET:
+		case ACTION_TYPE.EDITOR_RECORD_SET:
 			return {
 				...state,
 				editorRecord: action.record,
@@ -91,7 +91,7 @@ export default function(state = initialState, action) {
 				tabIndex: 2
 			};
 
-		case actionType.EDITOR_RECORD_UNSET:
+		case ACTION_TYPE.EDITOR_RECORD_UNSET:
 			return {
 				...state,
 				editorRecord: null,
@@ -100,7 +100,7 @@ export default function(state = initialState, action) {
 				tabIndex: Math.min(state.tabIndex, 1)
 			}
 
-		case actionType.EDITOR_NEW_RECORD:
+		case ACTION_TYPE.EDITOR_NEW_RECORD:
 			return {
 				...state,
 				editorNewRecord: true,
@@ -109,19 +109,19 @@ export default function(state = initialState, action) {
 				tabIndex: 2
 			}
 
-		case actionType.EDITOR_CLOSE_NEW_RECORD:
+		case ACTION_TYPE.EDITOR_CLOSE_NEW_RECORD:
 			return {
 				...state,
 				editorNewRecord: false
 			}
 
-		case actionType.TAB_INDEX_SET:
+		case ACTION_TYPE.TAB_INDEX_SET:
 			return {
 				...state,
 				tabIndex: action.tabIndex
 			}
 
-		case actionType.RECORD_ADDED:
+		case ACTION_TYPE.RECORD_ADDED:
 			return {
 				...state,
 				records: state.records.concat(action.record),
@@ -129,7 +129,7 @@ export default function(state = initialState, action) {
 				selectedRecord: action.record
 			}
 
-		case actionType.RECORD_REPLACED:
+		case ACTION_TYPE.RECORD_REPLACED:
 			return {
 				...state,
 				records: state.records.filter(r => r['o:id'].toString() !== action.record['o:id'].toString()).concat(action.record),
@@ -137,7 +137,7 @@ export default function(state = initialState, action) {
 				selectedRecord: action.record
 			}
 
-		case actionType.RECORD_REMOVED:
+		case ACTION_TYPE.RECORD_REMOVED:
 			return {
 				...state,
 				records: state.records.filter(r => r['o:id'].toString() !== action.record['o:id'].toString()),
@@ -147,7 +147,7 @@ export default function(state = initialState, action) {
 			}
 
 		// Remove this and have map use hidden form
-		case actionType.RECORD_COVERAGE_SET:
+		case ACTION_TYPE.RECORD_COVERAGE_SET:
 			if( state.editorRecord !== null){
 				var thisRecord = state.editorRecord;
 				thisRecord['o:coverage'] = action.coverage;
@@ -167,7 +167,7 @@ function setExhibitBySlugAndFetchRecords(exhibits, slug, dispatch) {
 	const exhibit = exhibits.filter(e => e['o:slug'] === slug)[0];
 	if (exhibit) {
 		dispatch({
-			type: actionType.EXHIBIT_LOADED,
+			type: ACTION_TYPE.EXHIBIT_LOADED,
 			exhibit
 		});
 		return fetch(urlFormat(recordsEndpoint, {
@@ -181,20 +181,20 @@ function setExhibitBySlugAndFetchRecords(exhibits, slug, dispatch) {
 			})
 			.then(response => parseRecordsJSON(response))
 			.then(records => dispatch({
-				type: actionType.EXHIBIT_FETCH_SUCCESS,
+				type: ACTION_TYPE.EXHIBIT_FETCH_SUCCESS,
 				records
 			}))
 			.then(() => dispatch({
-				type: actionType.EXHIBIT_LOADING,
+				type: ACTION_TYPE.EXHIBIT_LOADING,
 				loading: false
 			}))
 			.catch(() => dispatch({
-				type: actionType.EXHIBIT_ERRORED,
+				type: ACTION_TYPE.EXHIBIT_ERRORED,
 				errored: true
 			}));
 	} else {
 		dispatch({
-			type: actionType.EXHIBIT_NOT_FOUND
+			type: ACTION_TYPE.EXHIBIT_NOT_FOUND
 		});
 	}
 }
@@ -202,7 +202,7 @@ function setExhibitBySlugAndFetchRecords(exhibits, slug, dispatch) {
 export function fetchExhibitWithRecords(slug) {
 	return function(dispatch, getState) {
 		dispatch({
-			type: actionType.EXHIBIT_LOADING,
+			type: ACTION_TYPE.EXHIBIT_LOADING,
 			loading: true
 		});
 		const exhibits = getState().exhibits.exhibits;
@@ -218,7 +218,7 @@ export function fetchExhibitWithRecords(slug) {
 			.then(response => parseExhibitsJSON(response))
 			.then(exhibits => setExhibitBySlugAndFetchRecords(exhibits, slug, dispatch))
 			.catch(() => dispatch({
-				type: actionType.EXHIBIT_ERRORED,
+				type: ACTION_TYPE.EXHIBIT_ERRORED,
 				errored: true
 			}));
 	};
@@ -227,7 +227,7 @@ export function fetchExhibitWithRecords(slug) {
 export function resetExhibit() {
 	return function(dispatch) {
 		dispatch({
-			type: actionType.EXHIBIT_RESET
+			type: ACTION_TYPE.EXHIBIT_RESET
 		});
 	};
 }
@@ -236,11 +236,11 @@ export function selectRecord(record) {
 	return function(dispatch, getState) {
 		if (getState().exhibitShow.selectedRecord === record) {
 			dispatch({
-				type: actionType.RECORD_DESELECTED
+				type: ACTION_TYPE.RECORD_DESELECTED
 			});
 		} else {
 			dispatch({
-				type: actionType.RECORD_SELECTED,
+				type: ACTION_TYPE.RECORD_SELECTED,
 				record
 			});
 			dispatch(push(`${window.baseRoute}/show/${getState().exhibitShow.exhibit['o:slug']}/edit/${record['o:id']}`));
@@ -251,7 +251,7 @@ export function selectRecord(record) {
 export function deselectRecord() {
 	return function(dispatch) {
 		dispatch({
-			type: actionType.RECORD_DESELECTED
+			type: ACTION_TYPE.RECORD_DESELECTED
 		});
 	}
 }
@@ -259,7 +259,7 @@ export function deselectRecord() {
 export function previewRecord(record) {
 	return function(dispatch) {
 		dispatch({
-			type: actionType.RECORD_PREVIEWED,
+			type: ACTION_TYPE.RECORD_PREVIEWED,
 			record
 		});
 	}
@@ -268,7 +268,7 @@ export function previewRecord(record) {
 export function unpreviewRecord() {
 	return function(dispatch) {
 		dispatch({
-			type: actionType.RECORD_UNPREVIEWED
+			type: ACTION_TYPE.RECORD_UNPREVIEWED
 		});
 	}
 }
@@ -279,7 +279,7 @@ export function setEditorRecordById(id) {
 		const record = records.filter(r => r['o:id'].toString() === id)[0];
 		if (record) {
 			dispatch({
-				type: actionType.EDITOR_RECORD_SET,
+				type: ACTION_TYPE.EDITOR_RECORD_SET,
 				record
 			});
 		}
@@ -289,7 +289,7 @@ export function setEditorRecordById(id) {
 export function unsetEditorRecord() {
 	return function(dispatch, getState) {
 		dispatch({
-			type: actionType.EDITOR_RECORD_UNSET
+			type: ACTION_TYPE.EDITOR_RECORD_UNSET
 		});
 		const exhibit = getState().exhibitShow.exhibit;
 		if (exhibit)
@@ -300,7 +300,7 @@ export function unsetEditorRecord() {
 export function openEditorToNewRecord() {
 	return function(dispatch) {
 		dispatch({
-			type: actionType.EDITOR_NEW_RECORD
+			type: ACTION_TYPE.EDITOR_NEW_RECORD
 		});
 	}
 }
@@ -308,7 +308,7 @@ export function openEditorToNewRecord() {
 export function setTabIndex(tabIndex) {
 	return function(dispatch) {
 		dispatch({
-			type: actionType.TAB_INDEX_SET,
+			type: ACTION_TYPE.TAB_INDEX_SET,
 			tabIndex
 		});
 	}
@@ -317,7 +317,7 @@ export function setTabIndex(tabIndex) {
 export function setCurrentRecordCoverage(coverage) {
 	return function(dispatch) {
 		dispatch({
-			type: actionType.RECORD_COVERAGE_SET,
+			type: ACTION_TYPE.RECORD_COVERAGE_SET,
 			coverage:coverage
 		});
 	}

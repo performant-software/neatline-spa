@@ -1,12 +1,12 @@
 import initialState from './initialState-record';
-import * as actionType from '../actions/action-types';
+import * as ACTION_TYPE from '../actions/action-types';
 import {strings} from '../i18nLibrary';
 
 export default function(state = initialState, action) {
 	switch (action.type) {
 
 		// On initiate create...
-		case actionType.RECORD_CREATE:
+		case ACTION_TYPE.RECORD_CREATE:
 			return {
 			  ...state,
 			  loading: true,
@@ -15,7 +15,7 @@ export default function(state = initialState, action) {
 
 
 		// Handle response from create record API call
-		case actionType.CREATE_RECORD_RESPONSE_RECEIVED:
+		case ACTION_TYPE.CREATE_RECORD_RESPONSE_RECEIVED:
 
 			// Failed with error from API server
 			if (typeof action.payload.errors !== 'undefined') {
@@ -37,14 +37,14 @@ export default function(state = initialState, action) {
 
 
 		// On initiate delete...
-		case actionType.RECORD_DELETE:
+		case ACTION_TYPE.RECORD_DELETE:
 			return {
 	          ...state,
 	          loading: true
 	        };
 
 		// Handle response from delete record API call
-		case actionType.DELETE_RECORD_RESPONSE_RECEIVED:
+		case ACTION_TYPE.DELETE_RECORD_RESPONSE_RECEIVED:
 
 			// Failed with error from API server
 			if (typeof action.payload.jsonResponse.errors !== 'undefined') {
@@ -64,7 +64,7 @@ export default function(state = initialState, action) {
 			}
 
 		// Handle response from update record API call
-		case actionType.UPDATE_RECORD_RESPONSE_RECEIVED:
+		case ACTION_TYPE.UPDATE_RECORD_RESPONSE_RECEIVED:
 
 			// Failed with error from API server
 			if (typeof action.payload.errors !== 'undefined') {
@@ -85,7 +85,7 @@ export default function(state = initialState, action) {
 			}
 
 		// A wild error appeared!
-		case actionType.RECORD_ERROR:
+		case ACTION_TYPE.RECORD_ERROR:
 			console.error(`RECORD_ERROR: ${action.payload.error}`);
 			return {
 				...state,
@@ -93,7 +93,7 @@ export default function(state = initialState, action) {
 			};
 
 		// Reset
-		case actionType.NEW_RECORD_RESET:
+		case ACTION_TYPE.NEW_RECORD_RESET:
 			return initialState;
 
 		default:

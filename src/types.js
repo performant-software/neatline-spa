@@ -17,3 +17,7 @@ export const EXHIBIT_DEFAULT_VALUES = Object.freeze({
 });
 
 export const TEMPORARY = -1;
+
+export const EVENT = Object.freeze({
+	SAVE_ALL:'SAVE_ALL'
+});

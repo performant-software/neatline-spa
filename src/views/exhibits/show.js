@@ -13,15 +13,13 @@ import RecordCreate from '../records/create';
 import RecordUpdate from '../records/update';
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
-import {strings} from '../../i18nLibrary';
-
-export const TEMPORARY = -1;
+import * as TYPE from '../../types';
 
 const ExhibitShowHeader = props => (
-
-	<h3>
-		<Link to={`${window.baseRoute}/`}>Neatline</Link> | {props.children}
-	</h3>
+	<div>
+		<div className="ps_n3_button" onClick={this.saveAll}>Save</div>
+		<h3><Link to={`${window.baseRoute}/`}>Neatline</Link> | {props.children}</h3>
+	</div>
 );
 
 
@@ -55,8 +53,12 @@ class ExhibitShow extends Component {
 
 			// Clear the temporary array
 			const {recordLayers} = this.props;
-			recordLayers[TEMPORARY]=[];
+			recordLayers[TYPE.TEMPORARY]=[];
 		}
+	}
+
+	saveAll = (event) => {
+		document.dispatchEvent(new Event(TYPE.EVENT.SAVE_ALL));
 	}
 
 	render() {

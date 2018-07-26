@@ -1,17 +1,17 @@
 import initialState from './initialState-mapPreview';
-import * as actionType from '../actions/action-types';
+import * as ACTION_TYPE from '../actions/action-types';
 
 export default function app(state = initialState, action) {
 	let newState;
 
 	switch (action.type) {
 
-		case actionType.PREVIEW_MARKSELECTED:
+		case ACTION_TYPE.PREVIEW_MARKSELECTED:
 			return {
 				...state,
 				selectedRecordID:action.payload
 			}
-		case actionType.PREVIEW_INIT:
+		case ACTION_TYPE.PREVIEW_INIT:
 			return {
 				...state,
 				isEditingWithPreview: true,
@@ -37,7 +37,7 @@ export default function app(state = initialState, action) {
 				}
 			}
 
-		case actionType.PREVIEW_UPDATE_BULK:
+		case ACTION_TYPE.PREVIEW_UPDATE_BULK:
 			return {
 				...state,
 				current: {
@@ -49,14 +49,14 @@ export default function app(state = initialState, action) {
 				}
 			}
 
-		case actionType.HAS_UNSAVED_CHANGES:
+		case ACTION_TYPE.HAS_UNSAVED_CHANGES:
 			newState = {
 				...state,
 				hasUnsavedChanges:action.payload.hasUnsavedChanges
 			};
 			return newState;
 
-		case actionType.PREVIEW_UPDATE:
+		case ACTION_TYPE.PREVIEW_UPDATE:
 			newState = {
 				...state,
 				current: {
@@ -72,14 +72,14 @@ export default function app(state = initialState, action) {
 			};
 			return newState;
 
-		case actionType.EXHIBIT_PATCH_SUCCESS:
+		case ACTION_TYPE.EXHIBIT_PATCH_SUCCESS:
 			return {
 				...state,
 				hasUnsavedChanges: false
 			}
 
 		// Set the tilelayer object based on an ID (array position)
-		case actionType.PREVIEW_BASELAYER:
+		case ACTION_TYPE.PREVIEW_BASELAYER:
 			return {
 				...state,
 				current: {
@@ -90,7 +90,7 @@ export default function app(state = initialState, action) {
 			};
 
 		// Create a subset of tilelayer objects based on array of IDs
-		case actionType.SET_AVAILABLE_TILELAYERS:
+		case ACTION_TYPE.SET_AVAILABLE_TILELAYERS:
 			let availableOptions = [];
 			action.payload.ids.forEach((thisID, key, map) => {
 				availableOptions.push(state.available.baseMaps[thisID]);

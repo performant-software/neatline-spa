@@ -2,7 +2,7 @@ import { urlFormat, exhibitsEndpoint } from '../../sagas/api_helper.js';
 import { fetchExhibits } from './exhibits';
 import { replace } from 'react-router-redux'
 
-import * as actionType from '../../actions/action-types';
+import * as ACTION_TYPE from '../../actions/action-types';
 
 
 const initialState = {
@@ -13,21 +13,21 @@ const initialState = {
 
 export default function(state = initialState, action) {
   switch (action.type) {
-    case actionType.EXHIBIT_UPDATED:
+    case ACTION_TYPE.EXHIBIT_UPDATED:
       return {
         ...state,
         loading: true,
         changedExhibit: action.exhibit
       };
 
-    case actionType.EXHIBIT_PATCH_SUCCESS:
+    case ACTION_TYPE.EXHIBIT_PATCH_SUCCESS:
       return {
         ...state,
         loading: false,
         changedExhibit: initialState.changedExhibit
       };
 
-    case actionType.EXHIBIT_PATCH_ERRORED:
+    case ACTION_TYPE.EXHIBIT_PATCH_ERRORED:
       return {
         ...state,
         errored: true
@@ -41,7 +41,7 @@ export default function(state = initialState, action) {
 export function updateExhibit(exhibit) {
   return function(dispatch) {
     dispatch({
-      type: actionType.EXHIBIT_UPDATED,
+      type: ACTION_TYPE.EXHIBIT_UPDATED,
       exhibit
     });
 
@@ -59,16 +59,16 @@ export function updateExhibit(exhibit) {
         }
       })
       .then(() => dispatch({
-        type: actionType.EXHIBIT_PATCH_SUCCESS
+        type: ACTION_TYPE.EXHIBIT_PATCH_SUCCESS
       }))
       .then(() => dispatch({
-        type: actionType.EXHIBIT_LOADED,
+        type: ACTION_TYPE.EXHIBIT_LOADED,
         exhibit: exhibit
       }))
       .then(() => dispatch(replace(window.baseRoute + '/show/' + exhibit['o:slug'])))
       .then(() => dispatch(fetchExhibits()))
       .catch(() => dispatch({
-        type: actionType.EXHIBIT_PATCH_ERRORED
+        type: ACTION_TYPE.EXHIBIT_PATCH_ERRORED
       }));
   }
 }

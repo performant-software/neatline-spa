@@ -3,7 +3,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {change} from 'redux-form';
 import {preview_init} from '../../actions';
-import * as types from '../types';
+import * as TYPE from '../../types';
 import AlertBar from './alertBar.js';
 
 // Makes availabe to mapStateToProps
@@ -46,7 +46,7 @@ class ExhibitPublicMap extends Component {
 	_onCreated = (e) => {
 		// Save geometry when it is created - if we don't have a record ID yet, use -1
 		const {editorRecord} = this.props;
-		const recordId = editorRecord?editorRecord['o:id']: types.TEMPORARY;
+		const recordId = editorRecord?editorRecord['o:id']: TYPE.TEMPORARY;
 
 		if (recordId){
 			this.props.addLayer(recordId, e.layer);
@@ -62,7 +62,7 @@ class ExhibitPublicMap extends Component {
 		const {editorRecord, recordLayers} = this.props;
 		const recordId = editorRecord
 			? editorRecord['o:id']
-			: types.TEMPORARY;
+			: TYPE.TEMPORARY;
 
 		const layersForRecord = recordLayers[recordId];
 		if (layersForRecord && layersForRecord.length > 0) {
@@ -102,7 +102,7 @@ class ExhibitPublicMap extends Component {
 				switch (this.props.mapPreview.current.type) {
 
 					// Map layer
-					case types.BASELAYER_TYPE.MAP: default:
+					case TYPE.BASELAYER_TYPE.MAP: default:
 						// Remove existing image layers
 						mapInstance.eachLayer(function(layer){
 							if(layer._image){
@@ -112,7 +112,7 @@ class ExhibitPublicMap extends Component {
 						break;
 
 					// WMS layer
-					case types.BASELAYER_TYPE.WMS:
+					case TYPE.BASELAYER_TYPE.WMS:
 						// Remove existing image layers
 						mapInstance.eachLayer(function(layer){
 							if(layer._image){
@@ -122,7 +122,7 @@ class ExhibitPublicMap extends Component {
 						break;
 
 					// Image layer
-					case types.BASELAYER_TYPE.IMAGE:
+					case TYPE.BASELAYER_TYPE.IMAGE:
 
 						let url = this.props.mapPreview.current.image_address;
 						let w = event.currentTarget.naturalWidth;
@@ -171,7 +171,7 @@ class ExhibitPublicMap extends Component {
 		switch (this.props.mapPreview.current.type) {
 
 			// Map layer
-			case types.BASELAYER_TYPE.MAP:
+			case TYPE.BASELAYER_TYPE.MAP:
 				baseLayers.push(
 					<LayersControl.BaseLayer key={this.props.mapPreview.current.tileLayer.slug}
 											 name={this.props.mapPreview.current.tileLayer.displayName}
@@ -185,14 +185,14 @@ class ExhibitPublicMap extends Component {
 
 			// Image layers use a different CRS
 			// https://leafletjs.com/examples/crs-simple/crs-simple.html
-			case types.BASELAYER_TYPE.IMAGE:
+			case TYPE.BASELAYER_TYPE.IMAGE:
 
 				// This kicks off an image overlay that is not drawn correctly,
 				// so we zero the bounds and use it as a hook to an onload handler
 				// This is awkward but not wasted - we need to load the image to get
 				// the dimensions anyway.
 				baseLayers.push(
-					<LayersControl.BaseLayer key={types.BASELAYER_TYPE.IMAGE}
+					<LayersControl.BaseLayer key={TYPE.BASELAYER_TYPE.IMAGE}
 											 name={this.props.mapPreview.current.image_address}
 											 checked={true}>
 						<ImageOverlay bounds={[[0,0], [0,0]]}
@@ -204,9 +204,9 @@ class ExhibitPublicMap extends Component {
 				break;
 
 			// Custom tile (same as map), FIXME: factor into map case?
-		 	case types.BASELAYER_TYPE.TILE:
+		 	case TYPE.BASELAYER_TYPE.TILE:
 				baseLayers.push(
-					<LayersControl.BaseLayer key={types.BASELAYER_TYPE.TILE}
+					<LayersControl.BaseLayer key={TYPE.BASELAYER_TYPE.TILE}
 											 name={this.props.mapPreview.current.tile_attribution}
 											 checked={true}>
 						<TileLayer 	attribution={this.props.mapPreview.current.tile_attribution}
@@ -217,9 +217,9 @@ class ExhibitPublicMap extends Component {
 				break;
 
 			// WMS
-			case types.BASELAYER_TYPE.WMS:
+			case TYPE.BASELAYER_TYPE.WMS:
 				baseLayers.push(
-					<LayersControl.BaseLayer key={types.BASELAYER_TYPE.WMS}
+					<LayersControl.BaseLayer key={TYPE.BASELAYER_TYPE.WMS}
 											 name={this.props.mapPreview.current.wms_address}
 											 checked={true}>
 

@@ -3,11 +3,9 @@ import {Field, reduxForm, change} from 'redux-form';
 import {Tabs, TabList, Tab, TabPanel} from 'react-tabs';
 import {connect} from 'react-redux';
 import {preview_update,preview_init,setUnsavedChanges} from '../../actions';
-import ColorPicker from './colorPicker.js';
+import ColorPicker from './colorPicker.js'
 import {strings} from '../../i18nLibrary';
-
-
-
+import * as TYPE from '../../types';
 const defaultValues = {
 	'o:fill_color': '#00aeff',
 	'o:fill_color_select': '#00aeff',
@@ -46,6 +44,21 @@ class RecordForm extends Component {
 			strings
 		};
 		this.previewInitialized=false;
+	}
+
+	componentDidMount(){
+		// Register event listener for global save
+		document.addEventListener(TYPE.EVENT.SAVE_ALL, this.invokeSave);
+	}
+
+	invokeSave = () => {
+		console.log("Record Save! (NOTE: I didn't really save yet!)");
+
+	}
+
+	componentWillUnmount() {
+		// Remove event listener
+		document.removeEventListener(TYPE.EVENT.SAVE_ALL, this.invokeSave);
 	}
 
 	// Sets the unsaved changes flag
@@ -200,7 +213,6 @@ class RecordForm extends Component {
 			);
 		}
 	}
-
 
 	// Input enforcer
 	// Fixme: factor out
