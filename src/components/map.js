@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {change} from 'redux-form';
+import {strings} from '../i18nLibrary';
 
 // Makes availabe to mapStateToProps
 import {selectRecord, deselectRecord, previewRecord, unpreviewRecord} from '../reducers/not_refactored/exhibitShow';
@@ -115,7 +116,7 @@ class ExhibitPublicMap extends Component {
 
 				{/* Reminder to save the map */}
 				<SaveMapReminder isVisible={this.props.mapPreview.hasUnsavedChanges}
-								 message="You have unsaved changes!"/>
+								 message={strings.unsaved_changes}/>
 
 				<LayersControl position='topright'>
 

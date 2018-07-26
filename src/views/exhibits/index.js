@@ -6,33 +6,44 @@ import { connect } from 'react-redux';
 import { fetchExhibits } from '../../reducers/not_refactored/exhibits';
 import { resetExhibit } from '../../reducers/not_refactored/exhibitShow';
 import { deleteExhibit } from '../../reducers/not_refactored/exhibitDelete';
+import { strings } from '../../i18nLibrary';
 
 class Exhibits extends Component {
   componentWillMount() {
     this.props.fetchExhibits();
     this.props.resetExhibit();
+
   }
 
   render() {
     const props = this.props;
 
+    const changeLanguage = lng => {
+      strings.setLanguage(lng);
+      this.setState({});
+    }
+    const allLanguages = strings.getAvailableLanguages();
+    const lngButtons = allLanguages.map((lng) =>
+        <button onClick={() => changeLanguage(lng)}>{lng}</button>
+    );
     return (
       <div>
-        <h3><Link to={`${window.baseRoute}/`}>Neatline</Link> | Browse Exhibits</h3>
+        <div>{lngButtons}</div>
+        <h3><Link to={`${window.baseRoute}/`}>Neatline</Link> | {strings.browseExhibit}</h3>
         {props.userSignedIn &&
-          <button onClick={props.createExhibitView} style={{ marginRight: '0.5em' }}>Create an Exhibit</button>
+          <button onClick={props.createExhibitView} style={{ marginRight: '0.5em' }}>{strings.createExhibit}</button>
         }
-        <button onClick={props.fetchExhibits} disabled={props.exhibitsLoading}>Refresh exhibits</button>
+        <button onClick={props.fetchExhibits} disabled={props.exhibitsLoading}>{strings.refreshExhibits}</button>
 
         <table>
           <thead>
             <tr>
-              <th>Title</th>
+              <th>{strings.title}</th>
               {props.userSignedIn &&
                 <th></th>
               }
-              <th>Created</th>
-              <th>Public</th>
+              <th>{strings.created}</th>
+              <th>{strings.public}</th>
             </tr>
           </thead>
           <tbody>
@@ -43,17 +54,17 @@ class Exhibits extends Component {
                 </td>
                 {props.userSignedIn &&
                   <td>
-                    <button onClick={() => {props.deleteExhibit(exhibit);}} disabled={props.deleteInProgress}>Delete</button>
+                    <button onClick={() => {props.deleteExhibit(exhibit);}} disabled={props.deleteInProgress}>{strings.delete}</button>
                   </td>
                 }
                 <td>{exhibit['o:added']}</td>
-                <td>{exhibit['o:public'] ? 'Yes' : 'No'}</td>
+                <td>{exhibit['o:public'] ? strings.yes : strings.no}</td>
               </tr>
             ))}
           </tbody>
         </table>
         {props.deleteErrored &&
-          <p>Error: exhibit failed to delete</p>
+          <p>{strings.delete_exhibit_error}</p>
         }
       </div>
     );

@@ -4,13 +4,14 @@ import ExhibitForm from '../../components/exhibitForm';
 import { createExhibit } from '../../reducers/not_refactored/exhibitCreate';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { strings } from '../../i18nLibrary';
 
 const ExhibitCreate = props => (
   <div className="ps_n3_exhibitFormContainer">
-    <h3><Link to={`${window.baseRoute}/`}>Neatline</Link> | Create an Exhibit</h3>
-    <ExhibitForm onSubmit={props.submit} submitLabel='Create exhibit' disabled={props.loading} />
+    <h3><Link to={`${window.baseRoute}/`}>Neatline</Link> | {strings.createExhibit}</h3>
+    <ExhibitForm onSubmit={props.submit} submitLabel={strings.create_exhibit} disabled={props.loading} />
     {props.errored &&
-      <p>Error: failed to create exhibit</p>
+      <p>{strings.create_exhibit_error}</p>
     }
   </div>
 )

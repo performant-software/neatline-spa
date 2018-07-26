@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Field, reduxForm} from 'redux-form'
 import {connect} from 'react-redux';
 import {set_tileLayer, set_availableTileLayers} from '../actions';
+import { strings } from '../i18nLibrary';
 
 const defaultValues = {
 	'o:spatial_layers': [],
@@ -38,6 +39,7 @@ class ExhibitForm extends Component {
 	constructor(props) {
 		super(props);
 
+
 		// Redux Actions, bind to this
 		this.set_tileLayer = set_tileLayer;
 		this.set_availableTileLayers = set_availableTileLayers;
@@ -60,29 +62,31 @@ class ExhibitForm extends Component {
 	}
 	render() {
 		return (
+		 <div>
+
 			<form className='ps_n3_exhibit-form' onSubmit={this.handleSubmit}>
 			<fieldset disabled={this.disabled} style={{
 					border: 'none',
 					padding: '0'
 				}}>
 				<div>
-					<label htmlFor='o:title'>Title</label>
+					<label htmlFor='o:title'>{strings.title}</label>
 					<Field name='o:title' component='input' type='text'/>
 				</div>
 				<div>
-					<label htmlFor='o:slug'>URL Slug</label>
+					<label htmlFor='o:slug'>{strings.slug}</label>
 					<Field name='o:slug' component='input' type='text'/>
 				</div>
 				<div>
-					<label htmlFor='o:narrative'>Narrative</label>
+					<label htmlFor='o:narrative'>{strings.narrative}</label>
 					<Field name='o:narrative' component='textarea'/>
 				</div>
 				<div>
-					<label htmlFor='o:accessible_url'>Alternative Accessible URL</label>
+					<label htmlFor='o:accessible_url'>{strings.accessible_url}</label>
 					<Field name='o:accessible_url' component='input' type='text'/>
 				</div>
 				<div>
-					<label htmlFor='o:spatial_layer'>Default Spatial Layer</label>
+					<label htmlFor='o:spatial_layer'>{strings.default_spatial_layer}</label>
 					<Field name='o:spatial_layer' component='select' onChange={this.spatialLayerPreview}>
 						<optgroup label='Default Layers'>
 							{this.layerTypeOptions}
@@ -91,34 +95,34 @@ class ExhibitForm extends Component {
 					</Field>
 				</div>
 				<div>
-					<label htmlFor='o:spatial_layers'>Additional Spatial Layers</label>
+					<label htmlFor='o:spatial_layers'>{strings.additional_spatial_layers}</label>
 					<Field name='o:spatial_layers' component='select' multiple="multiple" onChange={this.enabledSpatialLayerPreview}>
 						{this.layerTypeOptions}
 					</Field>
 				</div>
 
 				<div>
-					<label htmlFor='o:image_layer'>Image Layer</label>
+					<label htmlFor='o:image_layer'>{strings.image_layer}</label>
 					<Field name='o:image_layer' component='input' type='text'/>
 				</div>
 				<div>
-					<label htmlFor='o:zoom_levels'>Zoom Levels</label>
+					<label htmlFor='o:zoom_levels'>{strings.zoom_levels}</label>
 					<Field name='o:zoom_levels' component='input' type='number'/>
 				</div>
 				<div>
-					<label htmlFor='o:wms_address'>WMS Address</label>
+					<label htmlFor='o:wms_address'>{strings.wms_address}</label>
 					<Field name='o:wms_address' component='input' type='text'/>
 				</div>
 				<div>
-					<label htmlFor='o:wms_layers'>WMS Layers</label>
+					<label htmlFor='o:wms_layers'>{strings.wms_layers}</label>
 					<Field name='o:wms_layers' component='input' type='text'/>
 				</div>
 				<div className="ps_n3_checkboxPair">
-					<label htmlFor='o:spatial_querying'>Spatial Querying</label>
+					<label htmlFor='o:spatial_querying'>{strings.spatial_querying}</label>
 					<Field name='o:spatial_querying' component='input' type='checkbox'/>
 				</div>
 				<div className="ps_n3_checkboxPair">
-					<label htmlFor='o:public'>Public</label>
+					<label htmlFor='o:public'>{strings.public}</label>
 					<Field name='o:public' component='input' type='checkbox'/>
 				</div>
 				{this.exhibit && this.exhibit['o:id'] && <Field name='o:id' component='input' type='hidden'/>}
@@ -126,7 +130,8 @@ class ExhibitForm extends Component {
 					<button type='submit'>{this.submitLabel}</button>
 				</div>
 			</fieldset>
-		</form>);
+		</form>
+	 </div>);
 	}
 }
 

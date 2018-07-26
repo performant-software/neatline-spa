@@ -2,6 +2,7 @@ import { urlFormat, recordsEndpoint } from './api_helper.js';
 import {put,takeLatest,all} from 'redux-saga/effects';
 //import { push } from 'react-router-redux';
 import * as actions from '../actions/action-types';
+import {strings} from '../i18nLibrary';
 
 const JSON_HEADERS = {
   'Accept': 'application/json',
@@ -37,7 +38,7 @@ function* createRecord(action) {
 		yield put({	type: actions.RECORD_ERROR,
 					payload: {
 						record:'',
-						message:'Error Creating Record',
+						message: strings.create_record_error,
 						error:e
 					}});
     }
@@ -58,7 +59,7 @@ function* createRecordResponseReceived(action){
 // Delete a record on confirm
 function* deleteRecord(action) {
 	let record = action.payload;
-	if (window.confirm(`Are you sure you want to delete the Neatline record "${record['o:title']}"?`)) {
+	if (window.confirm(  strings.formatString(strings.record_delete_confirmation, record['o:title']) )) {
 
 		// Make API call
 		try{
@@ -76,7 +77,7 @@ function* deleteRecord(action) {
 			yield put({	type: actions.RECORD_ERROR,
 						payload: {
 							record:record,
-							message:'Error Deleting Record',
+							message:strings.delete_record_error,
 							error:e
 						}});
 		}
@@ -110,7 +111,7 @@ function* updateRecord(action) {
 		yield put({	type: actions.RECORD_ERROR,
 					payload: {
 						record:record,
-						message:'Error Updating Record',
+						message:strings.update_record_error,
 						error:e
 					}});
 

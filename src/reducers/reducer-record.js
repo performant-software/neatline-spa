@@ -1,5 +1,6 @@
 import initialState from './initialState-record';
 import * as actionType from '../actions/action-types';
+import {strings} from '../i18nLibrary';
 
 export default function(state = initialState, action) {
 	switch (action.type) {
@@ -21,7 +22,7 @@ export default function(state = initialState, action) {
 				console.error(`CREATE_RECORD_ERROR: ${action.payload.errors.error}`);
 				return {
 					...state,
-					error: 'Error Creating record'
+					error: strings.create_record_error
 				};
 
 			// Accepted (RECORD_CREATED)
@@ -50,7 +51,7 @@ export default function(state = initialState, action) {
 				console.error(`DELETE_RECORD_ERROR: ${action.payload.jsonResponse.errors.error}`);
 				return {
 					...state,
-					error: 'Error deleting record'
+					error: strings.delete_record_error
 				};
 
 			// Accepted (RECORD_DELETED)
@@ -70,7 +71,7 @@ export default function(state = initialState, action) {
 				console.error(`UPDATE_RECORD_ERROR: ${action.payload.errors.error}`);
 				return {
 					...state,
-					error: 'Error Updating record'
+					error: strings.update_record_error
 				};
 
 				// Accepted

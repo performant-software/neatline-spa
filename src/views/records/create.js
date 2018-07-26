@@ -3,10 +3,11 @@ import RecordForm from '../../components/RecordForm';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {createRecord} from '../../actions';
+import {strings} from '../../i18nLibrary';
 
 const RecordCreate = props => (
 <div>
-	<RecordForm onSubmit={props.submit} submitLabel='Create' disabled={props.record.loading}/>
+	<RecordForm onSubmit={props.submit} submitLabel={strings.create} disabled={props.record.loading}/>
 	<p>{props.record.error}</p>
 </div>)
 

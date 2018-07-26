@@ -20,6 +20,7 @@ import L from 'leaflet';
 import {EditControl} from "react-leaflet-draw"
 import {circleMarker} from 'leaflet';
 import AlertBar from './alertBar.js';
+import {strings} from '../../i18nLibrary';
 export const TEMPORARY = -1;
 
 // FIXME: workaround broken icons when using webpack, see https://github.com/PaulLeCam/react-leaflet/issues/255
@@ -134,7 +135,7 @@ class ExhibitPublicMap extends Component {
 
 				{/* Reminder to save the map */}
 				<AlertBar isVisible={this.props.mapPreview.hasUnsavedChanges}
-							message="You have unsaved changes"/>
+							message={strings.unsaved_changes}/>
 
 
 				<LayersControl position='topright'>
