@@ -31,7 +31,6 @@ export default {
 		},
 		geometryStyle: {
 			default: {
-				hasUnsavedChanges:false,
 
 				stroke: true,
 

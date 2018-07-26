@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {Field, reduxForm, change, formValueSelector} from 'redux-form'
 import {connect} from 'react-redux';
-import {preview_baseLayer, set_availableTileLayers} from '../../actions';
+import {preview_baseLayer, set_availableTileLayers, setUnsavedChanges} from '../../actions';
 import * as types from '../types';
 
 class ExhibitForm extends Component {
@@ -27,7 +27,10 @@ class ExhibitForm extends Component {
 
 		// Is this a new (add) or existing (edit) version of this form?
 		let isNewExhibit = (typeof this.props.initialValues['o:exhibit_type'] === 'undefined');
-		let exhibitType = (typeof this.props.initialValues['o:exhibit_type'] === 'undefined')?types.EXHIBIT_TYPE.UNDEFINED:this.props.initialValues['o:exhibit_type'];
+		let exhibitType = (typeof this.props.initialValues['o:exhibit_type'] === 'undefined')?types.EXHIBIT_TYPE.MAP:this.props.initialValues['o:exhibit_type'];
+
+		// Init form field
+		this.props.change('o:exhibit_type', exhibitType);
 
 		// Update the layer preview with initial values
 		this.updateLayerPreview({
@@ -50,7 +53,8 @@ class ExhibitForm extends Component {
 		this.setState({
 			exhibitType:exhibitType,
 			isNewExhibit:isNewExhibit
-		})
+		});
+
 	}
 
 	// Update the live-preview of the spatial layer
@@ -74,6 +78,7 @@ class ExhibitForm extends Component {
 			payload.spatial_layer=types.BASELAYER_TYPE.IMAGE;
 		}
 		this.updateLayerPreview(payload);
+		this.markUnsaved();
 	}
 
 	updateLayerPreview = (payload) =>{
@@ -118,7 +123,7 @@ class ExhibitForm extends Component {
 				exhibitType:types.EXHIBIT_TYPE.IMAGE
 			});
 			this.onSpatialLayerInfoChange({target:{name:'o:spatial_layer',value:types.BASELAYER_TYPE.IMAGE}});
-			this.props.change('record', 'o:exhibit_type', types.EXHIBIT_TYPE.IMAGE);
+			this.props.change('o:exhibit_type', types.EXHIBIT_TYPE.IMAGE);
 
 		}else{
 			this.setState({
@@ -126,9 +131,16 @@ class ExhibitForm extends Component {
 				exhibitType:types.EXHIBIT_TYPE.MAP
 			});
 			this.onSpatialLayerInfoChange({target:{name:'o:spatial_layer',value:0}});
-			this.props.change('record', 'o:exhibit_type', types.EXHIBIT_TYPE.MAP);
+			this.props.change('o:exhibit_type', types.EXHIBIT_TYPE.MAP);
 		}
 
+	}
+
+	// Sets the unsaved changes flag
+	markUnsaved = () => {
+		this.props.dispatch(
+			setUnsavedChanges({hasUnsavedChanges:true})
+		);
 	}
 
 	// Build layertypes from the set of non-deprecated maps
@@ -174,20 +186,31 @@ class ExhibitForm extends Component {
 							padding: '0'
 						}}>
 						<div>
-							<label htmlFor='o:title'>Title</label>
-							<Field name='o:title' component='input' type='text'/>
+							<label htmlFor='o:title'>* Title</label>
+							<Field 	name='o:title'
+									component='input'
+									type='text'
+									onChange={this.markUnsaved}/>
 						</div>
 						<div>
-							<label htmlFor='o:slug'>URL Slug</label>
-							<Field name='o:slug' component='input' type='text'/>
+							<label htmlFor='o:slug'>* URL Slug</label>
+							<Field 	name='o:slug'
+									component='input'
+									type='text'
+									onChange={this.markUnsaved}/>
 						</div>
 						<div>
 							<label htmlFor='o:narrative'>Narrative</label>
-							<Field name='o:narrative' component='textarea'/>
+							<Field 	name='o:narrative'
+									component='textarea'
+									onChange={this.markUnsaved}/>
 						</div>
 						<div>
 							<label htmlFor='o:accessible_url'>Alternative Accessible URL</label>
-							<Field name='o:accessible_url' component='input' type='text'/>
+							<Field 	name='o:accessible_url'
+									component='input'
+									type='text'
+									onChange={this.markUnsaved}/>
 						</div>
 
 						{(this.state.isNewExhibit) &&
@@ -302,7 +325,8 @@ class ExhibitForm extends Component {
 									<label 	htmlFor='o:zoom_levels'>Zoom Levels</label>
 									<Field 	name='o:zoom_levels'
 											component='input'
-											type='number'/>
+											type='number'
+											onChange={this.markUnsaved}/>
 								</div>
 							</div>
 						}
@@ -310,24 +334,30 @@ class ExhibitForm extends Component {
 						<div className="ps_n3_checkboxPair">
 							<Field 	name='o:spatial_querying'
 									component='input'
-									type='checkbox'/>
+									type='checkbox'
+									onChange={this.markUnsaved}/>
 							<label 	htmlFor='o:spatial_querying'>Spatial Querying</label>
 						</div>
 						<div className="ps_n3_checkboxPair">
 							<Field 	name='o:public'
 									component='input'
-									type='checkbox'/>
+									type='checkbox'
+									onChange={this.markUnsaved}/>
 							<label 	htmlFor='o:public'>Public</label>
 
-							{/* Hidden fields */}
-							<Field 	name='o:exhibit_type'
-									component='input'
-									type='hidden'/>
+
 						</div>
 						{this.exhibit && this.exhibit['o:id'] &&
 							<Field 	name='o:id'
 									component='input'
-									type='hidden'/>}
+									type='hidden'/>
+						}
+
+						{/* Hidden fields */}
+						<Field 	name='o:exhibit_type'
+								component='input'
+								type='hidden'/>
+
 					</fieldset>
 				</form>
 		</div>);
@@ -347,6 +377,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => bindActionCreators({
 	change,
+	dispatch
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(ExhibitForm);
