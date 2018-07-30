@@ -1,4 +1,4 @@
-import { urlFormat, recordsEndpoint } from './api_helper.js';
+import { urlFormat, recordsEndpoint, exhibitsEndpoint,parseExhibitsJSON } from './api_helper.js';
 import {put,takeLatest,all} from 'redux-saga/effects';
 //import { push } from 'react-router-redux';
 import {strings} from '../i18nLibrary';
@@ -17,7 +17,11 @@ export default function* rootSaga() {
 		takeLatest(ACTION_TYPE.RECORD_UPDATE, updateRecord),
 		takeLatest(ACTION_TYPE.CREATE_RECORD_RESPONSE_RECEIVED, createRecordResponseReceived),
 		takeLatest(ACTION_TYPE.DELETE_RECORD_RESPONSE_RECEIVED, deleteRecordResponseReceived),
-		takeLatest(ACTION_TYPE.UPDATE_RECORD_RESPONSE_RECEIVED, updateRecordResponseReceived)
+		takeLatest(ACTION_TYPE.UPDATE_RECORD_RESPONSE_RECEIVED, updateRecordResponseReceived),
+
+		takeLatest(ACTION_TYPE.EXHIBIT_CACHE_SAVE, saveCacheToDatabase),
+		takeLatest(ACTION_TYPE.EXHIBIT_FETCH, fetchExhibits),
+		takeLatest(ACTION_TYPE.EXHIBIT_FETCH_RESPONSE_RECEIVED, fetchExhibitsResponseReceived)
 	])
 }
 
@@ -96,6 +100,7 @@ function* deleteRecordResponseReceived(action){
 
 // Update a record
 function* updateRecord(action) {
+	console.log(action.payload);
 	let record = action.payload;
 	try{
 		let url = urlFormat(recordsEndpoint, {}, record['o:id']);
@@ -114,11 +119,9 @@ function* updateRecord(action) {
 						message:strings.update_record_error,
 						error:e
 					}});
-
     }
 }
 function* updateRecordResponseReceived(action){
-
 	// On success...
 	if (typeof action.payload.errors === 'undefined') {
 		yield put({type: ACTION_TYPE.EDITOR_RECORD_SET});
@@ -126,5 +129,64 @@ function* updateRecordResponseReceived(action){
 
 	// On failure...
 	}else{
+	}
+}
+
+
+// Save cache to the database
+function* saveCacheToDatabase(action){
+	let records = action.payload.records;
+	let exhibit = action.payload.exhibit;
+
+	// Save the records
+	for(let x=0;x<records.length;x++){
+		let thisRecord = records[x];
+		if(typeof thisRecord !== 'undefined'){
+			console.log("Saving Record: "+x);
+			yield put({type: ACTION_TYPE.RECORD_UPDATE, payload:thisRecord});
+		}
+	}
+
+	// Save the exhibit
+	if(exhibit !== 'undefined'){
+		console.log("FIXME: Implement exhibit save");
+		//yield put({type: ACTION_TYPE.EXHIBIT_UPDATE, payload:thisRecord});
+	}
+}
+
+function* fetchExhibits(action) {
+	try{
+		yield put({type: ACTION_TYPE.EXHIBITS_LOADING, payload:{loading:true}});
+
+		let url = urlFormat(exhibitsEndpoint);
+		const response = yield fetch(url);
+		yield put({type: ACTION_TYPE.EXHIBIT_FETCH_RESPONSE_RECEIVED, payload:response});
+
+	// Failed on the fetch call (timeout, etc)
+	}catch(e) {
+		yield put({type: ACTION_TYPE.EXHIBITS_LOADING, payload:{loading:false}});
+		yield put({	type: ACTION_TYPE.RECORD_ERROR,
+					payload: {
+						message:'error',
+						error:e
+					}});
+    }
+}
+
+function* fetchExhibitsResponseReceived(action){
+	yield put({type: ACTION_TYPE.EXHIBITS_LOADING, payload:{loading:false}});
+
+	// On success...
+	if (typeof action.payload.errors === 'undefined') {
+		console.log(action.payload);
+		let exhibits = yield parseExhibitsJSON(action.payload);
+		yield put({type: ACTION_TYPE.EXHIBITS_FETCH_SUCCESS,payload:exhibits})
+
+	// On failure...
+	}else{
+		yield put({	type: ACTION_TYPE.RECORD_ERROR,
+					payload: {
+						message:'error'
+					}});
 	}
 }

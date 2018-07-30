@@ -3,7 +3,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {change} from 'redux-form';
 import {preview_init} from '../../actions';
-import * as TYPE from '../../types';
+import * as TYPE from '../../types'
 import AlertBar from './alertBar.js';
 
 // Makes availabe to mapStateToProps
@@ -24,7 +24,7 @@ import {
 import L from 'leaflet';
 import {circleMarker} from 'leaflet';
 import {EditControl} from "react-leaflet-draw"
-import {strings} from '../../i18nLibrary';
+//FIXME: This got splinched in a merge import {strings} from '../../i18nLibrary';
 
 // FIXME: workaround broken icons when using webpack, see https://github.com/PaulLeCam/react-leaflet/issues/255
 delete L.Icon.Default.prototype._getIconUrl;

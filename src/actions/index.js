@@ -23,3 +23,6 @@ export const setUnsavedChanges = (payload) => action(ACTION_TYPE.HAS_UNSAVED_CHA
 
 export const updateRecordCache = (payload) => action(ACTION_TYPE.RECORD_CACHE_UPDATE,payload);
 export const updateExhibitCache = (payload) => action(ACTION_TYPE.EXHIBIT_CACHE_UPDATE,payload);
+export const recordCacheToDatabase = (payload) => action(ACTION_TYPE.EXHIBIT_CACHE_SAVE,payload);
+
+export const fetchExhibits = () => action(ACTION_TYPE.EXHIBIT_FETCH);

@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import {preview_update,preview_init,setUnsavedChanges,updateRecordCache} from '../../actions';
 import ColorPicker from './colorPicker.js'
 import {strings} from '../../i18nLibrary';
-import * as TYPE from '../../types';
+//import * as TYPE from '../../types';
 const defaultValues = {
 	'o:fill_color': '#00aeff',
 	'o:fill_color_select': '#00aeff',
@@ -52,7 +52,11 @@ class RecordForm extends Component {
 	}
 
 	// Sets the unsaved changes flag
-	markUnsaved = () => {
+	markUnsaved = (event) => {
+		if(typeof event !== 'undefined'){
+			console.log(event.target.name+":"+event.target.value);
+			this.props.dispatch(updateRecordCache({setValues:{'o:id':this.props.initialValues['o:id'],[event.target.name]:event.target.value}}));
+		}
 		this.props.dispatch(
 			setUnsavedChanges({hasUnsavedChanges:true})
 		);

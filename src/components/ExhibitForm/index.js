@@ -88,6 +88,7 @@ class ExhibitForm extends Component {
 	}
 
 	updateLayerPreview = (payload) =>{
+
 		// Set type...
 		// If it's a number, it's an id of a map, otherwise it's IMAGE or WMS
 		let baseLayerType=payload.spatial_layer;
@@ -143,7 +144,13 @@ class ExhibitForm extends Component {
 	}
 
 	// Sets the unsaved changes flag
-	markUnsaved = () => {
+	markUnsaved = (event) => {
+		
+		if(typeof event !== 'undefined'){
+			this.props.dispatch(updateExhibitCache({setValues:{[event.target.name]:event.target.value}}));
+		}
+
+
 		this.props.dispatch(
 			setUnsavedChanges({hasUnsavedChanges:true})
 		);

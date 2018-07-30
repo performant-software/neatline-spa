@@ -1,9 +1,9 @@
 import { urlFormat, exhibitsEndpoint } from '../../sagas/api_helper.js';
-import { fetchExhibits } from './exhibits';
+//import { fetchExhibits } from './exhibits';
 import { replace } from 'react-router-redux'
 
 import * as ACTION_TYPE from '../../actions/action-types';
-
+import {fetchExhibits} from '../../actions';
 
 const initialState = {
   changedExhibit: null,
@@ -39,6 +39,7 @@ export default function(state = initialState, action) {
 }
 
 export function updateExhibit(exhibit) {
+	console.log("UpdateExhibit:"+exhibit);
   return function(dispatch) {
     dispatch({
       type: ACTION_TYPE.EXHIBIT_UPDATED,

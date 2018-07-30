@@ -1,5 +1,5 @@
 import { urlFormat, exhibitsEndpoint } from '../../sagas/api_helper.js';
-import { fetchExhibits } from './exhibits';
+import {fetchExhibits} from '../../actions';
 import {strings} from '../../i18nLibrary';
 
 export const EXHIBIT_DELETED = 'exhibitDelete/EXHIBIT_DELETED';

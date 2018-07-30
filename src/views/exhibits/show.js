@@ -15,6 +15,8 @@ import RecordCreate from '../records/create';
 import RecordUpdate from '../records/update';
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import { strings } from '../../i18nLibrary';
+import {recordCacheToDatabase} from '../../actions';
+
 const ExhibitShowHeader = props => (
 	<div>
 		<h3><Link to={`${window.baseRoute}/`}>Neatline</Link> | {props.children}</h3>
@@ -41,7 +43,6 @@ const RecordEditor = props => {
 class ExhibitShow extends Component {
 	componentWillMount() {
 		this.props.fetchExhibitWithRecords(this.props.match.params.slug);
-
 	}
 
 	componentWillReceiveProps(nextprops) {
@@ -55,15 +56,20 @@ class ExhibitShow extends Component {
 	}
 
 	saveAll = (event) => {
-		console.log("Exhibit: "+this.props.exhibitPreview.cache);
-		console.log("Map: "+JSON.stringify(this.props.mapPreview.cache));
+		// Cache intial values
+		this.props.dispatch(
+			recordCacheToDatabase(
+				{
+					exhibit:this.props.exhibitPreview.cache,
+					records:this.props.mapPreview.cache
+				}
+			)
+		);
 	}
 
 	render() {
 		const props = this.props;
 		const {exhibit} = props;
-
-
 
 		let exhibitDisplay = <ExhibitShowHeader>{strings.loading}</ExhibitShowHeader>;
 		if (exhibit) {
@@ -158,7 +164,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
 	fetchExhibitWithRecords,
 	setTabIndex,
-	unsetEditorRecord
+	unsetEditorRecord,
+	dispatch
 }, dispatch);
 
 export default connect(
