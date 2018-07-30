@@ -26,7 +26,7 @@ class Exhibits extends Component {
     }
     const allLanguages = strings.getAvailableLanguages();
     const lngButtons = allLanguages.map((lng) =>
-        <button onClick={() => changeLanguage(lng)}>{lng}</button>
+        <button key={lng} onClick={() => changeLanguage(lng)}>{lng}</button>
     );
     return (
       <div>

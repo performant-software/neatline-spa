@@ -7,6 +7,7 @@ import {
 	set_availableTileLayers,
 	setUnsavedChanges,
 	updateExhibitCache} from '../../actions';
+import {replace} from 'react-router-redux'
 import * as TYPE from '../../types';
 
 class ExhibitForm extends Component {
@@ -20,6 +21,7 @@ class ExhibitForm extends Component {
 		this.submitLabel = props.submitLabel;
 		this.disabled = props.disabled;
 		this.layerTypeOptions = this.buildLayerTypeOptions();
+		this.currentSlug;
 		this.state={
 			exhibitType:TYPE.EXHIBIT_TYPE.MAP,
 			baseLayerType:TYPE.BASELAYER_TYPE.MAP,
@@ -60,6 +62,9 @@ class ExhibitForm extends Component {
 
 		// Cache intial values
 		this.props.dispatch(updateExhibitCache({setValues:this.props.initialValues}));
+
+		// Set the router
+		this.setState({currentSlug:this.props.initialValues['o:slug']})
 
 	}
 
@@ -145,12 +150,13 @@ class ExhibitForm extends Component {
 
 	// Sets the unsaved changes flag
 	markUnsaved = (event) => {
-		
+
+		// Update the cache
 		if(typeof event !== 'undefined'){
 			this.props.dispatch(updateExhibitCache({setValues:{[event.target.name]:event.target.value}}));
 		}
 
-
+		// Mark unsaved
 		this.props.dispatch(
 			setUnsavedChanges({hasUnsavedChanges:true})
 		);
@@ -181,15 +187,19 @@ class ExhibitForm extends Component {
 		return retval;
 	};
 
+	componentWillReceiveProps(nextprops){
+		let nextSlug = nextprops.exhibit['o:slug'];
+		if(this.currentSlug !== nextSlug && nextSlug.length > 0){
+			this.setState({currentSlug:nextSlug});
+			this.props.dispatch(replace(window.baseRoute + '/show/' + nextSlug));
+			this.currentSlug=nextSlug;
+		}
+	}
+
 	render() {
 		return (
 			<div>
 				<form className='ps_n3_exhibit-form' onSubmit={this.handleSubmit}>
-
-					{/* Form buttons */}
-					<div className="ps_n3_buttonGroup_exhibitForm">
-						<button type='submit'>{this.submitLabel}</button>
-					</div>
 
 
 					<fieldset disabled={this.disabled} style={{

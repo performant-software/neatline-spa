@@ -73,14 +73,14 @@ class ExhibitShow extends Component {
 
 		let exhibitDisplay = <ExhibitShowHeader>{strings.loading}</ExhibitShowHeader>;
 		if (exhibit) {
-			exhibitDisplay = (<div className='exhibit-public' style={{
+			exhibitDisplay = (
+				<div className='exhibit-public' style={{
 					height: '100%',
 					display: 'grid',
 					gridTemplateColumns: '320px 1fr',
 					gridGap: 'none'
 				}}>
-				{
-					!props.recordsLoading && <Route path={`${props.match.url}/edit/:recordId`} render={props => {
+				{!props.recordsLoading && <Route path={`${props.match.url}/edit/:recordId`} render={props => {
 								props.key = props.match.params.recordId;
 								return (<RecordEditorLoader {...props}/>)
 							}}/>

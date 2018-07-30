@@ -279,7 +279,6 @@ class RecordForm extends Component {
 
 				{/* Form buttons */}
 				<div className="ps_n3_buttonGroup">
-					<button className="ps_n3_button" type='submit'>{this.submitLabel}</button>
 					{this.showDelete && <button className="ps_n3_button" onClick={this.handleDelete} type='button'>Delete</button>}
 				</div>
 

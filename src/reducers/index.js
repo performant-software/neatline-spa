@@ -4,7 +4,6 @@ import { reducer as formReducer } from 'redux-form';
 import user from './not_refactored/user';
 
 import exhibitShow from './not_refactored/exhibitShow';
-import exhibitUpdate from './not_refactored/exhibitUpdate';
 /*
 import exhibits from './not_refactored/exhibits';
 import exhibitCreate from './not_refactored/exhibitCreate';
@@ -27,7 +26,6 @@ export default combineReducers({
   //exhibits,
   exhibitShow,
   //exhibitCreate,
-  exhibitUpdate,
   exhibitDelete,
   record: recordReducer,
   mapPreview: mapPreviewReducer,
