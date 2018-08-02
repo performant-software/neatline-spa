@@ -2,12 +2,10 @@ import React, {Component} from 'react';
 import {Field, reduxForm, change} from 'redux-form';
 import {Tabs, TabList, Tab, TabPanel} from 'react-tabs';
 import {connect} from 'react-redux';
-import {preview_update,preview_init} from '../../actions';
-import ColorPicker from './colorPicker.js';
+import {preview_update,preview_init,setUnsavedChanges,updateRecordCache} from '../../actions';
+import ColorPicker from './colorPicker.js'
 import {strings} from '../../i18nLibrary';
-
-
-
+//import * as TYPE from '../../types';
 const defaultValues = {
 	'o:fill_color': '#00aeff',
 	'o:fill_color_select': '#00aeff',
@@ -37,6 +35,7 @@ class RecordForm extends Component {
 		this.preview_init=preview_init.bind(this);
 		this.preview_update = preview_update.bind(this);
 		this.state={
+			exhibitType:'map',
 			colorPickerVisible:false,
 			colorPickerTop:0,
 			colorPickerCurrentColor:'000000',
@@ -45,6 +44,22 @@ class RecordForm extends Component {
 			strings
 		};
 		this.previewInitialized=false;
+	}
+
+	componentDidMount(){
+		// Cache intial values
+		this.props.dispatch(updateRecordCache({setValues:this.props.initialValues}));
+	}
+
+	// Sets the unsaved changes flag
+	markUnsaved = (event) => {
+		if(typeof event !== 'undefined'){
+			console.log(event.target.name+":"+event.target.value);
+			this.props.dispatch(updateRecordCache({setValues:{'o:id':this.props.initialValues['o:id'],[event.target.name]:event.target.value}}));
+		}
+		this.props.dispatch(
+			setUnsavedChanges({hasUnsavedChanges:true})
+		);
 	}
 
 	// After mount
@@ -193,7 +208,6 @@ class RecordForm extends Component {
 		}
 	}
 
-
 	// Input enforcer
 	// Fixme: factor out
 	inputEnforce(event){
@@ -247,6 +261,7 @@ class RecordForm extends Component {
 			setTimeout(()=> { this.props.dispatch(this.change(this.props.form,currentField,forcedValue)); }, 100);
 
 		}
+		this.markUnsaved();
 	}
 
 	render(){
@@ -264,7 +279,6 @@ class RecordForm extends Component {
 
 				{/* Form buttons */}
 				<div className="ps_n3_buttonGroup">
-					<button className="ps_n3_button" type='submit'>{this.submitLabel}</button>
 					{this.showDelete && <button className="ps_n3_button" onClick={this.handleDelete} type='button'>Delete</button>}
 				</div>
 
@@ -282,15 +296,22 @@ class RecordForm extends Component {
 								}}>
 								<div>
 									<label htmlFor='o:title'>{strings.title}</label>
-									<Field name='o:title' component='textarea'/>
+									<Field 	name='o:title'
+											component='textarea'
+											onChange={this.markUnsaved}/>
 								</div>
 								<div>
 									<label htmlFor='o:slug'>{strings.slug}</label>
-									<Field name='o:slug' component='input' type='text'/>
+									<Field 	name='o:slug'
+											component='input'
+											type='text'
+											onChange={this.markUnsaved}/>
 								</div>
 								<div>
 									<label htmlFor='o:body'>{strings.body}</label>
-									<Field name='o:body' component='textarea'/>
+									<Field 	name='o:body'
+											component='textarea'
+											onChange={this.markUnsaved}/>
 								</div>
 							</fieldset>
 						</div>
@@ -458,14 +479,16 @@ class RecordForm extends Component {
 									<Field 	className="styleEditor_input"
 											name='o:start_date'
 											component='input'
-											type='text'/>
+											type='text'
+											onChange={this.markUnsaved}/>
 								</div>
 								<div>
 									<label 	htmlFor='o:end_date'>{strings.end_date}</label>
 									<Field 	className="styleEditor_input"
 											name='o:end_date'
 											component='input'
-											type='text'/>
+											type='text'
+											onChange={this.markUnsaved}/>
 								</div>
 								<div>
 									<label 	htmlFor='o:after_date'>{strings.after_date}</label>
@@ -479,7 +502,8 @@ class RecordForm extends Component {
 									<Field 	className="styleEditor_input"
 											name='o:before_date'
 											component='input'
-											type='text'/>
+											type='text'
+											onChange={this.markUnsaved}/>
 								</div>
 
 								<div className="ps_n3_optionHeader">{strings.imagery}</div>
@@ -488,21 +512,24 @@ class RecordForm extends Component {
 									<Field 	className="styleEditor_input"
 											name='o:point_image'
 											component='input'
-											type='text'/>
+											type='text'
+											onChange={this.markUnsaved}/>
 								</div>
 								<div>
 									<label 	htmlFor='o:wms_address'>{strings.wms_address}</label>
 									<Field 	className="styleEditor_input"
 											name='o:wms_address'
 											component='input'
-											type='text'/>
+											type='text'
+											onChange={this.markUnsaved}/>
 								</div>
 								<div>
 									<label 	htmlFor='o:wms_layers'>{strings.wms_layers}</label>
 									<Field 	className="styleEditor_input"
 											name='o:wms_layers'
 											component='input'
-											type='text'/>
+											type='text'
+											onChange={this.markUnsaved}/>
 								</div>
 
 								<div className="ps_n3_optionHeader">{strings.visibility}</div>
@@ -511,21 +538,24 @@ class RecordForm extends Component {
 									<Field 	className="styleEditor_input"
 											name='o:min_zoom'
 											component='input'
-											type='number'/>
+											type='number'
+											onChange={this.markUnsaved}/>
 								</div>
 								<div>
 									<label 	htmlFor='o:max_zoom'>{strings.max_zoom}</label>
 									<Field 	className="styleEditor_input"
 											name='o:max_zoom'
 											component='input'
-											type='number'/>
+											type='number'
+											onChange={this.markUnsaved}/>
 								</div>
 								<div>
 									<label 	htmlFor='o:map_zoom'>{strings.default_zoom}</label>
 									<Field 	className="styleEditor_input"
 											name='o:map_zoom'
 											component='input'
-											type='number'/>
+											type='number'
+											onChange={this.markUnsaved}/>
 								</div>
 
 								<div>
@@ -533,7 +563,8 @@ class RecordForm extends Component {
 									<Field 	className="styleEditor_input"
 											name='o:map_focus'
 											component='input'
-											type='text'/>
+											type='text'
+											onChange={this.markUnsaved}/>
 								</div>
 							</fieldset>
 						</div>

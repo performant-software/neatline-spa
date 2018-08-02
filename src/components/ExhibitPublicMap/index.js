@@ -3,12 +3,14 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {change} from 'redux-form';
 import {preview_init} from '../../actions';
-import * as types from '../types';
+import * as TYPE from '../../types'
+import AlertBar from './alertBar.js';
 
 // Makes availabe to mapStateToProps
 import {selectRecord, deselectRecord, previewRecord, unpreviewRecord} from '../../reducers/not_refactored/exhibitShow';
 import {addLayer, resetLayers} from '../../reducers/not_refactored/recordMapLayers';
 
+// Leaflet
 import {
 	Map,
 	LayersControl,
@@ -17,20 +19,24 @@ import {
 	GeoJSON,
 	FeatureGroup,
 	ImageOverlay
+
 } from 'react-leaflet';
 import L from 'leaflet';
-import {EditControl} from "react-leaflet-draw"
 import {circleMarker} from 'leaflet';
-import AlertBar from './alertBar.js';
-import {strings} from '../../i18nLibrary';
+import {EditControl} from "react-leaflet-draw"
+//FIXME: This got splinched in a merge import {strings} from '../../i18nLibrary';
 
 // FIXME: workaround broken icons when using webpack, see https://github.com/PaulLeCam/react-leaflet/issues/255
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0/images/marker-icon.png', iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0/images/marker-icon.png', shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0/images/marker-shadow.png'});
 
 
-
 class ExhibitPublicMap extends Component {
+
+	constructor(props) {
+		super(props);
+		this.preview_init=preview_init.bind(this);
+	}
 
 	// Event handlers for map editing
 	_onEdited = (e) => {
@@ -40,9 +46,7 @@ class ExhibitPublicMap extends Component {
 	_onCreated = (e) => {
 		// Save geometry when it is created - if we don't have a record ID yet, use -1
 		const {editorRecord} = this.props;
-		const recordId = editorRecord
-			? editorRecord['o:id']
-			: types.TEMPORARY;
+		const recordId = editorRecord?editorRecord['o:id']: TYPE.TEMPORARY;
 
 		if (recordId){
 			this.props.addLayer(recordId, e.layer);
@@ -58,7 +62,7 @@ class ExhibitPublicMap extends Component {
 		const {editorRecord, recordLayers} = this.props;
 		const recordId = editorRecord
 			? editorRecord['o:id']
-			: types.TEMPORARY;
+			: TYPE.TEMPORARY;
 
 		const layersForRecord = recordLayers[recordId];
 		if (layersForRecord && layersForRecord.length > 0) {
@@ -69,8 +73,6 @@ class ExhibitPublicMap extends Component {
 		}
 	}
 
-	// FIXME: This lifecycle method is going to be deprecated, so we should re-write this,
-	// but don't stress right now. Premature optimization isn't cool.
 	componentWillReceiveProps(nextprops){
 
 		// Update live preview object with known values if they're not present
@@ -87,65 +89,145 @@ class ExhibitPublicMap extends Component {
 
 	}
 
-	constructor(props) {
-		super(props);
-		this.preview_init=preview_init.bind(this);
+
+
+	// Manipulate Map AFTER the map object loads, this is fired of a *child* of <Map/> because of load order
+	onMapDidLoad(event){
+
+			// Grab map object by ref
+			if(typeof this.refs.map !== 'undefined'){
+				this.mapOptionsSet=true;
+				let mapInstance = this.refs.map.leafletElement;
+
+				switch (this.props.mapPreview.current.type) {
+
+					// Map layer
+					case TYPE.BASELAYER_TYPE.MAP: default:
+						// Remove existing image layers
+						mapInstance.eachLayer(function(layer){
+							if(layer._image){
+								mapInstance.removeLayer(layer);
+							}
+						});
+						break;
+
+					// WMS layer
+					case TYPE.BASELAYER_TYPE.WMS:
+						// Remove existing image layers
+						mapInstance.eachLayer(function(layer){
+							if(layer._image){
+								mapInstance.removeLayer(layer);
+							}
+						});
+						break;
+
+					// Image layer
+					case TYPE.BASELAYER_TYPE.IMAGE:
+
+						let url = this.props.mapPreview.current.image_address;
+						let w = event.currentTarget.naturalWidth;
+						let h = event.currentTarget.naturalHeight;
+						let maxZoom = 4;
+						let southWest = mapInstance.unproject([0, h], maxZoom-1);
+						let northEast = mapInstance.unproject([w, 0], maxZoom-1);
+						let bounds = new L.LatLngBounds(southWest, northEast);
+
+						// Remove existing image layers
+						mapInstance.eachLayer(function(layer){
+							if(layer._image){
+								mapInstance.removeLayer(layer);
+							}
+						});
+
+						// Add image to map
+						L.imageOverlay(url, bounds).addTo(mapInstance);
+
+						// tell leaflet that the map is exactly as big as the image
+						mapInstance.setMaxBounds(bounds);
+
+						// Set zoom
+						mapInstance.setZoom(1);
+						mapInstance.setMaxZoom(maxZoom);
+
+						L.marker(mapInstance.unproject([0,0], mapInstance.getMaxZoom()-1)).addTo(mapInstance);
+						L.marker(mapInstance.unproject([w,h], mapInstance.getMaxZoom()-1)).addTo(mapInstance);
+						L.marker(mapInstance.unproject([w,0], mapInstance.getMaxZoom()-1)).addTo(mapInstance);
+						L.marker(mapInstance.unproject([0,h], mapInstance.getMaxZoom()-1)).addTo(mapInstance);
+						break;
+				}
+
+				//mapInstance.setMaxBounds([[0,0], [5000,5000]]);
+			}
 	}
+
 
 	// Render Method
 	render() {
-
 		// Which baselayer type
 		let baseLayers = [];
+
+		// Default CRS (per leaflet docs)
+		// NOTE: CRS can only be set on <MAP> creation, changing it after the fact won't do anything
 		switch (this.props.mapPreview.current.type) {
 
-			case types.BASELAYER_TYPE.MAP:
+			// Map layer
+			case TYPE.BASELAYER_TYPE.MAP:
 				baseLayers.push(
 					<LayersControl.BaseLayer key={this.props.mapPreview.current.tileLayer.slug}
 											 name={this.props.mapPreview.current.tileLayer.displayName}
 											 checked={true}>
-						<TileLayer attribution={this.props.mapPreview.current.tileLayer.attribution}
-								   url={this.props.mapPreview.current.tileLayer.url}/>
+						<TileLayer 	fattribution={this.props.mapPreview.current.tileLayer.attribution}
+								   	url={this.props.mapPreview.current.tileLayer.url}
+							   		onLoad={(e) => this.onMapDidLoad(e)}/>
 					</LayersControl.BaseLayer>
 				);
 				break;
 
+			// Image layers use a different CRS
+			// https://leafletjs.com/examples/crs-simple/crs-simple.html
+			case TYPE.BASELAYER_TYPE.IMAGE:
 
-			case types.BASELAYER_TYPE.IMAGE:
+				// This kicks off an image overlay that is not drawn correctly,
+				// so we zero the bounds and use it as a hook to an onload handler
+				// This is awkward but not wasted - we need to load the image to get
+				// the dimensions anyway.
 				baseLayers.push(
-					<LayersControl.BaseLayer key={types.BASELAYER_TYPE.IMAGE}
+					<LayersControl.BaseLayer key={TYPE.BASELAYER_TYPE.IMAGE}
 											 name={this.props.mapPreview.current.image_address}
 											 checked={true}>
-						<ImageOverlay bounds={[[51.509865, -0.118092], [52, -1]]}
-								      url={this.props.mapPreview.current.image_address}/>
+						<ImageOverlay bounds={[[0,0], [0,0]]}
+								      url={this.props.mapPreview.current.image_address}
+								  	  attribution={this.props.mapPreview.current.image_attribution}
+								  	  onLoad={(e) => this.onMapDidLoad(e)}/>
 					</LayersControl.BaseLayer>
 				);
 				break;
 
-		 	case types.BASELAYER_TYPE.TILE:
+			// Custom tile (same as map), FIXME: factor into map case?
+		 	case TYPE.BASELAYER_TYPE.TILE:
 				baseLayers.push(
-					<LayersControl.BaseLayer key={types.BASELAYER_TYPE.TILE}
+					<LayersControl.BaseLayer key={TYPE.BASELAYER_TYPE.TILE}
 											 name={this.props.mapPreview.current.tile_attribution}
 											 checked={true}>
-						<TileLayer attribution={this.props.mapPreview.current.tile_attribution}
-								   url={this.props.mapPreview.current.tile_address}/>
+						<TileLayer 	attribution={this.props.mapPreview.current.tile_attribution}
+								   	url={this.props.mapPreview.current.tile_address}
+							   		onLoad={(e) => this.onMapDidLoad(e)}/>
 					</LayersControl.BaseLayer>
 				);
 				break;
 
-			case types.BASELAYER_TYPE.WMS:
+			// WMS
+			case TYPE.BASELAYER_TYPE.WMS:
 				baseLayers.push(
-					<LayersControl.BaseLayer key={types.BASELAYER_TYPE.WMS}
+					<LayersControl.BaseLayer key={TYPE.BASELAYER_TYPE.WMS}
 											 name={this.props.mapPreview.current.wms_address}
 											 checked={true}>
 
-											 <WMSTileLayer
-												   attribution={this.props.mapPreview.current.wms_attribution}
-											       url={this.props.mapPreview.current.wms_address}
-												   layers={this.props.mapPreview.current.wms_layers}
-											       onTileerror={console.warn}
-											       onLoading={console.log}
-											       onLoad={console.log}/>
+						 <WMSTileLayer
+							   attribution={this.props.mapPreview.current.wms_attribution}
+						       url={this.props.mapPreview.current.wms_address}
+							   layers={this.props.mapPreview.current.wms_layers}
+						       onLoad={(e) => this.onMapDidLoad(e)}/>
 					  </LayersControl.BaseLayer>
 				);
 				break;
@@ -161,23 +243,25 @@ class ExhibitPublicMap extends Component {
 
 			// Don't allow duplicate
 			if ((typeof this.props.mapPreview.current.tileLayer !== 'undefined') && thisTileLayer.slug !== this.props.mapPreview.current.tileLayer.slug) {
-				baseLayers.push(<LayersControl.BaseLayer key={thisTileLayer.slug} name={thisTileLayer.displayName} checked={false}>
-					<TileLayer attribution={thisTileLayer.attribution} url={thisTileLayer.url}/>
-				</LayersControl.BaseLayer>);
+				baseLayers.push(
+					<LayersControl.BaseLayer key={thisTileLayer.slug} name={thisTileLayer.displayName} checked={false}>
+						<TileLayer attribution={thisTileLayer.attribution} url={thisTileLayer.url}/>
+					</LayersControl.BaseLayer>
+				);
 			}
 		}
 
 		const { records, recordClick, mapClick, recordMouseEnter, recordMouseLeave} = this.props;
 	   	const position = [51.505, -0.09];
-
-
 		return (
 				<div style={{height:'100%'}}>
+
 					{/* Reminder to save the map */}
 					<AlertBar isVisible={this.props.mapPreview.hasUnsavedChanges}
 							  message="You have unsaved changes"/>
 
-					<Map center={position}
+					<Map ref='map'
+						 center={position}
 						 zoom={13}
 						 className={this.props.mapPreview.hasUnsavedChanges?"ps_n3_mapComponent_withWarning":"ps_n3_mapComponent"}
 						 onClick={(event) => {
@@ -285,6 +369,7 @@ class ExhibitPublicMap extends Component {
 		)
 	}
 }
+
 
 // maps this.props.*
 const mapStateToProps = state => ({

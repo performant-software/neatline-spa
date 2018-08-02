@@ -3,19 +3,21 @@ import { Link } from 'react-router-dom';
 import { push } from 'react-router-redux';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { fetchExhibits } from '../../reducers/not_refactored/exhibits';
+//import { fetchExhibits } from '../../reducers/not_refactored/exhibits';
 import { resetExhibit } from '../../reducers/not_refactored/exhibitShow';
 import { deleteExhibit } from '../../reducers/not_refactored/exhibitDelete';
 import { strings } from '../../i18nLibrary';
 
+import {fetchExhibits} from '../../actions';
+
 class Exhibits extends Component {
   componentWillMount() {
-    this.props.fetchExhibits();
+	this.props.dispatch(fetchExhibits());
     this.props.resetExhibit();
-
   }
 
   render() {
+
     const props = this.props;
 
     const changeLanguage = lng => {
@@ -24,17 +26,18 @@ class Exhibits extends Component {
     }
     const allLanguages = strings.getAvailableLanguages();
     const lngButtons = allLanguages.map((lng) =>
-        <button onClick={() => changeLanguage(lng)}>{lng}</button>
+        <button key={lng} onClick={() => changeLanguage(lng)}>{lng}</button>
     );
     return (
       <div>
-        <div>{lngButtons}</div>
-        <h3><Link to={`${window.baseRoute}/`}>Neatline</Link> | {strings.browseExhibit}</h3>
-        {props.userSignedIn &&
-          <button onClick={props.createExhibitView} style={{ marginRight: '0.5em' }}>{strings.createExhibit}</button>
-        }
-        <button onClick={props.fetchExhibits} disabled={props.exhibitsLoading}>{strings.refreshExhibits}</button>
 
+        <h3><Link to={`${window.baseRoute}/`}>Neatline</Link> | {strings.browseExhibit}</h3>
+		<div className="ps_n3_buttonGroup">
+	        {props.userSignedIn &&
+	          <button onClick={props.createExhibitView}>{strings.createExhibit}</button>
+	        }
+			{lngButtons}
+		</div>
         <table>
           <thead>
             <tr>
@@ -84,7 +87,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   fetchExhibits,
   resetExhibit,
   createExhibitView: () => push(`${window.baseRoute}/add`),
-  deleteExhibit
+  deleteExhibit,
+  dispatch
 }, dispatch);
 
 export default connect(

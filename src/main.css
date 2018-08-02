@@ -25,12 +25,15 @@
 @import "https://unpkg.com/leaflet@1.3.1/dist/leaflet.css";
 @import "https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css";
 @import "https://unpkg.com/react-rangeslider/umd/rangeslider.min.css";
+/*
+	These !importants in this class are here to assert control
+	over properties that Omeka specifies in body {}
+*/
 #ps_n3_body {
   overflow: hidden;
   font-family: "Lato",sans-serif;
   font-size: 1rem;
   line-height: 1rem !important;
-  background-color: white;
   height: 100vh;
   margin: 0;
   padding: 0 0 0 .5rem !important;
@@ -75,9 +78,6 @@
 .ps_n3_hidden {
   display: none; }
 
-.ps_n3_shifted {
-  margin: 2.3rem 0 0 0; }
-
 .ps_n3_invisible {
   opacity: 0; }
 
@@ -93,6 +93,17 @@
   cursor: pointer;
   margin: 0 0 0 .3rem; }
 
+.ps_n3_button:hover {
+  background-color: #cdcdcd;
+  color: black;
+  border: 1px solid #dedede; }
+
+.ps_n3_button.save {
+  float: right;
+  top: .5rem;
+  left: 16.5rem;
+  position: absolute; }
+
 label {
   padding: 0;
   margin: 0; }
@@ -102,19 +113,15 @@ h3 {
   margin: 1rem 0 1rem 0; }
 
 .ps_n3_exhibitFormContainer {
-  height: calc(100vh - 10rem);
-  overflow: scroll; }
+  height: calc(100vh - 6rem);
+  overflow: scroll;
+  width: 19.3rem; }
 
 .ps_n3_exhibitShowContainer {
   gridRow: 1;
   gridColumn: 1;
   maxHeight: 100%;
   border-right: 2px solid #c2c0ba; }
-
-.ps_n3_refreshButton {
-  position: fixed;
-  left: 17.8rem;
-  top: 0.2rem; }
 
 .ps_n3_exhibit-form {
   height: 100%; }
@@ -142,7 +149,8 @@ h3 {
   max-width: 19.2rem !important; }
 
 .ps_n3_exhibit-form select[multiple] {
-  height: 4rem; }
+  height: 4rem;
+  margin: 0 0 .9rem 0; }
 
 .ps_n3_exhibit-form textarea {
   height: 4rem;
@@ -159,19 +167,28 @@ h3 {
   max-width: 1rem !important; }
 
 .ps_n3_checkboxPair label {
-  margin: 0 0 0 1rem; }
+  margin: 0 0 0 .5rem; }
+
+.ps_n3_radioSet label {
+  margin: 0 1rem 0 0; }
+
+.ps_n3_radioSet input {
+  position: relative;
+  margin: 0;
+  top: 0 !important;
+  max-height: 1rem !important;
+  max-width: 1rem !important; }
 
 .ps_n3_inputColorSwatch {
   box-sizing: content-box;
-  top: 0rem;
-  margin: -2rem 0 0 0;
+  top: 0;
+  margin: -2rem 0 0;
   padding: 0;
   position: relative;
   left: 16rem;
   top: 2.4rem;
   height: 2.3rem;
   width: 2.2rem;
-  background-color: white;
   border: 1px solid grey; }
 
 /* FIXME: this is a patch until we sort out the parent CSS, don't use !important, kids */
@@ -226,10 +243,13 @@ input.styleEditor_input {
   max-width: 19rem; }
 
 .ps_n3_buttonGroup {
-  margin: 0 0 .8rem -.1rem; }
+  margin: .5rem 0 .8rem .2rem; }
+
+.ps_n3_buttonGroup button {
+  margin-right: 0.5rem; }
 
 .ps_n3_buttonGroup_exhibitForm {
-  margin: 0 0 .8rem .2rem; }
+  margin: .5rem 0 .8rem .2rem; }
 
 .ps_n3_info_component, .ps_n3_info_component_withWarning {
   position: absolute;
@@ -260,7 +280,7 @@ input.styleEditor_input {
   cursor: pointer; }
 
 .ps_n3_recordFormContainer {
-  height: calc(100vh - 13rem);
+  height: calc(100vh - 12rem);
   overflow: scroll;
   border: 0;
   margin: 0 0 0 0; }

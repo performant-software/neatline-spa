@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import ExhibitForm from '../../components/exhibitForm';
+import ExhibitForm from '../../components/ExhibitForm';
 import { createExhibit } from '../../reducers/not_refactored/exhibitCreate';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
