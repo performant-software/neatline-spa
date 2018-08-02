@@ -5,6 +5,10 @@ import {connect} from 'react-redux';
 import {preview_update,preview_init,setUnsavedChanges,updateRecordCache} from '../../actions';
 import ColorPicker from './colorPicker.js'
 import {strings} from '../../i18nLibrary';
+
+import Slider from 'react-rangeslider';
+import 'react-rangeslider/lib/index.css';
+
 //import * as TYPE from '../../types';
 const defaultValues = {
 	'o:fill_color': '#00aeff',
@@ -18,7 +22,6 @@ const defaultValues = {
 	'o:stroke_width': 2,
 	'o:point_radius': 10
 };
-
 
 class RecordForm extends Component {
 
@@ -34,14 +37,21 @@ class RecordForm extends Component {
 		this.handleDelete = props.handleDelete;
 		this.preview_init=preview_init.bind(this);
 		this.preview_update = preview_update.bind(this);
+
+		this.slider = {
+			fieldName:'',
+			value:''
+		};
+
 		this.state={
+			strings,
 			exhibitType:'map',
 			colorPickerVisible:false,
 			colorPickerTop:0,
 			colorPickerCurrentColor:'000000',
 			colorPickerCurrentField:'',
 			colorPickerDefaultColor:'#000000',
-			strings
+			sliderValues:{}
 		};
 		this.previewInitialized=false;
 	}
@@ -49,6 +59,16 @@ class RecordForm extends Component {
 	componentDidMount(){
 		// Cache intial values
 		this.props.dispatch(updateRecordCache({setValues:this.props.initialValues}));
+
+		// For the sliders, setup initial values
+		let initialSliderValues = {
+			'o:fill_opacity':parseFloat(this.props.initialValues['o:fill_opacity']),
+			'o:stroke_opacity':parseFloat(this.props.initialValues['o:stroke_opacity']),
+			'o:stroke_opacity_selected':parseFloat(this.props.initialValues['o:stroke_opacity_selected']),
+			'o:stroke_width':parseFloat(this.props.initialValues['o:stroke_width']),
+			'o:fill_opacity_selected':parseFloat(this.props.initialValues['o:fill_opacity_selected'])
+		}
+		this.setState({sliderValues:initialSliderValues});
 	}
 
 	// Sets the unsaved changes flag
@@ -139,6 +159,8 @@ class RecordForm extends Component {
 			 	value: color.hex
 			})
 		);
+
+		this.markUnsaved();
 	}
 
 	// When the field blurs, write the value to the appropriate field
@@ -259,15 +281,45 @@ class RecordForm extends Component {
 		if(forcedValue !== null){
 			// FIXME: time delay workaround because this doesn't get dispatched until next click
 			setTimeout(()=> { this.props.dispatch(this.change(this.props.form,currentField,forcedValue)); }, 100);
-
 		}
 		this.markUnsaved();
 	}
 
+	// Slider handling
+	slider_changeStart = (fieldName) =>{
+		// Register the name of the field we're adjusting
+		this.slider.fieldName=fieldName;
+	}
+	slider_change = (value) =>{
+
+		// Hold the changed value
+		this.slider.value=value.toFixed(2);
+
+		// Set the state (updates the UI)
+		let updatedSliderValues = {
+			...this.state.sliderValues,
+			[this.slider.fieldName]:parseFloat(this.slider.value)
+		}
+		this.setState({sliderValues:updatedSliderValues});
+		console.log(updatedSliderValues);
+
+		// Fake a blur event to update the value (updates the map)
+		this.onFieldBlur({target:{value:this.slider.value,name:this.slider.fieldName}});
+	}
+	slider_changeComplete = (event) =>{
+		// Change the hidden form field
+		this.props.dispatch(change(this.props.form, this.slider.fieldName, this.slider.value));
+
+		// Flag the map needs saving
+		this.markUnsaved();
+
+		this.slider={
+			fieldName:'',value:''
+		}
+	}
+
 	render(){
 		let isSelected = (this.props.selectedRecord && this.state.recordID === this.props.selectedRecord["o:id"]);
-
-
 		return (
 			<form className='ps_n3_exhibit-form' onSubmit={this.handleSubmit}>
 
@@ -359,23 +411,33 @@ class RecordForm extends Component {
 
 									<div>
 										<label 	htmlFor='o:fill_opacity'>{strings.fill_opacity}</label>
-										<Field 	className="styleEditor_input"
-												name='o:fill_opacity'
+										<Slider
+											value={this.state.sliderValues['o:fill_opacity']}
+											min={0.1}
+											max={1.0}
+											step={0.01}
+											orientation="horizontal"
+											onChangeStart={()=>this.slider_changeStart('o:fill_opacity')}
+											onChange={this.slider_change}
+											onChangeComplete={this.slider_changeComplete}/>
+										<Field 	name='o:fill_opacity'
 												component='input'
-												type='text'
-												data-enforce='normal'
-												onBlur={this.onFieldBlur}
-												onChange={this.inputEnforce}/>
+												type='hidden'/>
 									</div>
 									<div>
 										<label 	htmlFor='o:stroke_opacity'>{strings.stroke_opacity}</label>
-										<Field 	className="styleEditor_input"
-												name='o:stroke_opacity'
+										<Slider
+											value={this.state.sliderValues['o:stroke_opacity']}
+											min={0.1}
+											max={1.0}
+											step={0.01}
+											orientation="horizontal"
+											onChangeStart={()=>this.slider_changeStart('o:stroke_opacity')}
+											onChange={this.slider_change}
+											onChangeComplete={this.slider_changeComplete}/>
+										<Field 	name='o:fill_opacity'
 												component='input'
-												type='text'
-												data-enforce='normal'
-												onBlur={this.onFieldBlur}
-												onChange={this.inputEnforce}/>
+												type='hidden'/>
 									</div>
 								</div>
 								<div className={isSelected?"ps_n3_highlight":""}>
@@ -414,36 +476,55 @@ class RecordForm extends Component {
 									</div>
 									<div>
 										<label 	htmlFor='o:stroke_opacity_selected'>{strings.selected_stroke_opacity}</label>
-										<Field 	className="styleEditor_input"
-												name='o:stroke_opacity_selected'
+										<Slider
+											value={this.state.sliderValues['o:stroke_opacity_selected']}
+											min={0.1}
+											max={1.0}
+											step={0.01}
+											orientation="horizontal"
+											onChangeStart={()=>this.slider_changeStart('o:stroke_opacity_selected')}
+											onChange={this.slider_change}
+											onChangeComplete={this.slider_changeComplete}/>
+										<Field 	name='o:stroke_opacity_selected'
 												component='input'
-												type='text'
-												data-enforce='normal'
-												onBlur={this.onFieldBlur}
-												onChange={this.inputEnforce}/>
+												type='hidden'/>
 									</div>
 									<div>
-										<label 	htmlFor='o:fill_opacity_select'>{strings.selected_fill_opacity}</label>
-										<Field 	className="styleEditor_input"
-												name='o:fill_opacity_selected'
+										<label 	htmlFor='o:fill_opacity_selected'>{strings.selected_fill_opacity}</label>
+										<Slider
+											value={this.state.sliderValues['o:fill_opacity_selected']}
+											min={0.1}
+											max={1.0}
+											step={0.01}
+											orientation="horizontal"
+											onChangeStart={()=>this.slider_changeStart('o:fill_opacity_selected')}
+											onChange={this.slider_change}
+											onChangeComplete={this.slider_changeComplete}/>
+										<Field 	name='o:fill_opacity_selected'
 												component='input'
-												type='text'
-												data-enforce='normal'
-												onBlur={this.onFieldBlur}
-												onChange={this.inputEnforce}/>
+												type='hidden'/>
 									</div>
 								</div>
 
 								<div className="ps_n3_optionHeader">{strings.dimensions}</div>
 								<div>
 									<label 	htmlFor='o:stroke_width'>{strings.stroke_width}</label>
-									<Field 	className="styleEditor_input"
-											name='o:stroke_width'
-											component='input'
-											type='number'
-											data-enforce='float'
-											onChange={this.inputEnforce}
-											onBlur={this.onFieldBlur}/>
+									<Slider
+										value={this.state.sliderValues['o:stroke_width']}
+										min={0}
+										max={10}
+										step={0.01}
+										orientation="horizontal"
+										onChangeStart={()=>this.slider_changeStart('o:stroke_width')}
+										onChange={this.slider_change}
+										onChangeComplete={this.slider_changeComplete}/>
+										<Field 	className="styleEditor_input"
+												name='o:stroke_width'
+												component='input'
+												type='number'
+												data-enforce='float'
+												onChange={this.inputEnforce}
+												onBlur={this.onFieldBlur}/>
 								</div>
 								<div>
 									<label 	htmlFor='o:point_radius'>{strings.point_radius}</label>
