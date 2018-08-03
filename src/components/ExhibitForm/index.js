@@ -21,7 +21,7 @@ class ExhibitForm extends Component {
 		this.submitLabel = props.submitLabel;
 		this.disabled = props.disabled;
 		this.layerTypeOptions = this.buildLayerTypeOptions();
-		this.currentSlug;
+		this.currentSlug='';
 		this.state={
 			exhibitType:TYPE.EXHIBIT_TYPE.MAP,
 			baseLayerType:TYPE.BASELAYER_TYPE.MAP,
