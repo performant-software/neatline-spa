@@ -22,13 +22,23 @@
 
 .ps_n3_exhibit-form input,
 .ps_n3_exhibit-form select,
-.ps_n3_exhibit-form textarea {
+.ps_n3_exhibit-form textarea,
+.ps_n3_dayPickerInput {
 	width: 100%;
 	max-width: 18.5rem !important;
 	display: inline;
 	border-radius: 0;
 	border: 1px solid #dedede;
 	padding: 0 0 0 0.5rem;
+}
+
+.DayPickerInput{
+	width: 100%;
+	max-width: 18.5rem !important;
+	display: inline;
+	border-radius: 0;
+	border: 1px solid #dedede;
+	padding: 0 0 0 0rem;
 }
 
 .ps_n3_exhibit-form input {

@@ -150,7 +150,6 @@ function* saveCacheToDatabase(action) {
 	for (let x = 0; x < records.length; x++) {
 		let thisRecord = records[x];
 		if (typeof thisRecord !== 'undefined') {
-			console.log("Saving Record: " + x);
 			yield put({type: ACTION_TYPE.RECORD_UPDATE, payload: thisRecord});
 		}
 	}
