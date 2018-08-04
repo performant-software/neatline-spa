@@ -7,92 +7,97 @@
 	font-family: "Lato",sans-serif;
 	font-size: 1rem;
 	line-height: 1rem !important;
-	height:100vh;
-	margin:0;
-	padding:0 0 0 .5rem !important;
+	height: 100vh;
+	margin: 0;
+	padding: 0 0 0 0.5rem !important;
 	box-sizing: content-box !important;
 }
 
-#ps_n3_body button{
+#ps_n3_body button {
 	background-color: #dedede;
-    border-radius: 2px;
-    padding: 7.6px;
-    display: inline-block;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    border: 0;
-    cursor: pointer;
+	border-radius: 2px;
+	padding: 7.6px;
+	display: inline-block;
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	border: 0;
+	cursor: pointer;
 }
 
 #ps_n3_body a:link {
-    text-decoration: none;
-    color: #000000;
+	text-decoration: none;
+	color: #000000;
 }
 
 #ps_n3_body a:visited {
 	color: #000000;
 }
+
 #ps_n3_body a:hover {
-    text-decoration: none;
-    color: #cccccc;
+	text-decoration: none;
+	color: #cccccc;
 }
-#ps_n3_body table{
+
+#ps_n3_body table {
 	margin: 30px 0;
 	border-collapse: collapse;
 }
-#ps_n3_body th,td{
+
+#ps_n3_body th,
+td {
 	text-align: left;
-    padding: 7.5px 15px 6.5px 0;
-    border-bottom: 1px solid #ababab;
+	padding: 7.5px 15px 6.5px 0;
+	border-bottom: 1px solid #ababab;
 }
 
 #ps_n3_main {
 	height: 100vh;
-	padding:0 0rem 6rem 0;
+	padding: 0 0 6rem;
 	overflow: hidden;
 }
 
-.ps_n3_hidden{
-	display:none;
+.ps_n3_hidden {
+	display: none;
 }
 
-.ps_n3_invisible{
+.ps_n3_invisible {
 	opacity: 0;
 }
 
-.ps_n3_button{
+.ps_n3_button {
 	background-color: #dedede;
-    border-radius: 2px;
-    padding: 7.6px;
-    display: inline-block;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    border: 0;
-    cursor: pointer;
-	margin: 0 0 0 .3rem;
+	border-radius: 2px;
+	padding: 7.6px;
+	display: inline-block;
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	border: 0;
+	cursor: pointer;
+	margin: 0 0 0 0.3rem;
 }
 
-.ps_n3_button:hover{
+.ps_n3_button:hover {
 	background-color: #cdcdcd;
-	color:black;
-	border:1px solid #dedede;
+	color: black;
+	border: 1px solid #dedede;
 }
 
-.ps_n3_button.save{
-	float:right;
-	top:.5rem;
-	left:16.5rem;
+.ps_n3_button.save {
+	float: right;
+	top: 0.5rem;
+	left: 16.5rem;
 	position: absolute;
+	margin: -6.6rem 0 0 3rem;
 }
 
-label{
-	padding:0;
-	margin:0;
+label {
+	padding: 0;
+	margin: 0;
 }
 
-h3{
-	border:0;
-	margin:1rem 0 1rem 0;
+h3 {
+	border: 0;
+	margin: 1rem 0;
 }

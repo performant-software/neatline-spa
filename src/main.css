@@ -35,7 +35,7 @@
   line-height: 1rem !important;
   height: 100vh;
   margin: 0;
-  padding: 0 0 0 .5rem !important;
+  padding: 0 0 0 0.5rem !important;
   box-sizing: content-box !important; }
 
 #ps_n3_body button {
@@ -64,14 +64,15 @@
   margin: 30px 0;
   border-collapse: collapse; }
 
-#ps_n3_body th, td {
+#ps_n3_body th,
+td {
   text-align: left;
   padding: 7.5px 15px 6.5px 0;
   border-bottom: 1px solid #ababab; }
 
 #ps_n3_main {
   height: 100vh;
-  padding: 0 0rem 6rem 0;
+  padding: 0 0 6rem;
   overflow: hidden; }
 
 .ps_n3_hidden {
@@ -90,7 +91,7 @@
   -moz-appearance: none;
   border: 0;
   cursor: pointer;
-  margin: 0 0 0 .3rem; }
+  margin: 0 0 0 0.3rem; }
 
 .ps_n3_button:hover {
   background-color: #cdcdcd;
@@ -99,9 +100,10 @@
 
 .ps_n3_button.save {
   float: right;
-  top: .5rem;
+  top: 0.5rem;
   left: 16.5rem;
-  position: absolute; }
+  position: absolute;
+  margin: -6.6rem 0 0 3rem; }
 
 label {
   padding: 0;
@@ -109,7 +111,7 @@ label {
 
 h3 {
   border: 0;
-  margin: 1rem 0 1rem 0; }
+  margin: 1rem 0; }
 
 .ps_n3_exhibitFormContainer {
   height: calc(100vh - 6rem);
@@ -120,7 +122,8 @@ h3 {
   gridRow: 1;
   gridColumn: 1;
   maxHeight: 100%;
-  border-right: 2px solid #c2c0ba; }
+  border-right: 2px solid #c2c0ba;
+  margin: 2rem 0 0; }
 
 .ps_n3_exhibit-form {
   height: 100%; }
@@ -128,10 +131,10 @@ h3 {
 .ps_n3_exhibit-form fieldset > div {
   margin-bottom: 1em; }
 
+.ps_n3_dayPickerInput,
 .ps_n3_exhibit-form input,
 .ps_n3_exhibit-form select,
-.ps_n3_exhibit-form textarea,
-.ps_n3_dayPickerInput {
+.ps_n3_exhibit-form textarea {
   width: 100%;
   max-width: 18.5rem !important;
   display: inline;
@@ -145,7 +148,7 @@ h3 {
   display: inline;
   border-radius: 0;
   border: 1px solid #dedede;
-  padding: 0 0 0 0rem; }
+  padding: 0; }
 
 .ps_n3_exhibit-form input {
   height: 2.3rem; }
@@ -158,7 +161,7 @@ h3 {
 
 .ps_n3_exhibit-form select[multiple] {
   height: 4rem;
-  margin: 0 0 .9rem 0; }
+  margin: 0 0 0.9rem; }
 
 .ps_n3_exhibit-form textarea {
   height: 4rem;
@@ -175,7 +178,7 @@ h3 {
   max-width: 1rem !important; }
 
 .ps_n3_checkboxPair label {
-  margin: 0 0 0 .5rem; }
+  margin: 0 0 0 0.5rem; }
 
 .ps_n3_radioSet label {
   margin: 0 1rem 0 0; }

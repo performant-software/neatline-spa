@@ -1,8 +1,7 @@
-
 .ps_n3_exhibitFormContainer {
 	height: calc(100vh - 6rem);
 	overflow: scroll;
-	width:19.3rem;
+	width: 19.3rem;
 }
 
 .ps_n3_exhibitShowContainer {
@@ -10,7 +9,8 @@
 	gridColumn: 1;
 	maxHeight: 100%;
 	border-right: 2px solid #c2c0ba;
-}
+	margin: 2rem 0 0;
+} 
 
 .ps_n3_exhibit-form {
 	height: 100%;
@@ -20,10 +20,10 @@
 	margin-bottom: 1em;
 }
 
+.ps_n3_dayPickerInput,
 .ps_n3_exhibit-form input,
 .ps_n3_exhibit-form select,
-.ps_n3_exhibit-form textarea,
-.ps_n3_dayPickerInput {
+.ps_n3_exhibit-form textarea {
 	width: 100%;
 	max-width: 18.5rem !important;
 	display: inline;
@@ -32,13 +32,13 @@
 	padding: 0 0 0 0.5rem;
 }
 
-.DayPickerInput{
+.DayPickerInput {
 	width: 100%;
 	max-width: 18.5rem !important;
 	display: inline;
 	border-radius: 0;
 	border: 1px solid #dedede;
-	padding: 0 0 0 0rem;
+	padding: 0;
 }
 
 .ps_n3_exhibit-form input {
@@ -54,7 +54,7 @@
 
 .ps_n3_exhibit-form select[multiple] {
 	height: 4rem;
-	margin: 0 0 .9rem 0;
+	margin: 0 0 0.9rem;
 }
 
 .ps_n3_exhibit-form textarea {
@@ -75,13 +75,14 @@
 }
 
 .ps_n3_checkboxPair label {
-	margin: 0 0 0 .5rem;
+	margin: 0 0 0 0.5rem;
 }
 
-.ps_n3_radioSet label{
+.ps_n3_radioSet label {
 	margin: 0 1rem 0 0;
 }
-.ps_n3_radioSet input{
+
+.ps_n3_radioSet input {
 	position: relative;
 	margin: 0;
 	top: 0 !important;
