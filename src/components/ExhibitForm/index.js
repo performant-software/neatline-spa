@@ -89,7 +89,7 @@ class ExhibitForm extends Component {
 			payload.spatial_layer=TYPE.BASELAYER_TYPE.IMAGE;
 		}
 		this.updateLayerPreview(payload);
-		this.markUnsaved();
+		this.markUnsaved(event);
 	}
 
 	updateLayerPreview = (payload) =>{
@@ -125,6 +125,7 @@ class ExhibitForm extends Component {
 	enabledSpatialLayerPreview = (event) => {
 		let arrayOfIDs = [...event.target.options].filter(({selected}) => selected).map(({value}) => value);
 		this.props.dispatch(this.set_availableTileLayers({ids: arrayOfIDs}));
+		this.markUnsaved({target:{name:'o:spatial_layers',value:arrayOfIDs}});
 	}
 
 	// Switches between map and image
@@ -154,6 +155,8 @@ class ExhibitForm extends Component {
 		// Update the cache
 		if(typeof event !== 'undefined'){
 			this.props.dispatch(updateExhibitCache({setValues:{[event.target.name]:event.target.value}}));
+		}else{
+			console.log("Skipping cache update");
 		}
 
 		// Mark unsaved
@@ -188,11 +191,13 @@ class ExhibitForm extends Component {
 	};
 
 	componentWillReceiveProps(nextprops){
-		let nextSlug = nextprops.exhibit['o:slug'];
-		if(this.currentSlug !== nextSlug && nextSlug.length > 0){
-			this.setState({currentSlug:nextSlug});
-			this.props.dispatch(replace(window.baseRoute + '/show/' + nextSlug));
-			this.currentSlug=nextSlug;
+		if(typeof nextprops.exhibit !== 'undefined'){
+			let nextSlug = nextprops.exhibit['o:slug'];
+			if(this.currentSlug !== nextSlug && nextSlug.length > 0){
+				this.setState({currentSlug:nextSlug});
+				this.props.dispatch(replace(window.baseRoute + '/show/' + nextSlug));
+				this.currentSlug=nextSlug;
+			}
 		}
 	}
 
@@ -200,8 +205,6 @@ class ExhibitForm extends Component {
 		return (
 			<div>
 				<form className='ps_n3_exhibit-form' onSubmit={this.handleSubmit}>
-
-
 					<fieldset disabled={this.disabled} style={{
 							border: 'none',
 							padding: '0'
@@ -380,6 +383,7 @@ class ExhibitForm extends Component {
 								type='hidden'/>
 
 					</fieldset>
+					{this.state.isNewExhibit && <button type="submit">Create Exhibit</button> }
 				</form>
 		</div>);
 	}

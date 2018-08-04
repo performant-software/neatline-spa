@@ -13,7 +13,7 @@ export let strings = new LocalizedStrings({
      created: "Created",
      public: "Public",
      delete: "Delete",
-     exhibit_delete_confirmation:"Are you sure you want to delete the Neatline exhibit {0}? This will delete the exhibit and its associated metadata.",
+     exhibit_delete_confirmation:"Are you sure you want to delete the Neatline exhibit? This will delete the exhibit and its associated metadata.",
      yes: "Yes",
      no: "No",
 
@@ -80,7 +80,7 @@ export let strings = new LocalizedStrings({
      update_record_error:"Error updating record",
      delete_record_error:"Error deleting record",
      create_record_error:"Error creating record",
-     record_delete_confirmation:"Are you sure you want to delete the Neatline record {0}?",
+     record_delete_confirmation:"Are you sure you want to delete the Neatline record?",
 
 
  },

@@ -5,6 +5,7 @@ import {change} from 'redux-form';
 import {preview_init} from '../../actions';
 import * as TYPE from '../../types'
 import AlertBar from './alertBar.js';
+import {updateRecordCache} from '../../actions';
 
 // Makes availabe to mapStateToProps
 import {selectRecord, deselectRecord, previewRecord, unpreviewRecord} from '../../reducers/not_refactored/exhibitShow';
@@ -70,11 +71,11 @@ class ExhibitPublicMap extends Component {
 			const geojsonData = featureGroup.toGeoJSON();
 			this.props.change('record', 'o:coverage', geojsonData);
 			this.props.change('record', 'o:is_coverage', true);
+			this.props.dispatch(updateRecordCache({setValues:{'o:id':editorRecord['o:id'],'o:coverage':geojsonData}}));
 		}
 	}
 
 	componentWillReceiveProps(nextprops){
-
 		// Update live preview object with known values if they're not present
 		for(let x=0;x<nextprops.records.length;x++){
 			// FIXME: This should be moved out of this component entirely and put in a saga or reducer
@@ -93,7 +94,6 @@ class ExhibitPublicMap extends Component {
 
 	// Manipulate Map AFTER the map object loads, this is fired of a *child* of <Map/> because of load order
 	onMapDidLoad(event){
-
 			// Grab map object by ref
 			if(typeof this.refs.map !== 'undefined'){
 				this.mapOptionsSet=true;
@@ -149,10 +149,12 @@ class ExhibitPublicMap extends Component {
 						mapInstance.setZoom(1);
 						mapInstance.setMaxZoom(maxZoom);
 
+						/*
 						L.marker(mapInstance.unproject([0,0], mapInstance.getMaxZoom()-1)).addTo(mapInstance);
 						L.marker(mapInstance.unproject([w,h], mapInstance.getMaxZoom()-1)).addTo(mapInstance);
 						L.marker(mapInstance.unproject([w,0], mapInstance.getMaxZoom()-1)).addTo(mapInstance);
 						L.marker(mapInstance.unproject([0,h], mapInstance.getMaxZoom()-1)).addTo(mapInstance);
+						*/
 						break;
 				}
 
@@ -172,15 +174,17 @@ class ExhibitPublicMap extends Component {
 
 			// Map layer
 			case TYPE.BASELAYER_TYPE.MAP:
-				baseLayers.push(
-					<LayersControl.BaseLayer key={this.props.mapPreview.current.tileLayer.slug}
-											 name={this.props.mapPreview.current.tileLayer.displayName}
-											 checked={true}>
-						<TileLayer 	fattribution={this.props.mapPreview.current.tileLayer.attribution}
-								   	url={this.props.mapPreview.current.tileLayer.url}
-							   		onLoad={(e) => this.onMapDidLoad(e)}/>
-					</LayersControl.BaseLayer>
-				);
+				if(typeof this.props.mapPreview.current.tileLayer !== 'undefined'){
+					baseLayers.push(
+						<LayersControl.BaseLayer key={this.props.mapPreview.current.tileLayer.slug}
+												 name={this.props.mapPreview.current.tileLayer.displayName}
+												 checked={true}>
+							<TileLayer 	attribution={this.props.mapPreview.current.tileLayer.attribution}
+									   	url={this.props.mapPreview.current.tileLayer.url}
+								   		onLoad={(e) => this.onMapDidLoad(e)}/>
+						</LayersControl.BaseLayer>
+					);
+				}
 				break;
 
 			// Image layers use a different CRS

@@ -17,9 +17,8 @@ const ExhibitCreate = props => (
 )
 
 const mapStateToProps = state => ({
-  newExhibit: state.exhibitCreate.newExhibit,
-  loading: state.exhibitCreate.loading,
-  errored: state.exhibitCreate.errored
+	loading: state.exhibits.exhibit.loading,
+	errored: state.exhibits.exhibit.errored
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

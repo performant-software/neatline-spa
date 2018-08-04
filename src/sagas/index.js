@@ -146,12 +146,18 @@ function* saveCacheToDatabase(action) {
 	let records = action.payload.records;
 	let exhibit = action.payload.exhibit;
 
-	// Save the records
+	// Update records
 	for (let x = 0; x < records.length; x++) {
 		let thisRecord = records[x];
 		if (typeof thisRecord !== 'undefined') {
 			yield put({type: ACTION_TYPE.RECORD_UPDATE, payload: thisRecord});
 		}
+	}
+
+	// Create if there's a new one
+	if(typeof action.payload.records[-1] !== 'undefined'){
+		let newRecord = action.payload.records[-1];
+		yield put({type: ACTION_TYPE.RECORD_CREATE, payload:newRecord});
 	}
 
 	// Save the exhibit

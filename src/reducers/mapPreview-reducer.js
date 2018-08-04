@@ -3,7 +3,6 @@ import * as ACTION_TYPE from '../actions/action-types';
 
 export default function app(state = initialState, action) {
 	let newState;
-
 	switch (action.type) {
 
 		// Accepts an object of kvps, replaces existing values
@@ -37,6 +36,7 @@ export default function app(state = initialState, action) {
 				...state,
 				selectedRecordID:action.payload
 			}
+
 		case ACTION_TYPE.PREVIEW_INIT:
 			return {
 				...state,

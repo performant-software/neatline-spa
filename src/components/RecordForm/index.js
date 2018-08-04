@@ -5,12 +5,12 @@ import {connect} from 'react-redux';
 import {preview_update,preview_init,setUnsavedChanges,updateRecordCache} from '../../actions';
 import ColorPicker from './colorPicker.js'
 import {strings} from '../../i18nLibrary';
-import moment from 'moment';
 import {formatDate,parseDate,} from 'react-day-picker/moment';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
+import * as TYPE from '../../types';
 
 //import * as TYPE from '../../types';
 const defaultValues = {
@@ -61,6 +61,9 @@ class RecordForm extends Component {
 
 	componentDidMount(){
 		// Cache intial values
+		if(typeof this.props.initialValues["o:id"] === 'undefined'){
+			this.props.initialValues["o:id"] = TYPE.TEMPORARY;
+		}
 		this.props.dispatch(updateRecordCache({setValues:this.props.initialValues}));
 
 		// For the sliders, setup initial values
@@ -99,6 +102,7 @@ class RecordForm extends Component {
 			});
 			this.previewInitialized=true;
 		}
+
 	}
 
 	// Color picker
@@ -163,7 +167,32 @@ class RecordForm extends Component {
 			})
 		);
 
-		this.markUnsaved();
+
+		// FIXME: we should rename these props to o:
+		// this.onFieldBlur({target:{value:color.hex,name:this.state.colorPickerCurrentlyEditing}});
+		let property;
+		let value=color.hex;
+		switch (this.state.colorPickerCurrentlyEditing) {
+			case 'fillColor':
+				property='o:fill_color';
+				break;
+			case 'fillColor_selected':
+				property='o:fill_color_select';
+				break;
+			case 'stroke_color':
+				property='o:stroke_color';
+				break;
+			case 'stroke_color_selected':
+				property='o:stroke_color_select';
+				break;
+			default:
+
+		}
+		//console.log("Updating:"+property+":"+value);
+		this.props.dispatch(updateRecordCache({setValues:{'o:id':this.props.initialValues['o:id'],[property]:value}}));
+
+
+
 	}
 
 	// When the field blurs, write the value to the appropriate field
@@ -206,14 +235,6 @@ class RecordForm extends Component {
 
 			case 'o:fill_color_selected':
 				property = 'fillColor_selected';
-				break;
-
-			case 'o:fill_opacity_select':
-				property = 'fill_opacity_selected';
-				break;
-
-			case 'o:stroke_opacity_select':
-				property = 'stroke_opacity_selected';
 				break;
 
 			case 'o:stroke_width':
