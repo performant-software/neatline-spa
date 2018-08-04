@@ -188,9 +188,8 @@ class RecordForm extends Component {
 			default:
 
 		}
-		//console.log("Updating:"+property+":"+value);
 		this.props.dispatch(updateRecordCache({setValues:{'o:id':this.props.initialValues['o:id'],[property]:value}}));
-
+		this.markUnsaved();
 
 
 	}
@@ -252,6 +251,8 @@ class RecordForm extends Component {
 			);
 		}
 	}
+
+
 
 	// Input enforcer
 	// Fixme: factor out
@@ -341,6 +342,11 @@ class RecordForm extends Component {
 		}
 	}
 
+	clearGeometry = () => {
+		var event = new Event("clearAllGeometry");
+		document.dispatchEvent(event);
+	}
+
 	render(){
 		let isSelected = (this.props.selectedRecord && this.state.recordID === this.props.selectedRecord["o:id"]);
 		return (
@@ -354,7 +360,12 @@ class RecordForm extends Component {
 
 				{/* Form buttons */}
 				<div className="ps_n3_buttonGroup">
-					{this.showDelete && <button className="ps_n3_button" onClick={this.handleDelete} type='button'>Delete</button>}
+					{this.showDelete &&
+						<div>
+							<button className="ps_n3_button" onClick={this.handleDelete} type='button'>Delete</button>
+							<button className="ps_n3_button" onClick={this.clearGeometry} type='button'>Clear</button>
+						</div>
+					}
 				</div>
 
 				<TabList>

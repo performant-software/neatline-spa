@@ -27,3 +27,4 @@ export const recordCacheToDatabase = (payload) => action(ACTION_TYPE.EXHIBIT_CAC
 
 export const fetchExhibits = () => action(ACTION_TYPE.EXHIBIT_FETCH);
 export const updateExhibit = (payload) => action(ACTION_TYPE.EXHIBIT_UPDATE);
+export const resetRecordCache = () => action(ACTION_TYPE.RECORD_CACHE_CLEAR);

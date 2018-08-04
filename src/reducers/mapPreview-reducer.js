@@ -25,11 +25,27 @@ export default function app(state = initialState, action) {
 					newCache[recordID][key]=value;
 				}
 			}
+			//console.log("Updating:"+JSON.stringify(newCache));
+
 			return{
 				...state,
 				cache:newCache
 			}
 
+		case ACTION_TYPE.RECORD_CACHE_CLEAR_UNSAVED:
+
+				newCache = state.cache;
+				delete newCache[-1];
+				return{
+					...state,
+					cache:newCache
+				}
+
+		case ACTION_TYPE.RECORD_CACHE_CLEAR:
+				return{
+					...state,
+					cache:[]
+				}
 
 		case ACTION_TYPE.PREVIEW_MARKSELECTED:
 			return {

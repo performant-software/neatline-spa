@@ -2,6 +2,8 @@
 // if this gets unweildy, it can be split into multiple files
 
 // Map preview
+export const RECORD_CACHE_CLEAR = 'RECORD_CACHE_CLEAR';
+export const RECORD_CACHE_CLEAR_UNSAVED = 'RECORD_CACHE_CLEAR_UNSAVED';
 export const EXHIBIT_CACHE_SAVE = 'EXHIBIT_CACHE_SAVE';
 export const RECORD_CACHE_UPDATE = 'RECORD_CACHE_UPDATE';
 export const PREVIEW_FILLCOLOR = 'PREVIEW_FILLCOLOR';

@@ -5,7 +5,7 @@ import {change} from 'redux-form';
 import {preview_init} from '../../actions';
 import * as TYPE from '../../types'
 import AlertBar from './alertBar.js';
-import {updateRecordCache} from '../../actions';
+import {updateRecordCache,preview_update} from '../../actions';
 
 // Makes availabe to mapStateToProps
 import {selectRecord, deselectRecord, previewRecord, unpreviewRecord} from '../../reducers/not_refactored/exhibitShow';
@@ -71,8 +71,26 @@ class ExhibitPublicMap extends Component {
 			const geojsonData = featureGroup.toGeoJSON();
 			this.props.change('record', 'o:coverage', geojsonData);
 			this.props.change('record', 'o:is_coverage', true);
-			this.props.dispatch(updateRecordCache({setValues:{'o:id':editorRecord['o:id'],'o:coverage':geojsonData}}));
+			this.props.dispatch(preview_update({recordID:recordId, property:'o:coverage', value:geojsonData}));
+			this.props.dispatch(updateRecordCache({setValues:{'o:id':recordId,'o:coverage':geojsonData}}));
+			this.props.dispatch(preview_update({recordID:recordId, property:'o:is_coverage', value:true}));
+			this.props.dispatch(updateRecordCache({setValues:{'o:id':recordId,'o:is_coverage':true}}));
 		}
+	}
+
+	// Clear all geometry
+	clearAllGeometry = (event) =>{
+		const {editorRecord, recordLayers} = this.props;
+		const recordId = editorRecord
+			? editorRecord['o:id']
+			: TYPE.TEMPORARY;
+
+			const layersForRecord = recordLayers[recordId];
+			if (layersForRecord && layersForRecord.length > 0) {
+				console.log("Clearing all geometry for: "+recordId);
+				debugger
+				L.featureGroup(layersForRecord).clearLayers();
+			}
 	}
 
 	componentWillReceiveProps(nextprops){
@@ -162,6 +180,12 @@ class ExhibitPublicMap extends Component {
 			}
 	}
 
+	componentDidMount(){
+		document.addEventListener("clearAllGeometry", this.clearAllGeometry);
+	}
+	componentWillUnmount(){
+		document.removeEventListener("clearAllGeometry", this.clearAllGeometry);
+	}
 
 	// Render Method
 	render() {

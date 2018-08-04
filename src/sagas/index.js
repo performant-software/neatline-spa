@@ -107,7 +107,7 @@ function* deleteRecordResponseReceived(action) {
 
 // Update a record
 function* updateRecord(action) {
-	console.log(action.payload);
+	//console.log(action.payload);
 	let record = action.payload;
 	try {
 		let url = urlFormat(recordsEndpoint, {}, record['o:id']);
@@ -146,6 +146,14 @@ function* saveCacheToDatabase(action) {
 	let records = action.payload.records;
 	let exhibit = action.payload.exhibit;
 
+	// Create if there's a new one
+	if(typeof action.payload.records[-1] !== 'undefined'){
+		let newRecord = action.payload.records[-1];
+		yield put({type: ACTION_TYPE.RECORD_CREATE, payload:newRecord});
+	}
+
+	yield put({type: ACTION_TYPE.RECORD_CACHE_CLEAR_UNSAVED});
+
 	// Update records
 	for (let x = 0; x < records.length; x++) {
 		let thisRecord = records[x];
@@ -154,11 +162,7 @@ function* saveCacheToDatabase(action) {
 		}
 	}
 
-	// Create if there's a new one
-	if(typeof action.payload.records[-1] !== 'undefined'){
-		let newRecord = action.payload.records[-1];
-		yield put({type: ACTION_TYPE.RECORD_CREATE, payload:newRecord});
-	}
+
 
 	// Save the exhibit
 	if (exhibit !== 'undefined') {
@@ -210,7 +214,7 @@ function* fetchExhibitsResponseReceived(action) {
 		let exhibits = yield parseExhibitsJSON(action.payload);
 		yield put({type: ACTION_TYPE.EXHIBITS_FETCH_SUCCESS, payload: exhibits})
 
-		// On failure...
+	// On failure...
 	} else {
 		yield put({
 			type: ACTION_TYPE.RECORD_ERROR,
