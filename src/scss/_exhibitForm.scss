@@ -7,10 +7,9 @@
 .ps_n3_exhibitShowContainer {
 	gridRow: 1;
 	gridColumn: 1;
-	maxHeight: 100%;
-	border-right: 2px solid #c2c0ba;
 	margin: 2rem 0 0;
-} 
+	height: 80vh;
+}
 
 .ps_n3_exhibit-form {
 	height: 100%;
@@ -34,15 +33,12 @@
 
 .DayPickerInput {
 	width: 100%;
-	max-width: 18.5rem !important;
-	display: inline;
-	border-radius: 0;
-	border: 1px solid #dedede;
-	padding: 0;
+	max-width: 17.4rem !important;
 }
 
 .ps_n3_exhibit-form input {
 	height: 2.3rem;
+	margin:.5rem 0 .5rem 0;
 }
 
 .ps_n3_exhibit-form select {
@@ -54,12 +50,13 @@
 
 .ps_n3_exhibit-form select[multiple] {
 	height: 4rem;
-	margin: 0 0 0.9rem;
+	margin:.5rem 0 .5rem 0;
 }
 
 .ps_n3_exhibit-form textarea {
 	height: 4rem;
 	padding: 0.5rem 0 0 0.5rem;
+	margin:.5rem 0 .5rem 0;
 }
 
 .ps_n3_checkboxPair {

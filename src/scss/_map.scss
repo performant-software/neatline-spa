@@ -8,7 +8,7 @@
 .ps_n3_mapComponent_withWarning {
 	height: calc(100% - 2.8rem);
 	top: 2.8rem;
-	border-right:2px solid #c2c0ba;
+
 }
 
 .ps_n3_mapStatus_warning:before {
@@ -31,7 +31,6 @@
     width:calc(100% - 1rem);
     margin:0rem;
     padding:.8rem 0 .5rem 1.2rem;
-	border-top: 2px solid #b3b2b2;
-	border-right: 2px solid #b3b2b2;
+
 	line-height:1rem;
 }

@@ -71,9 +71,14 @@ td {
   border-bottom: 1px solid #ababab; }
 
 #ps_n3_main {
-  height: 100vh;
-  padding: 0 0 6rem;
-  overflow: hidden; }
+  overflow: hidden;
+  border: 1px solid #0000000f;
+  background-color: white;
+  font-size: 1.2rem;
+  font-family: "Open Sans";
+  margin: 0.5rem;
+  max-height: calc(100vh - 1rem);
+  line-height: 1rem; }
 
 .ps_n3_hidden {
   display: none; }
@@ -99,11 +104,11 @@ td {
   border: 1px solid #dedede; }
 
 .ps_n3_button.save {
-  float: right;
-  top: 0.5rem;
-  left: 16.5rem;
-  position: absolute;
-  margin: -6.6rem 0 0 3rem; }
+  top: -6.5rem;
+  left: 16rem;
+  position: relative;
+  margin: 0;
+  bottom: 0; }
 
 label {
   padding: 0;
@@ -121,9 +126,8 @@ h3 {
 .ps_n3_exhibitShowContainer {
   gridRow: 1;
   gridColumn: 1;
-  maxHeight: 100%;
-  border-right: 2px solid #c2c0ba;
-  margin: 2rem 0 0; }
+  margin: 2rem 0 0;
+  height: 80vh; }
 
 .ps_n3_exhibit-form {
   height: 100%; }
@@ -144,14 +148,11 @@ h3 {
 
 .DayPickerInput {
   width: 100%;
-  max-width: 18.5rem !important;
-  display: inline;
-  border-radius: 0;
-  border: 1px solid #dedede;
-  padding: 0; }
+  max-width: 17.4rem !important; }
 
 .ps_n3_exhibit-form input {
-  height: 2.3rem; }
+  height: 2.3rem;
+  margin: .5rem 0 .5rem 0; }
 
 .ps_n3_exhibit-form select {
   height: 3rem;
@@ -161,11 +162,12 @@ h3 {
 
 .ps_n3_exhibit-form select[multiple] {
   height: 4rem;
-  margin: 0 0 0.9rem; }
+  margin: .5rem 0 .5rem 0; }
 
 .ps_n3_exhibit-form textarea {
   height: 4rem;
-  padding: 0.5rem 0 0 0.5rem; }
+  padding: 0.5rem 0 0 0.5rem;
+  margin: .5rem 0 .5rem 0; }
 
 .ps_n3_checkboxPair {
   height: 1rem; }
@@ -197,7 +199,7 @@ h3 {
   padding: 0;
   position: relative;
   left: 16rem;
-  top: 2.4rem;
+  top: 2.93rem;
   height: 2.3rem;
   width: 2.2rem;
   border: 1px solid grey; }
@@ -221,8 +223,7 @@ input.styleEditor_input {
 
 .ps_n3_mapComponent_withWarning {
   height: calc(100% - 2.8rem);
-  top: 2.8rem;
-  border-right: 2px solid #c2c0ba; }
+  top: 2.8rem; }
 
 .ps_n3_mapStatus_warning:before {
   font-family: FontAwesome;
@@ -243,8 +244,6 @@ input.styleEditor_input {
   width: calc(100% - 1rem);
   margin: 0rem;
   padding: .8rem 0 .5rem 1.2rem;
-  border-top: 2px solid #b3b2b2;
-  border-right: 2px solid #b3b2b2;
   line-height: 1rem; }
 
 .react-tabs {

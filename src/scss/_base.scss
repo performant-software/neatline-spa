@@ -52,9 +52,14 @@ td {
 }
 
 #ps_n3_main {
-	height: 100vh;
-	padding: 0 0 6rem;
 	overflow: hidden;
+	border: 1px solid #0000000f;
+	background-color: white;
+	font-size: 1.2rem;
+	font-family: "Open Sans";
+	margin: 0.5rem;
+	max-height: calc(100vh - 1rem);
+	line-height: 1rem;
 }
 
 .ps_n3_hidden {
@@ -85,11 +90,11 @@ td {
 }
 
 .ps_n3_button.save {
-	float: right;
-	top: 0.5rem;
-	left: 16.5rem;
-	position: absolute;
-	margin: -6.6rem 0 0 3rem;
+	top: -6.5rem;
+    left: 16rem;
+    position: relative;
+    margin: 0;
+    bottom: 0;
 }
 
 label {
