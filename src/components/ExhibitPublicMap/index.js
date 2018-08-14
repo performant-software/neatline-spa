@@ -233,31 +233,35 @@ class ExhibitPublicMap extends Component {
 
 			// Custom tile (same as map), FIXME: factor into map case?
 		 	case TYPE.BASELAYER_TYPE.TILE:
-				baseLayers.push(
-					<LayersControl.BaseLayer key={TYPE.BASELAYER_TYPE.TILE}
-											 name={this.props.mapPreview.current.tile_attribution}
-											 checked={true}>
-						<TileLayer 	attribution={this.props.mapPreview.current.tile_attribution}
-								   	url={this.props.mapPreview.current.tile_address}
-							   		onLoad={(e) => this.onMapDidLoad(e)}/>
-					</LayersControl.BaseLayer>
-				);
+				if(this.props.mapPreview.current.tile_address !== null){
+					baseLayers.push(
+						<LayersControl.BaseLayer key={TYPE.BASELAYER_TYPE.TILE}
+												 name={this.props.mapPreview.current.tile_attribution}
+												 checked={true}>
+							<TileLayer 	attribution={this.props.mapPreview.current.tile_attribution}
+									   	url={this.props.mapPreview.current.tile_address}
+								   		onLoad={(e) => this.onMapDidLoad(e)}/>
+						</LayersControl.BaseLayer>
+					);
+				}
 				break;
 
 			// WMS
 			case TYPE.BASELAYER_TYPE.WMS:
-				baseLayers.push(
-					<LayersControl.BaseLayer key={TYPE.BASELAYER_TYPE.WMS}
-											 name={this.props.mapPreview.current.wms_address}
-											 checked={true}>
+				if(this.props.mapPreview.current.wms_address !== null){
+					baseLayers.push(
+						<LayersControl.BaseLayer key={TYPE.BASELAYER_TYPE.WMS}
+												 name={this.props.mapPreview.current.wms_address}
+												 checked={true}>
 
-						 <WMSTileLayer
-							   attribution={this.props.mapPreview.current.wms_attribution}
-						       url={this.props.mapPreview.current.wms_address}
-							   layers={this.props.mapPreview.current.wms_layers}
-						       onLoad={(e) => this.onMapDidLoad(e)}/>
-					  </LayersControl.BaseLayer>
-				);
+							 <WMSTileLayer
+								   attribution={this.props.mapPreview.current.wms_attribution}
+							       url={this.props.mapPreview.current.wms_address}
+								   layers={this.props.mapPreview.current.wms_layers}
+							       onLoad={(e) => this.onMapDidLoad(e)}/>
+						  </LayersControl.BaseLayer>
+					);
+				}
 				break;
 
 			default:
