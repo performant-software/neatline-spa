@@ -7,7 +7,6 @@ import ColorPicker from './colorPicker.js'
 import DatePicker from './datePicker.js';
 import {strings} from '../../i18nLibrary';
 import {formatDate,parseDate,} from 'react-day-picker/moment';
-import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';

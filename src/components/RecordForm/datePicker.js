@@ -5,11 +5,10 @@ import moment from 'moment';
 
 class DatePicker extends React.Component {
 	render() {
-		let thisValue=this.props.formatDate(thisValue);
+		let thisValue=this.props.formatDate(this.props.value);
 		if(!moment(this.props.value).isValid()){
 			thisValue='';
 		}
-		console.log("Value is:"+thisValue);
 		return (
 			<div>
 				<label 	htmlFor={this.props.fieldName}>{this.props.label}</label>

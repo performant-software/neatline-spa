@@ -86,15 +86,13 @@ td {
 .ps_n3_button:hover {
 	background-color: #cdcdcd;
 	color: black;
-	border: 1px solid #dedede;
 }
 
+
 .ps_n3_button.save {
-	top: -6.5rem;
     left: 16rem;
-    position: relative;
-    margin: 0;
-    bottom: 0;
+	margin:.5rem 0 0 0;
+	position: relative;
 }
 
 label {

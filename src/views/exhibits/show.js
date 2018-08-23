@@ -19,8 +19,8 @@ import {recordCacheToDatabase} from '../../actions';
 
 const ExhibitShowHeader = props => (
 	<div>
-		<h3><Link to={`${window.baseRoute}/`}>Neatline</Link> | {props.children}</h3>
 		<div className="ps_n3_button save" onClick={props.onSave}>Save</div>
+		<h3><Link to={`${window.baseRoute}/`}>Neatline</Link> | {props.children}</h3>
 	</div>
 );
 
