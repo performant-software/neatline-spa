@@ -4,6 +4,7 @@ import {Tabs, TabList, Tab, TabPanel} from 'react-tabs';
 import {connect} from 'react-redux';
 import {preview_update,preview_init,setUnsavedChanges,updateRecordCache} from '../../actions';
 import ColorPicker from './colorPicker.js'
+import DatePicker from './datePicker.js';
 import {strings} from '../../i18nLibrary';
 import {formatDate,parseDate,} from 'react-day-picker/moment';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
@@ -11,6 +12,7 @@ import 'react-day-picker/lib/style.css';
 import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
 import * as TYPE from '../../types';
+import moment from 'moment';
 
 //import * as TYPE from '../../types';
 const defaultValues = {
@@ -80,7 +82,13 @@ class RecordForm extends Component {
 	// Sets the unsaved changes flag
 	markUnsaved = (event) => {
 		if(typeof event !== 'undefined'){
-			console.log("Updating cache:"+event.target.name+":"+event.target.value);
+			//console.log("Updating cache:"+event.target.name+":"+event.target.value);
+
+			// Converting moment into string for storage
+			if(event.target.name.includes("date")){
+				event.target.value = moment(event.target.value).format('YYYY-MM-DD');
+				//console.log(moment(event.target.value).format('YYYY-MM-DD'));
+			}
 			this.props.dispatch(updateRecordCache({setValues:{'o:id':this.props.initialValues['o:id'],[event.target.name]:event.target.value}}));
 		}
 		this.props.dispatch(
@@ -348,6 +356,7 @@ class RecordForm extends Component {
 	}
 
 	render(){
+		let thisRecord = this.props.mapPreview.cache[this.props.initialValues['o:id']];
 		let isSelected = (this.props.selectedRecord && this.state.recordID === this.props.selectedRecord["o:id"]);
 		return (
 			<form className='ps_n3_exhibit-form' onSubmit={this.handleSubmit}>
@@ -585,53 +594,36 @@ class RecordForm extends Component {
 
 								<div className="ps_n3_optionHeader">{strings.dates}</div>
 								<div>
-									<label 	htmlFor='o:start_date'>{strings.start_date}</label>
-									<Field 	name='o:start_date'
-											component='input'
-											type='hidden'/>
-
-									<DayPickerInput	className="ps_n3_dayPickerInput"
-														formatDate={formatDate}
-						        						parseDate={parseDate}
-						        						value={this.props.mapPreview.datefilter_input}
-														onDayChange={(value)=>{this.markUnsaved({target:{value:value,name:'o:start_date'}})}}/>
+									<DatePicker	fieldName='o:end_date'
+												value={thisRecord['o:start_date']}
+												label={strings.start_date}
+												formatDate={formatDate}
+												parseDate={parseDate}
+												onDayChange={this.markUnsaved}/>
 								</div>
 								<div>
-									<label 	htmlFor='o:end_date'>{strings.end_date}</label>
-									<Field 	name='o:end_date'
-											component='input'
-											type='hidden'/>
-
-									<DayPickerInput	className="ps_n3_dayPickerInput"
-													formatDate={formatDate}
-													parseDate={parseDate}
-													value={this.props.mapPreview.datefilter_input}
-													onDayChange={(value)=>{this.markUnsaved({target:{value:value,name:'o:end_date'}})}}/>
+									<DatePicker	fieldName='o:end_date'
+												value={thisRecord['o:end_date']}
+												label={strings.end_date}
+												formatDate={formatDate}
+												parseDate={parseDate}
+												onDayChange={this.markUnsaved}/>
 								</div>
 								<div>
-									<label 	htmlFor='o:after_date'>{strings.after_date}</label>
-									<Field 	name='o:after_date'
-											component='input'
-											type='hidden'/>
-
-									<DayPickerInput	className="ps_n3_dayPickerInput"
-													formatDate={formatDate}
-													parseDate={parseDate}
-													value={this.props.mapPreview.datefilter_input}
-													onDayChange={(value)=>{this.markUnsaved({target:{value:value,name:'o:after_date'}})}}/>
-
+									<DatePicker	fieldName='o:after_date'
+												value={thisRecord['o:after_date']}
+												label={strings.after_date}
+												formatDate={formatDate}
+												parseDate={parseDate}
+												onDayChange={this.markUnsaved}/>
 								</div>
 								<div>
-									<label 	htmlFor='o:before_date'>{strings.before_date}</label>
-									<Field 	name='o:before_date'
-											component='input'
-											type='hidden'/>
-
-									<DayPickerInput	className="styleEditor_input"
-													formatDate={formatDate}
-													parseDate={parseDate}
-													value={this.props.mapPreview.datefilter_input}
-													onDayChange={(value)=>{this.markUnsaved({target:{value:value,name:'o:before_date'}})}}/>
+									<DatePicker	fieldName='o:before_date'
+												value={thisRecord['o:before_date']}
+												label={strings.before_date}
+												formatDate={formatDate}
+												parseDate={parseDate}
+												onDayChange={this.markUnsaved}/>
 								</div>
 
 								<div className="ps_n3_optionHeader">{strings.imagery}</div>
