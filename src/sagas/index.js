@@ -137,8 +137,10 @@ function* updateRecordResponseReceived(action) {
 		yield put({type: ACTION_TYPE.EDITOR_RECORD_SET});
 		yield put({type: ACTION_TYPE.RECORD_REPLACED, record: action.payload});
 
-		// On failure...
-	} else {}
+	// On failure...
+	} else {
+		debugger
+	}
 }
 
 // Save cache to the database
