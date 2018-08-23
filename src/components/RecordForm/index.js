@@ -595,7 +595,7 @@ class RecordForm extends Component {
 								<div className="ps_n3_optionHeader">{strings.dates}</div>
 								<div>
 									<DatePicker	fieldName='o:end_date'
-												value={thisRecord['o:start_date']}
+												value={(typeof thisRecord !== 'undefined')?thisRecord['o:start_date']:''}
 												label={strings.start_date}
 												formatDate={formatDate}
 												parseDate={parseDate}
@@ -603,7 +603,7 @@ class RecordForm extends Component {
 								</div>
 								<div>
 									<DatePicker	fieldName='o:end_date'
-												value={thisRecord['o:end_date']}
+												value={(typeof thisRecord !== 'undefined')?thisRecord['o:end_date']:''}
 												label={strings.end_date}
 												formatDate={formatDate}
 												parseDate={parseDate}
@@ -611,7 +611,7 @@ class RecordForm extends Component {
 								</div>
 								<div>
 									<DatePicker	fieldName='o:after_date'
-												value={thisRecord['o:after_date']}
+												value={(typeof thisRecord !== 'undefined')?thisRecord['o:after_date']:''}
 												label={strings.after_date}
 												formatDate={formatDate}
 												parseDate={parseDate}
@@ -619,7 +619,7 @@ class RecordForm extends Component {
 								</div>
 								<div>
 									<DatePicker	fieldName='o:before_date'
-												value={thisRecord['o:before_date']}
+												value={(typeof thisRecord !== 'undefined')?thisRecord['o:before_date']:''}
 												label={strings.before_date}
 												formatDate={formatDate}
 												parseDate={parseDate}
