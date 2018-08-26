@@ -19,8 +19,8 @@ import {recordCacheToDatabase} from '../../actions';
 
 const ExhibitShowHeader = props => (
 	<div>
-		<h3><Link to={`${window.baseRoute}/`}>Neatline</Link> | {props.children}</h3>
 		<div className="ps_n3_button save" onClick={props.onSave}>Save</div>
+		<h3><Link to={`${window.baseRoute}/`}>Neatline</Link> | {props.children}</h3>
 	</div>
 );
 
@@ -97,13 +97,7 @@ class ExhibitShow extends Component {
 										: 'hidden',
 									maxWidth: '100px'
 								}}>
-								{
-									props.editorNewRecord
-										? strings.new_record
-										: props.editorRecord
-											? props.editorRecord['o:title']
-											: ''
-								}
+								{props.editorNewRecord?strings.new_record:props.editorRecord?props.editorRecord['o:title']:''}
 								<span onClick={e => {
 										props.unsetEditorRecord();
 										e.stopPropagation();

@@ -164,8 +164,6 @@ function* saveCacheToDatabase(action) {
 		}
 	}
 
-
-
 	// Save the exhibit
 	if (exhibit !== 'undefined') {
 		yield put({type: ACTION_TYPE.EXHIBIT_UPDATE, payload:exhibit});

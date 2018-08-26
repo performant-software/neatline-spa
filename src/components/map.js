@@ -83,9 +83,11 @@ class ExhibitPublicMap extends Component {
 		// Other options
 		for (let x = 0; x < this.props.mapPreview.current.basemapOptions.length; x++) {
 			let thisTileLayer = this.props.mapPreview.current.basemapOptions[x];
+
 			// Don't allow duplicate
 			if (thisTileLayer.slug !== this.props.mapPreview.current.tileLayer.slug) {
-				baseLayers.push(<LayersControl.BaseLayer key={thisTileLayer.slug} name={thisTileLayer.displayName} checked={false}>
+				baseLayers.push(
+				<LayersControl.BaseLayer key={thisTileLayer.slug} name={thisTileLayer.displayName} checked={false}>
 					<TileLayer attribution={thisTileLayer.attribution} url={thisTileLayer.url}/>
 				</LayersControl.BaseLayer>);
 			}
@@ -138,9 +140,11 @@ class ExhibitPublicMap extends Component {
 								isPreviewed = record === previewedRecord;
 							// this.props.resetLayers(record['o:id']);
 							if (record['o:is_wms']) {
-								return (<LayersControl.Overlay name={record['o:title']} checked={true} key={record['o:id'] + '_wms'}>
+								return (
+								<LayersControl.Overlay name={record['o:title']} checked={true} key={record['o:id'] + '_wms'}>
 									<WMSTileLayer url={record['o:wms_address']} layers={record['o:wms_layers']} transparent={true} format='image/png' opacity={0.8}/>
-								</LayersControl.Overlay>)
+								</LayersControl.Overlay>
+							)
 
 							} else if (record['o:is_coverage']) {
 
@@ -150,21 +154,20 @@ class ExhibitPublicMap extends Component {
 									recordToUse=JSON.parse(recordToUse);
 								}
 								return (
-									<GeoJSON
-									style={function(feature) {
-										return {
-											...currentMapPreview.geometryStyle,
-											opacity: isSelected ? 1.0 : 0.6,
-											fill: feature.geometry.type !== 'LineString',
-											fillOpacity: isPreviewed ? 0.9 : isSelected ? 0.6 : 0.3
-										};
-									}}
-									onClick={() => recordClick(record)}
-									onMouseover={() => recordMouseEnter(record)}
-									onMouseout={recordMouseLeave}
-									data={recordToUse}
-									pointToLayer={function(point, latlng) {return circleMarker(latlng);}}
-									onEachFeature={function(feature, layer) {this.props.addLayer(record['o:id'], layer);
+									<GeoJSON	style={function(feature) {
+													return {
+														...currentMapPreview.geometryStyle,
+														opacity: isSelected ? 1.0 : 0.6,
+														fill: feature.geometry.type !== 'LineString',
+														fillOpacity: isPreviewed ? 0.9 : isSelected ? 0.6 : 0.3
+													};
+												}}
+												onClick={() => recordClick(record)}
+												onMouseover={() => recordMouseEnter(record)}
+												onMouseout={recordMouseLeave}
+												data={recordToUse}
+												pointToLayer={function(point, latlng) {return circleMarker(latlng);}}
+												onEachFeature={function(feature, layer) {this.props.addLayer(record['o:id'], layer);
 
 									}.bind(this)} key={record['o:id'] + '_coverage'}/>);
 							}
