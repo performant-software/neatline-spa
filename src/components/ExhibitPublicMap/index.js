@@ -80,17 +80,37 @@ class ExhibitPublicMap extends Component {
 
 	// Clear all geometry
 	clearAllGeometry = (event) =>{
-		const {editorRecord, recordLayers} = this.props;
-		const recordId = editorRecord
-			? editorRecord['o:id']
-			: TYPE.TEMPORARY;
+		const {editorRecord} = this.props;
+		const recordId = editorRecord?editorRecord['o:id']:TYPE.TEMPORARY;
+		let mapInstance = this.refs.map.leafletElement;
+		var targetLayer = this.refs[`geometry_${recordId}`];
 
-			const layersForRecord = recordLayers[recordId];
-			if (layersForRecord && layersForRecord.length > 0) {
-				console.log("Clearing all geometry for: "+recordId);
-				debugger
-				L.featureGroup(layersForRecord).clearLayers();
+		// Clears it from the map
+		if(typeof targetLayer !== 'undefined'){
+			mapInstance.removeLayer(targetLayer.leafletElement);
+		}
+
+		// Clears it from memory
+		this.props.change('record', 'o:coverage', null);
+		this.props.change('record', 'o:is_coverage', false);
+		this.props.dispatch(preview_update({recordID:recordId, property:'o:coverage', value:null}));
+		this.props.dispatch(updateRecordCache({setValues:{'o:id':recordId,'o:coverage':null}}));
+		this.props.dispatch(preview_update({recordID:recordId, property:'o:is_coverage', value:false}));
+		this.props.dispatch(updateRecordCache({setValues:{'o:id':recordId,'o:is_coverage':false}}));
+
+		/*
+
+		mapInstance.eachLayer(
+			(layer) => {
+				if(typeof layer.feature !== 'undefined'){
+					console.log(targetLayer.props.data);
+					console.log(layer.feature.geometry);
+					//console.log("Removing:"+layer.feature.type);
+					//mapInstance.removeLayer(layer);
+				}
 			}
+		);
+		*/
 	}
 
 	componentWillReceiveProps(nextprops){
@@ -121,7 +141,7 @@ class ExhibitPublicMap extends Component {
 
 					// Map layer
 					case TYPE.BASELAYER_TYPE.MAP: default:
-						// Remove existing image layers
+						// Remove any existing image layers
 						mapInstance.eachLayer(function(layer){
 							if(layer._image){
 								mapInstance.removeLayer(layer);
@@ -131,7 +151,7 @@ class ExhibitPublicMap extends Component {
 
 					// WMS layer
 					case TYPE.BASELAYER_TYPE.WMS:
-						// Remove existing image layers
+						// Remove any existing image layers
 						mapInstance.eachLayer(function(layer){
 							if(layer._image){
 								mapInstance.removeLayer(layer);
@@ -159,6 +179,9 @@ class ExhibitPublicMap extends Component {
 
 						// Add image to map
 						L.imageOverlay(url, bounds).addTo(mapInstance);
+
+						// Add attribution
+						mapInstance.attributionControl.addAttribution(this.props.mapPreview.current.image_attribution);
 
 						// tell leaflet that the map is exactly as big as the image
 						mapInstance.setMaxBounds(bounds);
@@ -347,7 +370,7 @@ class ExhibitPublicMap extends Component {
 
 									// Use preview
 									let record_id = record['o:id'];
-
+									let geometry_id = `geometry_${record_id}`;
 									let previewStyle = this.props.mapPreview.current.geometryStyle['default'];
 									if(record_id in this.props.mapPreview.current.geometryStyle){
 										previewStyle = this.props.mapPreview.current.geometryStyle[record_id];
@@ -369,6 +392,7 @@ class ExhibitPublicMap extends Component {
 
 									return (
 										<GeoJSON
+											ref={geometry_id}
 											style={
 												function(feature, layer) {
 													// If the geometry is a line, get rid of fill

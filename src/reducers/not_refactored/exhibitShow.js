@@ -288,9 +288,8 @@ export function setEditorRecordById(id) {
 
 export function unsetEditorRecord() {
 	return function(dispatch, getState) {
-		dispatch({
-			type: ACTION_TYPE.EDITOR_RECORD_UNSET
-		});
+		dispatch({type: ACTION_TYPE.RECORD_CACHE_CLEAR_UNSAVED});
+		dispatch({type: ACTION_TYPE.EDITOR_RECORD_UNSET});
 		const exhibit = getState().exhibitShow.exhibit;
 		if (exhibit)
 			dispatch(push(`${window.baseRoute}/show/${exhibit['o:slug']}`))

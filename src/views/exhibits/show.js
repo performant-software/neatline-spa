@@ -97,13 +97,7 @@ class ExhibitShow extends Component {
 										: 'hidden',
 									maxWidth: '100px'
 								}}>
-								{
-									props.editorNewRecord
-										? strings.new_record
-										: props.editorRecord
-											? props.editorRecord['o:title']
-											: ''
-								}
+								{props.editorNewRecord?strings.new_record:props.editorRecord?props.editorRecord['o:title']:''}
 								<span onClick={e => {
 										props.unsetEditorRecord();
 										e.stopPropagation();

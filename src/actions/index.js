@@ -26,5 +26,8 @@ export const updateExhibitCache = (payload) => action(ACTION_TYPE.EXHIBIT_CACHE_
 export const recordCacheToDatabase = (payload) => action(ACTION_TYPE.EXHIBIT_CACHE_SAVE,payload);
 
 export const fetchExhibits = () => action(ACTION_TYPE.EXHIBIT_FETCH);
-export const updateExhibit = (payload) => action(ACTION_TYPE.EXHIBIT_UPDATE);
-export const resetRecordCache = () => action(ACTION_TYPE.RECORD_CACHE_CLEAR);
+export const updateExhibit = (payload) => action(ACTION_TYPE.EXHIBIT_UPDATE,payload);
+
+export const clearRecordCache = () => action(ACTION_TYPE.RECORD_CACHE_CLEAR);
+export const removeRecordFromCache = (payload) => action(ACTION_TYPE.RECORD_CACHE_REMOVE_RECORD,payload);
+export const clearUnsavedRecordCache = () => action(ACTION_TYPE.RECORD_CACHE_CLEAR_UNSAVED);
