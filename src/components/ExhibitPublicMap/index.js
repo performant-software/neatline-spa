@@ -1,116 +1,54 @@
+import * as TYPE from '../../types';
+import AlertBar from './alertBar.js';
 import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {change} from 'redux-form';
 import {preview_init} from '../../actions';
-import * as TYPE from '../../types'
-import AlertBar from './alertBar.js';
-import {updateRecordCache,preview_update} from '../../actions';
-
+import LeafletSupport from './leafletSupport';
+import LeafletEventHandlers from './leafletEventHandlers';
+import {
+	clearLayers,
+	addLayerTo,
+	removeLayerFrom}
+	from '../../actions';
 // Makes availabe to mapStateToProps
 import {selectRecord, deselectRecord, previewRecord, unpreviewRecord} from '../../reducers/not_refactored/exhibitShow';
-import {addLayer, resetLayers} from '../../reducers/not_refactored/recordMapLayers';
 
 // Leaflet
 import {
 	Map,
 	LayersControl,
-	TileLayer,
-	WMSTileLayer,
-	GeoJSON,
-	FeatureGroup,
-	ImageOverlay
-
+	FeatureGroup
 } from 'react-leaflet';
 import L from 'leaflet';
-import {circleMarker} from 'leaflet';
 import {EditControl} from "react-leaflet-draw"
-//FIXME: This got splinched in a merge import {strings} from '../../i18nLibrary';
-
-// FIXME: workaround broken icons when using webpack, see https://github.com/PaulLeCam/react-leaflet/issues/255
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0/images/marker-icon.png', iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0/images/marker-icon.png', shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0/images/marker-shadow.png'});
-
 
 class ExhibitPublicMap extends Component {
 
+
 	constructor(props) {
 		super(props);
-		this.preview_init=preview_init.bind(this);
-	}
 
-	// Event handlers for map editing
-	_onEdited = (e) => {
-		this._onChange();
-	}
 
-	_onCreated = (e) => {
-		// Save geometry when it is created - if we don't have a record ID yet, use -1
-		const {editorRecord} = this.props;
-		const recordId = editorRecord?editorRecord['o:id']: TYPE.TEMPORARY;
+		// Drawing tool options (useImperialUnits, showUnits)
+		this.drawingOptions = LeafletSupport.drawingOptions(true,false);
 
-		if (recordId){
-			this.props.addLayer(recordId, e.layer);
-		}
-		this._onChange();
-	}
+		// Modifies the Circle prototype so we can save to geojson
+		let circleToGeoJSON = L.Circle.prototype.toGeoJSON;
+		L.Circle.include({
+		    toGeoJSON: function() {
+		        var feature = circleToGeoJSON.call(this);
+		        feature.properties = {
+		            point_type: 'circle',
+		            radius: this.getRadius()
+		        };
+		        return feature;
+		    }
+		});
 
-	_onMounted = (drawControl) => {
-		this._onChange();
-	}
-
-	_onChange = () => {
-		const {editorRecord, recordLayers} = this.props;
-		const recordId = editorRecord
-			? editorRecord['o:id']
-			: TYPE.TEMPORARY;
-
-		const layersForRecord = recordLayers[recordId];
-		if (layersForRecord && layersForRecord.length > 0) {
-			const featureGroup = L.featureGroup(layersForRecord)
-			const geojsonData = featureGroup.toGeoJSON();
-			this.props.change('record', 'o:coverage', geojsonData);
-			this.props.change('record', 'o:is_coverage', true);
-			this.props.dispatch(preview_update({recordID:recordId, property:'o:coverage', value:geojsonData}));
-			this.props.dispatch(updateRecordCache({setValues:{'o:id':recordId,'o:coverage':geojsonData}}));
-			this.props.dispatch(preview_update({recordID:recordId, property:'o:is_coverage', value:true}));
-			this.props.dispatch(updateRecordCache({setValues:{'o:id':recordId,'o:is_coverage':true}}));
-		}
-	}
-
-	// Clear all geometry
-	clearAllGeometry = (event) =>{
-		const {editorRecord} = this.props;
-		const recordId = editorRecord?editorRecord['o:id']:TYPE.TEMPORARY;
-		let mapInstance = this.refs.map.leafletElement;
-		var targetLayer = this.refs[`geometry_${recordId}`];
-
-		// Clears it from the map
-		if(typeof targetLayer !== 'undefined'){
-			mapInstance.removeLayer(targetLayer.leafletElement);
-		}
-
-		// Clears it from memory
-		this.props.change('record', 'o:coverage', null);
-		this.props.change('record', 'o:is_coverage', false);
-		this.props.dispatch(preview_update({recordID:recordId, property:'o:coverage', value:null}));
-		this.props.dispatch(updateRecordCache({setValues:{'o:id':recordId,'o:coverage':null}}));
-		this.props.dispatch(preview_update({recordID:recordId, property:'o:is_coverage', value:false}));
-		this.props.dispatch(updateRecordCache({setValues:{'o:id':recordId,'o:is_coverage':false}}));
-
-		/*
-
-		mapInstance.eachLayer(
-			(layer) => {
-				if(typeof layer.feature !== 'undefined'){
-					console.log(targetLayer.props.data);
-					console.log(layer.feature.geometry);
-					//console.log("Removing:"+layer.feature.type);
-					//mapInstance.removeLayer(layer);
-				}
-			}
-		);
-		*/
+		this.baseLayers=[];
+		this.geometry=null;
 	}
 
 	componentWillReceiveProps(nextprops){
@@ -121,17 +59,22 @@ class ExhibitPublicMap extends Component {
 			if (record['o:is_coverage']) {
 				let record_id = record['o:id'];
 				if(!(record_id in this.props.mapPreview.current.geometryStyle)){
-					this.props.dispatch(this.preview_init(record));
+					this.props.dispatch(preview_init(record));
 				}
 			}
 		}
+	}
 
+	// New record button clicked
+	newRecordLoaded = (event) =>{
+		this.props.dispatch(clearLayers);
 	}
 
 
 
 	// Manipulate Map AFTER the map object loads, this is fired of a *child* of <Map/> because of load order
 	onMapDidLoad(event){
+
 			// Grab map object by ref
 			if(typeof this.refs.map !== 'undefined'){
 				this.mapOptionsSet=true;
@@ -161,7 +104,7 @@ class ExhibitPublicMap extends Component {
 
 					// Image layer
 					case TYPE.BASELAYER_TYPE.IMAGE:
-
+						console.log("Post map, image layer...");
 						let url = this.props.mapPreview.current.image_address;
 						let w = event.currentTarget.naturalWidth;
 						let h = event.currentTarget.naturalHeight;
@@ -183,243 +126,112 @@ class ExhibitPublicMap extends Component {
 						// Add attribution
 						mapInstance.attributionControl.addAttribution(this.props.mapPreview.current.image_attribution);
 
-						// tell leaflet that the map is exactly as big as the image
+						// Tell leaflet that the map is exactly as big as the image
 						mapInstance.setMaxBounds(bounds);
 
 						// Set zoom
 						mapInstance.setZoom(1);
 						mapInstance.setMaxZoom(maxZoom);
 
-						/*
-						L.marker(mapInstance.unproject([0,0], mapInstance.getMaxZoom()-1)).addTo(mapInstance);
-						L.marker(mapInstance.unproject([w,h], mapInstance.getMaxZoom()-1)).addTo(mapInstance);
-						L.marker(mapInstance.unproject([w,0], mapInstance.getMaxZoom()-1)).addTo(mapInstance);
-						L.marker(mapInstance.unproject([0,h], mapInstance.getMaxZoom()-1)).addTo(mapInstance);
-						*/
 						break;
 				}
 
-				//mapInstance.setMaxBounds([[0,0], [5000,5000]]);
 			}
 	}
 
-	componentDidMount(){
-		document.addEventListener("clearAllGeometry", this.clearAllGeometry);
+	componentDidUpdate(){
+
+		/*
+		setTimeout(() => {
+			console.log("Fixing missing editing object...");
+			if(typeof this.refs.editableFeaturegroup !== 'undefined'){
+				let featureGroup=this.refs.editableFeaturegroup.leafletElement;
+
+				if(Object.keys(featureGroup._layers).length > 0){
+					Object.keys(featureGroup._layers).forEach((key) => {
+						let layer = featureGroup._layers[key];
+						//delete layer.options.editing;
+						//
+
+						try {
+							layer.editing.enable();
+							//layer.editing.disable();
+						} catch (e) {
+							layer.options.editing={};
+							layer.editing.enable();
+							//layer.editing.disable();
+							console.log("Failed");
+						}
+
+					});
+				}
+			}
+		}, 1000);
+		*/
 	}
-	componentWillUnmount(){
-		document.removeEventListener("clearAllGeometry", this.clearAllGeometry);
+
+	shouldComponentUpdate(){
+		return !LeafletEventHandlers.isEditingGeometry();
 	}
 
 	// Render Method
 	render() {
-		// Which baselayer type
-		let baseLayers = [];
 
-		// Default CRS (per leaflet docs)
-		// NOTE: CRS can only be set on <MAP> creation, changing it after the fact won't do anything
-		switch (this.props.mapPreview.current.type) {
+		// FIXME: These are a bit awkward
+		LeafletEventHandlers.props = this.props;
+		LeafletSupport.props = this.props;
+		LeafletSupport.onMapDidLoad = this.onMapDidLoad.bind(this);
 
-			// Map layer
-			case TYPE.BASELAYER_TYPE.MAP:
-				if(typeof this.props.mapPreview.current.tileLayer !== 'undefined'){
-					baseLayers.push(
-						<LayersControl.BaseLayer key={this.props.mapPreview.current.tileLayer.slug}
-												 name={this.props.mapPreview.current.tileLayer.displayName}
-												 checked={true}>
-							<TileLayer 	attribution={this.props.mapPreview.current.tileLayer.attribution}
-									   	url={this.props.mapPreview.current.tileLayer.url}
-								   		onLoad={(e) => this.onMapDidLoad(e)}/>
-						</LayersControl.BaseLayer>
-					);
-				}
-				break;
+		// Baselayer setup
+		this.baseLayers = LeafletSupport.baseLayerSetup(this.props.mapPreview.current.type);
 
-			// Image layers use a different CRS
-			// https://leafletjs.com/examples/crs-simple/crs-simple.html
-			case TYPE.BASELAYER_TYPE.IMAGE:
+		// Parse out the records
+		this.geometry = LeafletSupport.geometrySetup(this.props.records);
 
-				// This kicks off an image overlay that is not drawn correctly,
-				// so we zero the bounds and use it as a hook to an onload handler
-				// This is awkward but not wasted - we need to load the image to get
-				// the dimensions anyway.
-				baseLayers.push(
-					<LayersControl.BaseLayer key={TYPE.BASELAYER_TYPE.IMAGE}
-											 name={this.props.mapPreview.current.image_address}
-											 checked={true}>
-						<ImageOverlay bounds={[[0,0], [0,0]]}
-								      url={this.props.mapPreview.current.image_address}
-								  	  attribution={this.props.mapPreview.current.image_attribution}
-								  	  onLoad={(e) => this.onMapDidLoad(e)}/>
-					</LayersControl.BaseLayer>
-				);
-				break;
 
-			// Custom tile (same as map), FIXME: factor into map case?
-		 	case TYPE.BASELAYER_TYPE.TILE:
-				if(this.props.mapPreview.current.tile_address !== null){
-					baseLayers.push(
-						<LayersControl.BaseLayer key={TYPE.BASELAYER_TYPE.TILE}
-												 name={this.props.mapPreview.current.tile_attribution}
-												 checked={true}>
-							<TileLayer 	attribution={this.props.mapPreview.current.tile_attribution}
-									   	url={this.props.mapPreview.current.tile_address}
-								   		onLoad={(e) => this.onMapDidLoad(e)}/>
-						</LayersControl.BaseLayer>
-					);
-				}
-				break;
-
-			// WMS
-			case TYPE.BASELAYER_TYPE.WMS:
-				if(this.props.mapPreview.current.wms_address !== null){
-					baseLayers.push(
-						<LayersControl.BaseLayer key={TYPE.BASELAYER_TYPE.WMS}
-												 name={this.props.mapPreview.current.wms_address}
-												 checked={true}>
-
-							 <WMSTileLayer
-								   attribution={this.props.mapPreview.current.wms_attribution}
-							       url={this.props.mapPreview.current.wms_address}
-								   layers={this.props.mapPreview.current.wms_layers}
-							       onLoad={(e) => this.onMapDidLoad(e)}/>
-						  </LayersControl.BaseLayer>
-					);
-				}
-				break;
-
-			default:
-				console.error("Unknown baselayer type: "+this.props.mapPreview.current.type);
-				break;
-		}
-
-		// Other options
-		for (let x = 0; x < this.props.mapPreview.current.basemapOptions.length; x++) {
-			let thisTileLayer = this.props.mapPreview.current.basemapOptions[x];
-
-			// Don't allow duplicate
-			if ((typeof this.props.mapPreview.current.tileLayer !== 'undefined') && thisTileLayer.slug !== this.props.mapPreview.current.tileLayer.slug) {
-				baseLayers.push(
-					<LayersControl.BaseLayer key={thisTileLayer.slug} name={thisTileLayer.displayName} checked={false}>
-						<TileLayer attribution={thisTileLayer.attribution} url={thisTileLayer.url}/>
-					</LayersControl.BaseLayer>
-				);
-			}
-		}
-
-		const { records, recordClick, mapClick, recordMouseEnter, recordMouseLeave} = this.props;
-	   	const position = [51.505, -0.09];
-		return (
+			return (
 				<div style={{height:'100%'}}>
 
-					{/* Reminder to save the map */}
 					<AlertBar isVisible={this.props.mapPreview.hasUnsavedChanges}
 							  message="You have unsaved changes"/>
 
 					<Map ref='map'
-						 center={position}
+						 center={[51.505, -0.09]}
 						 zoom={13}
 						 className={this.props.mapPreview.hasUnsavedChanges?"ps_n3_mapComponent_withWarning":"ps_n3_mapComponent"}
 						 onClick={(event) => {
 							if (event.originalEvent.target === event.target.getContainer())
-								mapClick();
+								this.props.mapClick();
 							}}>
 
 
 					<LayersControl position='topright'>
-
-						{baseLayers}
-
-						{/* Conditional, featuregroup appears if this.props is true */}
+						{this.baseLayers}
 						{(this.props.editorRecord || this.props.editorNewRecord) &&
-								<FeatureGroup>
-									<EditControl position='topleft'
-												 onEdited={this._onEdited}
-												 onCreated={this._onCreated}
-											 	 onDeleted={this._onDeleted}
-												 onMounted={this._onMounted}
-												 onEditStart={this._onEditStart}
-												 onEditStop={this._onEditStop}
-											 	 onDeleteStart={this._onDeleteStart}
-												 onDeleteStop={this._onDeleteStop}
-												 draw={{
-												 	rectangle: false,
-													marker: false
-												 }}/>
-								</FeatureGroup>
+							<FeatureGroup ref='editableFeaturegroup'>
+
+
+								<EditControl position='topleft'
+											 onEdited={LeafletEventHandlers.onEdited}
+											 onCreated={LeafletEventHandlers.onCreated}
+										 	 onDeleted={LeafletEventHandlers.onDeleted}
+											 onMounted={LeafletEventHandlers.onMounted}
+											 onEditStart={
+											 	()=>{
+													console.log("Editing started...");
+													LeafletEventHandlers.onEditStart();
+												}
+											 }
+											 onEditStop={LeafletEventHandlers.onEditStop}
+										 	 onDeleteStart={LeafletEventHandlers.onDeleteStart}
+											 onDeleteStop={LeafletEventHandlers.onDeleteStop}
+											 draw={this.drawingOptions}/>
+									 		{(this.geometry !== null) && this.geometry.editable}
+
+							</FeatureGroup>
 						}
 					</LayersControl>
-
-						{records.map(record => {
-								const isSelected = record === this.props.selectedRecord;
-							    //const isPreviewed = record === this.props.previewedRecord;
-
-								if (record['o:is_wms']) {
-									return (
-									<LayersControl.Overlay name={record['o:title']} checked={true} key={record['o:id'] + '_wms'}>
-										<WMSTileLayer url={record['o:wms_address']} layers={record['o:wms_layers']} transparent={true} format='image/png' opacity={0.8}/>
-									</LayersControl.Overlay>)
-
-								} else if (record['o:is_coverage']) {
-
-									// Sometimes JSON arrives as string, but component below will barf on that, so we cast it
-									let recordToUse=record['o:coverage'];
-									if(typeof recordToUse === 'string'){
-										recordToUse=JSON.parse(recordToUse);
-									}
-
-
-									// Use preview
-									let record_id = record['o:id'];
-									let geometry_id = `geometry_${record_id}`;
-									let previewStyle = this.props.mapPreview.current.geometryStyle['default'];
-									if(record_id in this.props.mapPreview.current.geometryStyle){
-										previewStyle = this.props.mapPreview.current.geometryStyle[record_id];
-									}
-
-									let coverageStyle = ()=>{
-										return({
-											...this.props.mapPreview.current.geometryStyle[record['default']],
-											stroke:true,
-											color: isSelected?previewStyle.strokeColor_selected:previewStyle.strokeColor,
-											weight: previewStyle.stroke_weight,
-											opacity: isSelected?previewStyle.stroke_opacity_selected:previewStyle.stroke_opacity,
-											fill:true,
-											fillColor: isSelected?previewStyle.fillColor_selected:previewStyle.fillColor,
-											//fill: feature.geometry.type !== 'LineString',
-											fillOpacity: isSelected ? previewStyle.fill_opacity_selected : previewStyle.fill_opacity
-										});
-									};
-
-									return (
-										<GeoJSON
-											ref={geometry_id}
-											style={
-												function(feature, layer) {
-													// If the geometry is a line, get rid of fill
-													let style=coverageStyle();
-													if(feature.geometry.type === 'LineString'){
-															style.fillColor='transparent';
-													}
-													return style;
-												}
-											}
-											onClick={() => recordClick(record)}
-											onMouseover={() => recordMouseEnter(record)}
-											onMouseout={recordMouseLeave}
-											data={recordToUse}
-											pointToLayer={function(point, latlng) {return circleMarker(latlng);}}
-											onEachFeature={
-												function(feature, layer) {
-													this.props.addLayer(record['o:id'], layer);
-												}.bind(this)} key={record['o:id'] + '_coverage'
-											}/>);
-
-								}
-
-								return null;
-							})
-
-					}
+					{(this.geometry !== null) && this.geometry.uneditable}
 				</Map>
 			</div>
 		)
@@ -436,7 +248,7 @@ const mapStateToProps = state => ({
 	previewedRecord: state.exhibitShow.previewedRecord,
 	editorRecord: state.exhibitShow.editorRecord,
 	editorNewRecord: state.exhibitShow.editorNewRecord,
-	recordLayers: state.recordMapLayers.recordLayers
+	recordLayers: state.recordMapLayers.layers
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -445,8 +257,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 	recordMouseEnter: record => previewRecord(record),
 	recordMouseLeave: unpreviewRecord,
 	change,
-	addLayer,
-	resetLayers,
+	addLayerTo,
+	removeLayerFrom,
 	dispatch
 }, dispatch);
 

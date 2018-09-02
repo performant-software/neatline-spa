@@ -61,6 +61,11 @@ export const EXHIBIT_PATCH_SUCCESS = 'exhibitUpdate/EXHIBIT_POST_SUCCESS';
 export const EXHIBIT_PATCH_ERRORED = 'exhibitUpdate/EXHIBIT_POST_ERRORED';
 
 
+// Layers
+export const LAYER_ADDED = 'LAYER_ADDED';
+export const LAYER_REMOVED = 'LAYER_REMOVED';
+export const LAYER_CLEAR = 'LAYER_CLEAR';
+
 
 // Exhibits
 export const EXHIBIT_CREATED = 'exhibitCreate/EXHIBIT_CREATED';

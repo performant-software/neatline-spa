@@ -1,6 +1,5 @@
 import { urlFormat, exhibitsEndpoint } from '../../sagas/api_helper.js';
-import { push } from 'react-router-redux';
-
+import history from '../../history';
 export const EXHIBIT_CREATED = 'exhibitCreate/EXHIBIT_CREATED';
 export const EXHIBIT_POST_SUCCESS = 'exhibitCreate/EXHIBIT_POST_SUCCESS';
 export const EXHIBIT_POST_ERRORED = 'exhibitCreate/EXHIBIT_POST_ERRORED';
@@ -65,7 +64,7 @@ export function createExhibit(exhibit) {
       .then(() => dispatch({
         type: EXHIBIT_POST_SUCCESS
       }))
-      .then(() => dispatch(push(`${window.baseRoute}/`)))
+      .then(() => history.push(`${window.baseRoute}/`))
       .catch(() => dispatch({
         type: EXHIBIT_POST_ERRORED
       }));

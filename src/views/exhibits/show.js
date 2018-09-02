@@ -1,10 +1,8 @@
 import 'react-tabs/style/react-tabs.css';
-import * as TYPE from '../../types';
 import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Route} from 'react-router-dom';
-import {Link} from 'react-router-dom';
+import {Route, Link} from 'react-router-dom';
 import {fetchExhibitWithRecords, setTabIndex, unsetEditorRecord} from '../../reducers/not_refactored/exhibitShow';
 import ExhibitUpdate from './update';
 import ExhibitPublicMap from '../../components/ExhibitPublicMap';
@@ -45,29 +43,24 @@ class ExhibitShow extends Component {
 		this.props.fetchExhibitWithRecords(this.props.match.params.slug);
 	}
 
-	componentWillReceiveProps(nextprops) {
-		// If we're loading a new record
-		if (nextprops.editorNewRecord) {
-
-			// Clear the temporary array
-			const {recordLayers} = this.props;
-			recordLayers[TYPE.TEMPORARY]=[];
-		}
-	}
-
 	saveAll = (event) => {
-		// Cache intial values
+		// Save the cache to the DB
 		this.props.dispatch(
 			recordCacheToDatabase(
 				{
 					exhibit:this.props.exhibitPreview.cache,
-					records:this.props.mapPreview.cache
+					records:this.props.mapPreview.cache,
+					selectedRecord:this.props.selectedRecord
 				}
 			)
 		);
 	}
 
 	render() {
+		// Wait for records to load
+		if(this.props.recordsLoading){
+			return null;
+		}
 		const props = this.props;
 		const {exhibit} = props;
 
@@ -127,6 +120,7 @@ class ExhibitShow extends Component {
 					<RecordInfoPanel/>
 				</div>
 			</div>);
+
 		} else if (props.exhibitsLoading) {
 			exhibitDisplay = <ExhibitShowHeader>Loading...</ExhibitShowHeader>;
 		} else if (props.exhibitsErrored) {

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Field, reduxForm, change} from 'redux-form';
 import {Tabs, TabList, Tab, TabPanel} from 'react-tabs';
 import {connect} from 'react-redux';
-import {preview_update,preview_init,setUnsavedChanges,updateRecordCache,removeRecordFromCache} from '../../actions';
+import {preview_update,preview_init,setUnsavedChanges,updateRecordCache,removeRecordFromCache,clearLayers} from '../../actions';
 import ColorPicker from './colorPicker.js'
 import DatePicker from './datePicker.js';
 import {strings} from '../../i18nLibrary';
@@ -12,6 +12,7 @@ import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
 import * as TYPE from '../../types';
 import moment from 'moment';
+import {bindActionCreators} from 'redux';
 
 //import * as TYPE from '../../types';
 const defaultValues = {
@@ -63,7 +64,7 @@ class RecordForm extends Component {
 	componentDidMount(){
 		// Cache intial values
 		if(typeof this.props.initialValues["o:id"] === 'undefined'){
-			this.props.initialValues["o:id"] = TYPE.TEMPORARY;
+			this.props.initialValues["o:id"] = TYPE.NEW_UNSAVED_RECORD;
 		}
 		this.props.dispatch(updateRecordCache({setValues:this.props.initialValues}));
 
@@ -356,14 +357,6 @@ class RecordForm extends Component {
 		}
 	}
 
-	// Calls clear geometry event, is picked up in map component
-	// FIXME: To keep with new architecture, this should properly be a saga
-	clearGeometry = () => {
-		this.markUnsaved();
-		var event = new Event("clearAllGeometry");
-		document.dispatchEvent(event);
-	}
-
 	// Delete a record
 	deleteRecord = () => {
 		// 1. Remove from Cache
@@ -373,10 +366,11 @@ class RecordForm extends Component {
 		this.handleDelete();
 	}
 
-	render(){
 
+	render(){
 		let thisRecord = this.props.mapPreview.cache[this.props.initialValues['o:id']];
 		let isSelected = (this.props.selectedRecord && this.state.recordID === this.props.selectedRecord["o:id"]);
+
 		return (
 			<form className='ps_n3_exhibit-form' onSubmit={this.handleSubmit}>
 
@@ -390,7 +384,6 @@ class RecordForm extends Component {
 					{this.showDelete &&
 						<div>
 							<div className="ps_n3_button" onClick={this.deleteRecord} type='button'>Delete</div>
-							<div className="ps_n3_button" onClick={this.clearGeometry} type='button'>Clear</div>
 						</div>
 					}
 				</div>
@@ -727,7 +720,7 @@ class RecordForm extends Component {
 	}
 }
 
-RecordForm = reduxForm({form: 'record'})(RecordForm);
+RecordForm = reduxForm({form:'record',enableReinitialize:true})(RecordForm);
 const mapStateToProps = state => ({
 	mapPreview: state.mapPreview,
 	selectedRecord: state.exhibitShow.selectedRecord,
@@ -741,5 +734,8 @@ const mapStateToProps = state => ({
 		}
 });
 
+const mapDispatchToProps = dispatch => bindActionCreators({
+	clearLayers
+}, dispatch);
 
-export default connect(mapStateToProps, null)(RecordForm);
+export default connect(mapStateToProps, mapDispatchToProps)(RecordForm);

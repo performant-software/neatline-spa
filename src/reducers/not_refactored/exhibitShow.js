@@ -5,8 +5,7 @@ import {
 	parseRecordsJSON,
 	parseExhibitsJSON
 } from '../../sagas/api_helper.js';
-import {push} from 'react-router-redux';
-
+import history from '../../history';
 import * as ACTION_TYPE from '../../actions/action-types';
 
 const initialState = {
@@ -23,6 +22,7 @@ const initialState = {
 };
 
 export default function(state = initialState, action) {
+
 	switch (action.type) {
 		case ACTION_TYPE.EXHIBIT_LOADING:
 			return {
@@ -59,10 +59,17 @@ export default function(state = initialState, action) {
 			};
 
 		case ACTION_TYPE.RECORD_SELECTED:
-			return {
-				...state,
-				selectedRecord: action.record
-			};
+			if(typeof action.payload !== 'undefined' && action.payload !== null){
+				console.log("Selecting Record: "+action.payload["o:id"]);
+				return {
+					...state,
+					selectedRecord: action.record
+				};
+			}else{
+				return {
+					...state,
+				};
+			}
 
 		case ACTION_TYPE.RECORD_DESELECTED:
 			return {
@@ -109,6 +116,7 @@ export default function(state = initialState, action) {
 				tabIndex: 2
 			}
 
+
 		case ACTION_TYPE.EDITOR_CLOSE_NEW_RECORD:
 			return {
 				...state,
@@ -133,8 +141,8 @@ export default function(state = initialState, action) {
 			return {
 				...state,
 				records: state.records.filter(r => r['o:id'].toString() !== action.record['o:id'].toString()).concat(action.record),
-				editorRecord:action.record,
-				selectedRecord: action.record
+				editorRecord:action.record
+				/*selectedRecord: action.record*/
 			}
 
 		case ACTION_TYPE.RECORD_REMOVED:
@@ -201,10 +209,7 @@ function setExhibitBySlugAndFetchRecords(exhibits, slug, dispatch) {
 
 export function fetchExhibitWithRecords(slug) {
 	return function(dispatch, getState) {
-		dispatch({
-			type: ACTION_TYPE.EXHIBIT_LOADING,
-			loading: true
-		});
+		dispatch({type: ACTION_TYPE.EXHIBIT_LOADING,loading: true});
 		const exhibits = getState().exhibits.exhibits;
 		if (exhibits && exhibits.length > 0)
 			return setExhibitBySlugAndFetchRecords(exhibits, slug, dispatch);
@@ -243,7 +248,7 @@ export function selectRecord(record) {
 				type: ACTION_TYPE.RECORD_SELECTED,
 				record
 			});
-			dispatch(push(`${window.baseRoute}/show/${getState().exhibitShow.exhibit['o:slug']}/edit/${record['o:id']}`));
+			history.push(`${window.baseRoute}/show/${getState().exhibitShow.exhibit['o:slug']}/edit/${record['o:id']}`);
 		}
 	}
 }
@@ -292,7 +297,7 @@ export function unsetEditorRecord() {
 		dispatch({type: ACTION_TYPE.EDITOR_RECORD_UNSET});
 		const exhibit = getState().exhibitShow.exhibit;
 		if (exhibit)
-			dispatch(push(`${window.baseRoute}/show/${exhibit['o:slug']}`))
+			history.push(`${window.baseRoute}/show/${exhibit['o:slug']}`)
 	}
 }
 

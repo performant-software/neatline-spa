@@ -21,4 +21,4 @@ export const EXHIBIT_DEFAULT_VALUES = Object.freeze({
 });
 
 // Marks record temporary (new record, pre-save)
-export const TEMPORARY = -1;
+export const NEW_UNSAVED_RECORD = -1;

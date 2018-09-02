@@ -1,6 +1,5 @@
 import {urlFormat, recordsEndpoint, exhibitsEndpoint, parseExhibitsJSON} from './api_helper.js';
 import {put, takeLatest, all} from 'redux-saga/effects';
-//import { push } from 'react-router-redux';
 import {strings} from '../i18nLibrary';
 
 
@@ -43,7 +42,7 @@ function* createRecord(action) {
 		let response_json = yield response.json();
 		yield put({type: ACTION_TYPE.CREATE_RECORD_RESPONSE_RECEIVED, payload: response_json});
 
-		// Failed on the fetch call (timeout, etc)
+	// Failed on the fetch call (timeout, etc)
 	} catch (e) {
 		yield put({
 			type: ACTION_TYPE.RECORD_ERROR,
@@ -134,7 +133,7 @@ function* updateRecord(action) {
 function* updateRecordResponseReceived(action) {
 	// On success...
 	if (typeof action.payload.errors === 'undefined') {
-		yield put({type: ACTION_TYPE.EDITOR_RECORD_SET});
+		//yield put({type: ACTION_TYPE.EDITOR_RECORD_SET, record: action.payload});
 		yield put({type: ACTION_TYPE.RECORD_REPLACED, record: action.payload});
 
 	// On failure...
@@ -147,6 +146,7 @@ function* updateRecordResponseReceived(action) {
 function* saveCacheToDatabase(action) {
 	let records = action.payload.records;
 	let exhibit = action.payload.exhibit;
+	let selectedRecord = action.payload.selectedRecord;
 
 	// Create if there's a new one
 	if(typeof action.payload.records[-1] !== 'undefined'){
@@ -168,6 +168,9 @@ function* saveCacheToDatabase(action) {
 	if (exhibit !== 'undefined') {
 		yield put({type: ACTION_TYPE.EXHIBIT_UPDATE, payload:exhibit});
 	}
+
+	// Restore selected record
+	yield put({type: ACTION_TYPE.RECORD_SELECTED,payload:selectedRecord});
 }
 
 function* fetchExhibits(action) {
@@ -183,7 +186,7 @@ function* fetchExhibits(action) {
 		const response = yield fetch(url);
 		yield put({type: ACTION_TYPE.EXHIBIT_FETCH_RESPONSE_RECEIVED, payload: response});
 
-		// Failed on the fetch call (timeout, etc)
+	// Failed on the fetch call (timeout, etc)
 	} catch (e) {
 		yield put({
 			type: ACTION_TYPE.EXHIBITS_LOADING,

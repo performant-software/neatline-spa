@@ -31,3 +31,7 @@ export const updateExhibit = (payload) => action(ACTION_TYPE.EXHIBIT_UPDATE,payl
 export const clearRecordCache = () => action(ACTION_TYPE.RECORD_CACHE_CLEAR);
 export const removeRecordFromCache = (payload) => action(ACTION_TYPE.RECORD_CACHE_REMOVE_RECORD,payload);
 export const clearUnsavedRecordCache = () => action(ACTION_TYPE.RECORD_CACHE_CLEAR_UNSAVED);
+
+export const removeLayerFrom = (payload) => action(ACTION_TYPE.LAYER_REMOVED,payload);
+export const addLayerTo = (payload) => action(ACTION_TYPE.LAYER_ADDED,payload);
+export const clearLayers = () => action(ACTION_TYPE.LAYER_CLEAR);
