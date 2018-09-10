@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { push } from 'react-router-redux';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 //import { fetchExhibits } from '../../reducers/not_refactored/exhibits';
 import { resetExhibit } from '../../reducers/not_refactored/exhibitShow';
 import { deleteExhibit } from '../../reducers/not_refactored/exhibitDelete';
 import { strings } from '../../i18nLibrary';
-
+import history from '../../history';
 import {fetchExhibits} from '../../actions';
 
 class Exhibits extends Component {
@@ -86,7 +85,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
   fetchExhibits,
   resetExhibit,
-  createExhibitView: () => push(`${window.baseRoute}/add`),
+  createExhibitView: () => history.push(`${window.baseRoute}/add`),
   deleteExhibit,
   dispatch
 }, dispatch);

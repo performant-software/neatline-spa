@@ -1,15 +1,19 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
 import Exhibits from '../exhibits';
 import ExhibitShow from '../exhibits/show';
 import ExhibitCreate from '../exhibits/create';
+import {Router, Route, Switch} from 'react-router-dom';
+import history from '../../history';
 
 const App = () => (
-  <main id="ps_n3_main">
-    <Route exact path={`${window.baseRoute}/`} component={Exhibits} />
-    <Route path={`${window.baseRoute}/add`} component={ExhibitCreate} />
-    <Route path={`${window.baseRoute}/show/:slug`} component={ExhibitShow} />
-  </main>
+	<main id="ps_n3_main">
+	<Router history={history}>
+		<Switch>
+			<Route exact path={`${window.baseRoute}/`} component={Exhibits}/>
+			<Route path={`${window.baseRoute}/add`} component={ExhibitCreate}/>
+			<Route path={`${window.baseRoute}/show/:slug`} component={ExhibitShow}/>
+		</Switch>
+	</Router>
+	</main>
 );
-
 export default App;

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
+import history from '../../history';
 import {Field, reduxForm, change, formValueSelector} from 'redux-form'
 import {connect} from 'react-redux';
 import {
@@ -8,7 +9,6 @@ import {
 	set_availableTileLayers,
 	setUnsavedChanges,
 	updateExhibitCache} from '../../actions';
-import {replace} from 'react-router-redux'
 import * as TYPE from '../../types';
 
 class ExhibitForm extends Component {
@@ -197,7 +197,7 @@ class ExhibitForm extends Component {
 			let nextSlug = nextprops.exhibit['o:slug'];
 			if(this.currentSlug !== nextSlug && nextSlug.length > 0){
 				this.setState({currentSlug:nextSlug});
-				this.props.dispatch(replace(window.baseRoute + '/show/' + nextSlug));
+				history.replace(window.baseRoute + '/show/' + nextSlug);
 				this.currentSlug=nextSlug;
 			}
 		}
