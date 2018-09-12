@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Route, Link} from 'react-router-dom';
-import {fetchExhibitWithRecords, setTabIndex, unsetEditorRecord} from '../../reducers/not_refactored/exhibitShow';
+import {fetchExhibitWithRecords, setTabIndex, deselectRecord} from '../../actions';
 import ExhibitUpdate from './update';
 import ExhibitPublicMap from '../../components/ExhibitPublicMap';
 import RecordInfoPanel from '../../components/info';
@@ -14,6 +14,8 @@ import RecordUpdate from '../records/update';
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import { strings } from '../../i18nLibrary';
 import {recordCacheToDatabase} from '../../actions';
+import LockOverlay from '../../components/LockOverlay';
+import SpinnerOverlay from '../../components/SpinnerOverlay';
 
 const ExhibitShowHeader = props => (
 	<div>
@@ -41,20 +43,27 @@ const RecordEditor = props => {
 class ExhibitShow extends Component {
 	componentWillMount() {
 		this.props.fetchExhibitWithRecords(this.props.match.params.slug);
+		document.addEventListener("saveAll", this.saveAll);
+	}
+
+	componentWillUnMount(){
+		document.removeEventListener("saveAll", this.saveAll);
 	}
 
 	saveAll = (event) => {
 		// Save the cache to the DB
+		console.log("Dispatching save...");
 		this.props.dispatch(
 			recordCacheToDatabase(
 				{
-					exhibit:this.props.exhibitPreview.cache,
-					records:this.props.mapPreview.cache,
+					exhibit:this.props.exhibitCache.cache,
+					records:this.props.mapCache.cache,
 					selectedRecord:this.props.selectedRecord
 				}
 			)
 		);
 	}
+
 
 	render() {
 		// Wait for records to load
@@ -65,6 +74,10 @@ class ExhibitShow extends Component {
 		const {exhibit} = props;
 
 		let exhibitDisplay = <ExhibitShowHeader>{strings.loading}</ExhibitShowHeader>;
+
+		let recordTitle = props.editorNewRecord?strings.new_record:props.editorRecord?props.editorRecord['o:title']:'';
+		    recordTitle =(recordTitle === null || recordTitle.length === 0)?"???":recordTitle;
+
 		if (exhibit) {
 			exhibitDisplay = (
 				<div className='exhibit-public' style={{
@@ -79,7 +92,11 @@ class ExhibitShow extends Component {
 							}}/>
 				}
 				<div className="ps_n3_exhibitShowContainer">
-					<ExhibitShowHeader onSave={this.saveAll}>{exhibit['o:title']}</ExhibitShowHeader>
+					<SpinnerOverlay isVisible={this.props.leaflet.isSaving}/>
+					<LockOverlay isVisible={this.props.leaflet.isEditing}/>
+					<ExhibitShowHeader onSave={this.saveAll}>
+						{exhibit['o:title']}
+					</ExhibitShowHeader>
 					<Tabs selectedIndex={props.tabIndex} onSelect={tabIndex => props.setTabIndex(tabIndex)}>
 						<TabList>
 							<Tab>{strings.exhibit}</Tab>
@@ -90,14 +107,13 @@ class ExhibitShow extends Component {
 										: 'hidden',
 									maxWidth: '100px'
 								}}>
-								{props.editorNewRecord?strings.new_record:props.editorRecord?props.editorRecord['o:title']:''}
+								{recordTitle}
 								<span onClick={e => {
-										props.unsetEditorRecord();
+										props.deselectRecord();
 										e.stopPropagation();
 									}} style={{
 										fontWeight: 'bold'
-									}}>
-									x</span>
+									}}> [x]</span>
 							</Tab>
 						</TabList>
 						<TabPanel>
@@ -117,7 +133,7 @@ class ExhibitShow extends Component {
 						position: 'relative'
 					}}>
 					<ExhibitPublicMap/>
-					<RecordInfoPanel/>
+					<RecordInfoPanel isVisible={!this.props.leaflet.isEditing}/>
 				</div>
 			</div>);
 
@@ -135,8 +151,8 @@ class ExhibitShow extends Component {
 const mapStateToProps = state => ({
 	userSignedIn: state.user.userSignedIn,
 	exhibit: state.exhibitShow.exhibit,
+	leaflet: state.leaflet,
 	records: state.exhibitShow.records,
-	recordLayers: state.recordMapLayers.recordLayers,
 	recordsLoading: state.exhibitShow.loading,
 	recordsErrored: state.exhibitShow.errored,
 	exhibitNotFound: state.exhibitShow.exhibitNotFound,
@@ -145,14 +161,14 @@ const mapStateToProps = state => ({
 	editorNewRecord: state.exhibitShow.editorNewRecord,
 	tabIndex: state.exhibitShow.tabIndex,
 
-	mapPreview: state.mapPreview,
-	exhibitPreview: state.exhibitPreview
+	mapCache: state.mapCache,
+	exhibitCache: state.exhibitCache
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
 	fetchExhibitWithRecords,
 	setTabIndex,
-	unsetEditorRecord,
+	deselectRecord,
 	dispatch
 }, dispatch);
 

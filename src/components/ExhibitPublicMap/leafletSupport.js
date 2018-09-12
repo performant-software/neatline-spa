@@ -9,7 +9,8 @@ import {
 	ImageOverlay
 } from 'react-leaflet';
 import uuid from 'uuid-random';
-
+import L from 'leaflet';
+import Draw from 'leaflet-draw'; // eslint-disable-line
 const leafletSupport = {
 
 	// Drawing options
@@ -57,7 +58,7 @@ const leafletSupport = {
 			return null;
 		}
 
-		let leafletGeometry = [];
+		let convertedGeometry = [];
 		if (typeof geojson.features !== 'undefined') {
 			geojson.features.forEach((currentFeature, idx) => {
 
@@ -66,6 +67,11 @@ const leafletSupport = {
 				switch (currentFeature.geometry.type) {
 
 					case "Polygon":
+						let options = style;
+						let polygon = L.polygon(positions,options);
+						convertedGeometry.push(polygon);
+
+						/*
 						leafletGeometry.push(<Polygon	key={`polygon_${key_id}`}
 														positions={positions}
 														stroke={style.stroke}
@@ -75,33 +81,17 @@ const leafletSupport = {
 														fill={style.fill}
 														fillColor={style.fillColor}
 														fillOpacity={style.fillOpacity}
-														dashArray="4"/>);
+														dashArray="4"/>);*/
 						break;
 
 					case "Circle":
-						leafletGeometry.push(<Circle key={`circle_${key_id}`} positions={positions} radius="90000" color="purple"/>);
+						//leafletGeometry.push(<Circle key={`circle_${key_id}`} positions={positions} radius="90000" color="purple"/>);
 						break;
 
 					case "Point":
-						/*
-							// Build circles from points with props
-							// FIXME: Needs to check for props, not stored currently
-							geoJSON.features.forEach(
-								(feature,idx) => {
-									// Circles stored as feature properties
-									if(feature.geometry.type === 'Point'){
-										circles.push(<Circle 	key={`circle_${idx}`}
-																center={{lat:feature.geometry.coordinates[1], lng: feature.geometry.coordinates[0]}}
-																fillColor="red"
-																radius={99000.000}/>);
-									}else{
-										nonCircles.features.push(feature);
-									}
-								}
-							);
-							*/
+						// FIXME: Check for circles (points with radius)
 						let position = positions[0];
-						leafletGeometry.push(<Marker 	key={`marker_${key_id}`}
+						/*leafletGeometry.push(<Marker 	key={`marker_${key_id}`}
 														position={position}
 														stroke={style.stroke}
 														color={style.color}
@@ -110,21 +100,21 @@ const leafletSupport = {
 														fill={style.fill}
 														fillColor={style.fillColor}
 														fillOpacity={style.fillOpacity}
-														dashArray="4"/>);
+														dashArray="4"/>);*/
 						break;
 
 					case "LineString":
-						//console.log(positions);
-						leafletGeometry.push(<Polyline 	key={`polyline_${key_id}`}
+					case "MultiLineString":
+						/*leafletGeometry.push(<Polyline 	key={`polyline_${key_id}`}
 														positions={positions}
 														stroke={style.stroke}
 														color={style.color}
 														weight={style.weight}
 														opacity={parseFloat(style.opacity)}
 														fill={style.fill}
-														fillColor={style.fillColor}
+														fillColor='transparent'
 														fillOpacity={style.fillOpacity}
-														dashArray="4"/>);
+														dashArray="4"/>);*/
 						break;
 
 					default:
@@ -133,24 +123,25 @@ const leafletSupport = {
 
 			});
 		}
-		return leafletGeometry;
+		return convertedGeometry;
 	},
 
 	// Setup the correct baselayer
-	baseLayerSetup: (baselayerType) => {
+	mapInit: (currentMapCache,mapInstance,selectedRecord) => {
 		let baseLayers=[];
+		let baselayerType = currentMapCache.type;
 		switch (baselayerType) {
 
 			// Known map layer
 			case TYPE.BASELAYER_TYPE.MAP:
-				if(typeof leafletSupport.props.mapPreview.current.tileLayer !== 'undefined'){
+				if(typeof currentMapCache.tileLayer !== 'undefined'){
 					baseLayers.push(
 						<LayersControl.BaseLayer key={TYPE.BASELAYER_TYPE.MAP}
-												 name={leafletSupport.props.mapPreview.current.tileLayer.displayName}
+												 name={currentMapCache.tileLayer.displayName}
 												 checked={true}>
-							<TileLayer 	attribution={leafletSupport.props.mapPreview.current.tileLayer.attribution}
-										url={leafletSupport.props.mapPreview.current.tileLayer.url}
-										onLoad={(e) => leafletSupport.onMapDidLoad(e)}/>
+							<TileLayer 	attribution={currentMapCache.tileLayer.attribution}
+										url={currentMapCache.tileLayer.url}
+										onLoad={(e) => leafletSupport.onMapDidLoad(e,currentMapCache,mapInstance,selectedRecord)}/>
 						</LayersControl.BaseLayer>
 					);
 				}
@@ -159,14 +150,14 @@ const leafletSupport = {
 
 			// Custom tile layer
 			case TYPE.BASELAYER_TYPE.TILE:
-				if(leafletSupport.props.mapPreview.current.tile_address !== null){
+				if(currentMapCache.tile_address !== null){
 					baseLayers.push(
 						<LayersControl.BaseLayer key={TYPE.BASELAYER_TYPE.TILE}
-												 name={leafletSupport.props.mapPreview.current.tile_attribution}
+												 name={currentMapCache.tile_attribution}
 												 checked={true}>
-							<TileLayer 	attribution={leafletSupport.props.mapPreview.current.tile_attribution}
-										url={leafletSupport.props.mapPreview.current.tile_address}
-										onLoad={(e) => leafletSupport.onMapDidLoad(e)}/>
+							<TileLayer 	attribution={currentMapCache.tile_attribution}
+										url={currentMapCache.tile_address}
+										onLoad={(e) => leafletSupport.onMapDidLoad(e,currentMapCache,mapInstance,selectedRecord)}/>
 						</LayersControl.BaseLayer>
 					);
 				}
@@ -180,45 +171,45 @@ const leafletSupport = {
 				// the dimensions anyway.
 				baseLayers.push(
 					<LayersControl.BaseLayer key={TYPE.BASELAYER_TYPE.IMAGE}
-											 name={leafletSupport.props.mapPreview.current.image_address}
+											 name={currentMapCache.image_address}
 											 checked={true}>
 						<ImageOverlay bounds={[[0,0], [0,0]]}
-									  url={leafletSupport.props.mapPreview.current.image_address}
-									  attribution={leafletSupport.props.mapPreview.current.image_attribution}
-									  onLoad={(e) => leafletSupport.onMapDidLoad(e)}/>
+									  url={currentMapCache.image_address}
+									  attribution={currentMapCache.image_attribution}
+									  onLoad={(e) => leafletSupport.onMapDidLoad(e,currentMapCache,mapInstance,selectedRecord)}/>
 					</LayersControl.BaseLayer>
 				);
 				break;
 
 			// WMS
 			case TYPE.BASELAYER_TYPE.WMS:
-				if(leafletSupport.props.mapPreview.current.wms_address !== null){
+				if(currentMapCache.wms_address !== null){
 					baseLayers.push(
 						<LayersControl.BaseLayer key={TYPE.BASELAYER_TYPE.WMS}
-												 name={leafletSupport.props.mapPreview.current.wms_address}
+												 name={currentMapCache.wms_address}
 												 checked={true}>
 
 							 <WMSTileLayer
-								   attribution={leafletSupport.props.mapPreview.current.wms_attribution}
-								   url={leafletSupport.props.mapPreview.current.wms_address}
-								   layers={leafletSupport.props.mapPreview.current.wms_layers}
-								   onLoad={(e) => leafletSupport.onMapDidLoad(e)}/>
+								   attribution={currentMapCache.wms_attribution}
+								   url={currentMapCache.wms_address}
+								   layers={currentMapCache.wms_layers}
+								   onLoad={(e) => this.onMapDidLoad(e,currentMapCache,mapInstance,selectedRecord)}/>
 						  </LayersControl.BaseLayer>
 					);
 				}
 				break;
 
 			default:
-				console.error("Unknown baselayer type: "+leafletSupport.props.mapPreview.current.type);
+				console.error("Unknown baselayer type: "+currentMapCache.type);
 				break;
 		}
 
 		// Other options
-		for (let x = 0; x < leafletSupport.props.mapPreview.current.basemapOptions.length; x++) {
-			let thisTileLayer = leafletSupport.props.mapPreview.current.basemapOptions[x];
+		for (let x = 0; x < currentMapCache.basemapOptions.length; x++) {
+			let thisTileLayer = currentMapCache.basemapOptions[x];
 
 			// Don't allow duplicate
-			if ((typeof leafletSupport.props.mapPreview.current.tileLayer !== 'undefined') && thisTileLayer.slug !== leafletSupport.props.mapPreview.current.tileLayer.slug) {
+			if ((typeof currentMapCache.tileLayer !== 'undefined') && thisTileLayer.slug !== currentMapCache.tileLayer.slug) {
 				baseLayers.push(
 					<LayersControl.BaseLayer key={thisTileLayer.slug} name={thisTileLayer.displayName} checked={false}>
 						<TileLayer attribution={thisTileLayer.attribution} url={thisTileLayer.url}/>
@@ -230,13 +221,17 @@ const leafletSupport = {
 		return baseLayers;
 	},
 
-	geometrySetup: (records) => {
+	//this.props.mapCache.current
+	//leafletSupport.props.selectedRecord
+	_geometrySetup: (records, onGeometryClick, mapCache, selectedRecord, onMouseEnter, onMouseLeave) => {
 		let editable_geometry=[];
 		let uneditable_geometry=[];
 		records.map(record => {
-			let isSelected = (record === leafletSupport.props.selectedRecord);
+			let isSelected = (record === selectedRecord);
 
 				if (record['o:is_wms']) {
+					// FIXME: Doesn't belong here anymore
+					console.error("I am probably broken");
 					uneditable_geometry.push(
 						<LayersControl.Overlay name={record['o:title']} checked={true} key={record['o:id'] + '_wms'}>
 							<WMSTileLayer url={record['o:wms_address']} layers={record['o:wms_layers']} transparent={true} format='image/png' opacity={0.8}/>
@@ -253,48 +248,76 @@ const leafletSupport = {
 					// Style for this geometry
 					let record_id = record['o:id'];
 					let geometry_id = `geometry_${record_id}`;
-					let previewStyle = leafletSupport.props.mapPreview.current.geometryStyle['default'];
-					if(record_id in leafletSupport.props.mapPreview.current.geometryStyle){
-						previewStyle = leafletSupport.props.mapPreview.current.geometryStyle[record_id];
+					let style = {
+						'o:stroke_width': 2,
+						'o:stroke_color': '#FF00FF',
+						'o:stroke_color_select': '#FF00FF',
+						'o:stroke_opacity': 1.0,
+						'o:stroke_opacity_select': 1.0,
+						'o:fill_opacity': 0.5,
+						'o:fill_color': '#FF00FF',
+						'o:fill_color_select': '#FF00FF'
+
+					};
+					if(record_id in mapCache){
+						style = mapCache[record_id];
+					}else{
+						console.log("**** MISSING STYLE CACHE - USING DEFAULT");
 					}
 
-					let coverageStyle = ()=>{
+					let coverageStyle = (record_id)=>{
 						return({
-							...leafletSupport.props.mapPreview.current.geometryStyle[record['default']],
 							stroke:true,
-							color: isSelected?previewStyle.strokeColor_selected:previewStyle.strokeColor,
-							weight: previewStyle.stroke_weight,
-							opacity: isSelected?previewStyle.stroke_opacity_selected:previewStyle.stroke_opacity,
 							fill:true,
-							fillColor: isSelected?previewStyle.fillColor_selected:previewStyle.fillColor,
-							fillOpacity: isSelected ? previewStyle.fill_opacity_selected : previewStyle.fill_opacity
+							weight: style["o:stroke_width"],
+							color: isSelected ? style["o:stroke_color_select"]:style["o:stroke_color"],
+							opacity: isSelected ? style["o:stroke_opacity_select"]:style["o:stroke_opacity"],
+							fillColor: isSelected ? style["o:fill_color_select"]:style["o:fill_color"],
+							fillOpacity: isSelected ? style["o:fill_opacity_select"]:style["o:fill_opacity"]
 						});
-					};
+					}
 
 					if(isSelected){
-						editable_geometry.push(leafletSupport.convertToVector(geoJSON, coverageStyle()));
+						editable_geometry = leafletSupport.convertToVector(geoJSON, coverageStyle(record_id));
 					}else{
-						uneditable_geometry.push(
-							<div key={geometry_id}>
-								<GeoJSON
-									key={geometry_id}
-									ref={geometry_id}
-									style={
-										function(feature, layer) {
-											// If the geometry is a line, get rid of fill
-											let style=coverageStyle();
-											if(feature.geometry.type === 'LineString'){
-													style.fillColor='transparent';
-											}
-											return style;
-										}
-									}
-									onClick={() => leafletSupport.props.recordClick(record)}
-									onMouseover={() => leafletSupport.props.recordMouseEnter(record)}
-									onMouseout={leafletSupport.props.recordMouseLeave}
-									data={geoJSON}/>
-							</div>
+
+						/*
+						// Build circles from points with props
+						// FIXME: Needs to check for props, not stored currently
+						geoJSON.features.forEach(
+							(feature,idx) => {
+								// Circles stored as feature properties
+								if(feature.geometry.type === 'Point'){
+									circles.push(<Circle 	key={`circle_${idx}`}
+															center={{lat:feature.geometry.coordinates[1], lng: feature.geometry.coordinates[0]}}
+															fillColor="red"
+															radius={99000.000}/>);
+								}else{
+									nonCircles.features.push(feature);
+								}
+							}
 						);
+						*/
+
+						var geoJSONLayer = L.geoJSON();
+						geoJSONLayer.addData(geoJSON);
+
+						geoJSONLayer.on('click',()=>{onGeometryClick(record)});
+
+						// FIXME: The mouse events are wrong
+						geoJSONLayer.on('onmouseover',()=>{onMouseEnter(record)});
+						geoJSONLayer.on('onmouseleave',()=>{onMouseLeave(record)});
+
+						geoJSONLayer.setStyle(function(feature, layer) {
+							// If the geometry is a line, get rid of fill
+							let style=coverageStyle(record_id);
+							if(feature.geometry.type === 'LineString' || feature.geometry.type === 'MultiLineString'){
+									style.fillColor='transparent';
+							}
+							return style;
+						});
+						uneditable_geometry.push(geoJSONLayer);
+
 					}
 				}
 				return null;
@@ -306,8 +329,170 @@ const leafletSupport = {
 			uneditable:uneditable_geometry
 			}
 		)
-	}
+	},
+
+	// Manipulate Map AFTER the map object loads, this is fired of a *child* of <Map/> because of load order
+	onMapDidLoad: (event,currentMapCache,mapInstance,selectedRecord)=>{
+
+			// Grab map object by ref
+			if(typeof mapInstance !== 'undefined'){
+				switch (currentMapCache.type) {
+
+					// Map layer
+					case TYPE.BASELAYER_TYPE.MAP: default:
+						// Remove any existing image layers
+						mapInstance.eachLayer(function(layer){
+							if(layer._image){
+								mapInstance.removeLayer(layer);
+							}
+						});
+						break;
+
+					// WMS layer
+					case TYPE.BASELAYER_TYPE.WMS:
+						// Remove any existing image layers
+						mapInstance.eachLayer(function(layer){
+							if(layer._image){
+								mapInstance.removeLayer(layer);
+							}
+						});
+						break;
+
+					// Image layer
+					case TYPE.BASELAYER_TYPE.IMAGE:
+						let url = currentMapCache.image_address;
+						let w = event.currentTarget.naturalWidth;
+						let h = event.currentTarget.naturalHeight;
+						let maxZoom = 4;
+						let southWest = mapInstance.unproject([0, h], maxZoom-1);
+						let northEast = mapInstance.unproject([w, 0], maxZoom-1);
+						let bounds = new L.LatLngBounds(southWest, northEast);
+
+						// Remove existing image layers
+						mapInstance.eachLayer(function(layer){
+							if(layer._image){
+								mapInstance.removeLayer(layer);
+							}
+						});
+
+						// Add image to map
+						L.imageOverlay(url, bounds).addTo(mapInstance);
+
+						// Add attribution
+						mapInstance.attributionControl.addAttribution(currentMapCache.image_attribution);
+
+						// Tell leaflet that the map is exactly as big as the image
+						mapInstance.setMaxBounds(bounds);
+
+						// Set zoom
+						mapInstance.setZoom(1);
+						mapInstance.setMaxZoom(maxZoom);
+
+
+						break;
+				}
+
+			}
+	},
+
+	drawingSetup: (mapInstance,selectedRecord,records,onGeometryClick,mapCache,onMouseEnter,onMouseLeave,saveChanges) => {
+
+
+		let geometry = leafletSupport._geometrySetup(
+					records,
+					onGeometryClick,
+					mapCache,
+					selectedRecord,
+					onMouseEnter,
+					onMouseLeave);
+
+		console.log("Drawing setup and map rebuild:"+selectedRecord);
+
+		mapInstance.eachLayer(function(layer){
+			if(typeof layer.feature !== 'undefined' && layer.feature.type === "Feature"){
+				mapInstance.removeLayer(layer);
+			}
+		});
+
+		if(leafletSupport.fg){
+			mapInstance.removeLayer(leafletSupport.fg);
+			mapInstance.removeControl(leafletSupport.drawControl);
+		}
+		leafletSupport.fg = new L.FeatureGroup(geometry.editable);
+		let options = leafletSupport.drawingOptions();
+			options = {
+				...options,
+				edit:{
+					featureGroup:leafletSupport.fg
+				}
+			}
+
+		leafletSupport.drawControl = new L.Control.Draw(options);
+		mapInstance.addControl(leafletSupport.drawControl);
+		leafletSupport.fg.addTo(mapInstance);
+
+		 geometry.uneditable.forEach(layer =>{
+			 layer.addTo(mapInstance);
+		 });
+
+
+		//////////////////////////////////////
+	    // Event handlers
+
+
+
+		mapInstance.off('draw:created');
+		mapInstance.on('draw:created', function (e) {
+			/*
+			// Save geometry to record when it is created
+			// if we don't have a record ID yet, use TYPE.NEW_UNSAVED_RECORD
+			let recordId = eventHandlers.props.editorRecord
+				? eventHandlers.props.editorRecord['o:id']
+				: TYPE.NEW_UNSAVED_RECORD;
+			eventHandlers.props.addLayerTo({record: recordId, layer: e.layer});
+			eventHandlers.onChange();
+			*/
+		});
+
+		/*
+		mapInstance.off('draw:deleted');
+		mapInstance.on('draw:deleted', function (e) {
+			let recordId = eventHandlers.props.editorRecord
+				? eventHandlers.props.editorRecord['o:id']
+				: TYPE.NEW_UNSAVED_RECORD;
+			eventHandlers.props.removeLayerFrom({record: recordId, layers: e.layers});
+			eventHandlers.onChange();
+		});
+
+		mapInstance.off('draw:deletestart');
+		mapInstance.on('draw:deletestart', function (e) {});
+
+		mapInstance.off('draw:deletestop');
+		mapInstance.on('draw:deletestop', function (e) {});
+		*/
+
+		mapInstance.off('draw:editstart');
+		mapInstance.on('draw:editstart', (e) =>{});
+
+		mapInstance.off('draw:editstop');
+		mapInstance.on('draw:editstop', (e) => {});
+
+		mapInstance.off('draw:edited');
+		mapInstance.on('draw:edited', (e) =>{
+			console.log("Editing complete");
+			let geojsonData = leafletSupport.fg.toGeoJSON();
+			saveChanges(selectedRecord,geojsonData);
+		});
+
+	},
+
+
+
+
 };
+
+
+
 
 // Geojson stores lng,lat, Leaflet expects lat,lng
 const invertCoordinateOrder = (coordinates) => {

@@ -1,18 +1,17 @@
 import React from 'react';
-import { deselectRecord } from '../reducers/not_refactored/exhibitShow';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 function RecordInfoPanel(props) {
-  const { selectedRecord, previewedRecord, closeClick } = props;
+  const { selectedRecord, previewedRecord} = props;
   const record = selectedRecord || previewedRecord;
 
   if (record) {
+
+	  let className = props.mapCache.hasUnsavedChanges?"ps_n3_info_component_withWarning":"ps_n3_info_component";
+	  	  className = props.isVisible?className:"hidden";
     return (
-      <div className={props.mapPreview.hasUnsavedChanges?"ps_n3_info_component_withWarning":"ps_n3_info_component"}>
-        {selectedRecord &&
-          <div className="ps_n3_closeButton" onClick={closeClick}>x</div>
-        }
+      <div className={className}>
         <div style={{ marginRight: '20px' }}>{record['o:title']}</div>
         {selectedRecord &&
           <div>
@@ -28,14 +27,12 @@ function RecordInfoPanel(props) {
 }
 
 const mapStateToProps = state => ({
-	mapPreview: state.mapPreview,
+	mapCache: state.mapCache,
 	selectedRecord: state.exhibitShow.selectedRecord,
 	previewedRecord: state.exhibitShow.previewedRecord
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators({
-  closeClick: deselectRecord
-}, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({}, dispatch);
 
 export default connect(
   mapStateToProps,

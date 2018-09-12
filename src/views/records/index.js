@@ -1,14 +1,14 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import {selectRecord} from '../../reducers/not_refactored/exhibitShow';
+import {selectRecord} from '../../actions';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {strings} from '../../i18nLibrary';
+const Records = props => (
+	<div>
 
-const Records = props => (<div>
 	<Link 	className="ps_n3_button"
-			to={`${props.exhibitShowURL}/edit/new`}
-			onClick={()=>{document.dispatchEvent(new Event("newRecordLoaded"));}}>
+			to={`${props.exhibitShowURL}/edit/new`}>
 			{strings.new_record}
 	</Link>
 	<ul>
@@ -17,9 +17,13 @@ const Records = props => (<div>
 				<li key={'record-' + record['o:id']} style={{
 						fontWeight: record === props.selectedRecord? 'bold': 'normal'
 					}}>
-					<Link 	onClick={()=>{document.dispatchEvent(new Event("newRecordLoaded"));}}
-							to={`${props.exhibitShowURL}/edit/${record['o:id']}`}>
-						{record['o:title'] === null?"UNTITLED":record['o:title']}
+					<Link 	to={`${props.exhibitShowURL}/edit/${record['o:id']}`}
+							onClick={
+								()=>{
+									props.selectRecord(record);
+								}
+							}>
+						{record['o:title'] === null?"???":record['o:title']}
 					</Link>
 				</li>
 			))
@@ -28,10 +32,11 @@ const Records = props => (<div>
 </div>)
 
 
-const mapStateToProps = state => ({records: state.exhibitShow.records, selectedRecord: state.exhibitShow.selectedRecord});
+const mapStateToProps = state => ({record:state.record, records: state.exhibitShow.records, selectedRecord: state.exhibitShow.selectedRecord});
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-	selectRecord
+	selectRecord,
+	dispatch
 }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Records);

@@ -4,8 +4,8 @@ import history from '../../history';
 import {Field, reduxForm, change, formValueSelector} from 'redux-form'
 import {connect} from 'react-redux';
 import {
-	clearRecordCache,
 	preview_baseLayer,
+	clearRecordCache,
 	set_availableTileLayers,
 	setUnsavedChanges,
 	updateExhibitCache} from '../../actions';
@@ -15,7 +15,6 @@ class ExhibitForm extends Component {
 
 	constructor(props) {
 		super(props);
-		this.preview_baseLayer = preview_baseLayer;
 		this.set_availableTileLayers = set_availableTileLayers;
 		this.exhibit = props.exhibit;
 		this.handleSubmit = props.handleSubmit;
@@ -106,7 +105,7 @@ class ExhibitForm extends Component {
 		// Update local state and preview via redux
 		this.setState({baseLayerType:baseLayerType});
 		this.props.dispatch(
-			this.preview_baseLayer({
+			preview_baseLayer({
 				type: baseLayerType,
 				id: payload.spatial_layer,
 
@@ -170,7 +169,7 @@ class ExhibitForm extends Component {
 	// Build layerTYPE from the set of non-deprecated maps
 	layerTYPE = () => {
 		let retval = [];
-		var availableBaseMaps = this.props.mapPreview.available.baseMaps;
+		var availableBaseMaps = this.props.mapCache.available.baseMaps;
 		Object.keys(availableBaseMaps).forEach(function(key) {
 			let thisMap = availableBaseMaps[key];
 			if (!thisMap.deprecated) {
@@ -391,12 +390,12 @@ class ExhibitForm extends Component {
 	}
 }
 
-ExhibitForm = reduxForm({form: 'exhibit'})(ExhibitForm);
+ExhibitForm = reduxForm({form: 'exhibit',enableReinitialize:true})(ExhibitForm);
 const formSelector = formValueSelector('exhibit');
 
 const mapStateToProps = state => ({
 	state,
-	mapPreview: state.mapPreview,
+	mapCache: state.mapCache,
 	initialValues: state.exhibitShow.exhibit
 		? state.exhibitShow.exhibit
 		: TYPE.EXHIBIT_DEFAULT_VALUES

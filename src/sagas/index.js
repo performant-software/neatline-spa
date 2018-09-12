@@ -1,9 +1,7 @@
+import * as ACTION_TYPE from '../actions/action-types';
 import {urlFormat, recordsEndpoint, exhibitsEndpoint, parseExhibitsJSON} from './api_helper.js';
 import {put, takeLatest, all} from 'redux-saga/effects';
 import {strings} from '../i18nLibrary';
-
-
-import * as ACTION_TYPE from '../actions/action-types';
 
 const JSON_HEADERS = {
 	'Accept': 'application/json',
@@ -25,7 +23,9 @@ export default function* rootSaga() {
 		takeLatest(ACTION_TYPE.EXHIBIT_FETCH_RESPONSE_RECEIVED, fetchExhibitsResponseReceived),
 
 		takeLatest(ACTION_TYPE.EXHIBIT_UPDATE, updateExhibit),
-		takeLatest(ACTION_TYPE.EXHIBIT_UPDATE_RESPONSE_RECEIVED, updateExhibitResponseReceived)
+		takeLatest(ACTION_TYPE.EXHIBIT_UPDATE_RESPONSE_RECEIVED, updateExhibitResponseReceived),
+
+		takeLatest(ACTION_TYPE.CREATE_RECORD_RESPONSE_RECEIVED, newRecordCreated)
 	])
 }
 
@@ -61,6 +61,7 @@ function* createRecordResponseReceived(action) {
 	if (typeof action.payload.errors === 'undefined') {
 		yield put({type: ACTION_TYPE.EDITOR_CLOSE_NEW_RECORD});
 		yield put({type: ACTION_TYPE.RECORD_ADDED, record: action.payload});
+		yield put({type: ACTION_TYPE.LEAFLET_IS_SAVING, payload:false});
 
 		// On failure...
 	} else {}
@@ -99,6 +100,7 @@ function* deleteRecordResponseReceived(action) {
 	// On success...
 	if (typeof action.payload.jsonResponse.errors === 'undefined') {
 		yield put({type: ACTION_TYPE.RECORD_REMOVED, record: action.payload.record});
+		yield put({type: ACTION_TYPE.LEAFLET_IS_SAVING, payload:false});
 
 		// On failure...
 	} else {}
@@ -118,7 +120,7 @@ function* updateRecord(action) {
 		let response_json = yield response.json();
 		yield put({type: ACTION_TYPE.UPDATE_RECORD_RESPONSE_RECEIVED, payload: response_json});
 
-		// Failed on the fetch call (timeout, etc)
+	// Failed on the fetch call (timeout, etc)
 	} catch (e) {
 		yield put({
 			type: ACTION_TYPE.RECORD_ERROR,
@@ -136,20 +138,31 @@ function* updateRecordResponseReceived(action) {
 		//yield put({type: ACTION_TYPE.EDITOR_RECORD_SET, record: action.payload});
 		yield put({type: ACTION_TYPE.RECORD_REPLACED, record: action.payload});
 
+		yield put({type: ACTION_TYPE.RECORD_DESELECTED,payload:action.payload});
+
+		yield put({type: ACTION_TYPE.LEAFLET_IS_EDITING, payload:false});
+
+		yield put({type: ACTION_TYPE.LEAFLET_IS_SAVING, payload:false});
+
+
 	// On failure...
 	} else {
 		debugger
 	}
+
+	var event = new CustomEvent("saveComplete");
+	document.dispatchEvent(event);
 }
 
 // Save cache to the database
 function* saveCacheToDatabase(action) {
 	let records = action.payload.records;
 	let exhibit = action.payload.exhibit;
-	let selectedRecord = action.payload.selectedRecord;
+	//let selectedRecord = action.payload.selectedRecord;
 
 	// Create if there's a new one
 	if(typeof action.payload.records[-1] !== 'undefined'){
+		console.log("Creating a new record...");
 		let newRecord = action.payload.records[-1];
 		yield put({type: ACTION_TYPE.RECORD_CREATE, payload:newRecord});
 	}
@@ -169,8 +182,13 @@ function* saveCacheToDatabase(action) {
 		yield put({type: ACTION_TYPE.EXHIBIT_UPDATE, payload:exhibit});
 	}
 
-	// Restore selected record
-	yield put({type: ACTION_TYPE.RECORD_SELECTED,payload:selectedRecord});
+
+}
+
+function* newRecordCreated(action){
+	if(action.payload !== null){
+		yield put({type: ACTION_TYPE.RECORD_SELECTED,payload:action.payload});
+	}
 }
 
 function* fetchExhibits(action) {
@@ -252,6 +270,7 @@ function* updateExhibit(action) {
 		});
 	}
 }
+
 function* updateExhibitResponseReceived(action) {
 	let exhibit = action.payload.exhibit;
 	if (typeof action.payload.errors === 'undefined') {

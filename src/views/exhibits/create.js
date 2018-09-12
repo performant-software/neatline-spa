@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import ExhibitForm from '../../components/ExhibitForm';
-import { createExhibit } from '../../reducers/not_refactored/exhibitCreate';
+import { createExhibit } from '../../actions';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { strings } from '../../i18nLibrary';

@@ -1,30 +1,27 @@
 import { combineReducers } from 'redux';
-
 import { reducer as formReducer } from 'redux-form';
-import user from './not_refactored/user';
 
-import exhibitShow from './not_refactored/exhibitShow';
-import exhibitDelete from './not_refactored/exhibitDelete';
-/*
-import exhibitCreate from './not_refactored/exhibitCreate';
-*/
+import user from './user/user-reducer';
 
-import layerReducer from './layer-reducer.js';
-import exhibitReducer from './exhibit-reducer.js';
-import recordReducer from './record-reducer.js';
-import mapPreviewReducer from './mapPreview-reducer.js';
-import exhibitPreviewReducer from './exhibitPreview-reducer.js';
+import exhibitDelete from './exhibit/exhibitDelete-reducer.js';
+import exhibitShow from './exhibit/exhibitShow-reducer.js';
+import exhibitReducer from './exhibit/exhibit-reducer.js';
+import exhibitCacheReducer from './exhibit/exhibitCache-reducer.js';
+
+import recordReducer from './record/record-reducer.js';
+
+import mapCacheReducer from './map/mapCache-reducer.js';
+
+import leaflet from './leaflet/leaflet-reducer.js';
 
 export default combineReducers({
+  leaflet,
   form: formReducer,
   user,
   exhibits:exhibitReducer,
-  //exhibits,
   exhibitShow,
-  //exhibitCreate,
   exhibitDelete,
   record: recordReducer,
-  mapPreview: mapPreviewReducer,
-  exhibitPreview: exhibitPreviewReducer,
-  recordMapLayers:layerReducer
+  mapCache: mapCacheReducer,
+  exhibitCache: exhibitCacheReducer
 });
