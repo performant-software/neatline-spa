@@ -1,7 +1,5 @@
-import initialState from './exhibitCache-initialState';
+import initialState from './exhibitShow-initialState';
 import * as ACTION_TYPE from '../../actions/action-types';
-
-
 
 export default function(state = initialState, action) {
 
@@ -18,10 +16,17 @@ export default function(state = initialState, action) {
 				errored: action.errored
 			};
 
-		case ACTION_TYPE.EXHIBIT_FETCH_SUCCESS:
+		case ACTION_TYPE.RECORDS_LOADING:
 			return {
 				...state,
-				records: action.records
+				loading: action.payload
+			};
+
+		case ACTION_TYPE.RECORDS_FETCH_SUCCESS:
+			return {
+				...state,
+				records: action.payload,
+				loading: false
 			};
 
 		case ACTION_TYPE.EXHIBIT_RESET:
@@ -30,7 +35,7 @@ export default function(state = initialState, action) {
 		case ACTION_TYPE.EXHIBIT_LOADED:
 			return {
 				...state,
-				exhibit: action.exhibit,
+				exhibit: action.payload,
 				exhibitNotFound: false
 			};
 
@@ -42,32 +47,29 @@ export default function(state = initialState, action) {
 
 		case ACTION_TYPE.RECORD_SELECTED:
 			let record = action.payload;
-			if(typeof record !== 'undefined' && record !== null){
-				// FIXME: Tab switch broken
+			console.log("Selecting record: "+record['o:id']);
+			if (typeof record !== 'undefined' && record !== null) {
 				return {
 					...state,
 					selectedRecord: record,
 					editorRecord: record,
-					editorNewRecord: false
-					//,tabIndex: 2
+					editorNewRecord: false,
+					tabIndex: 2
 				};
-			}else{
+			} else {
 				return {
-					...state,
+					...state
 				};
 			}
-
-
 
 		case ACTION_TYPE.RECORD_DESELECTED:
 			return {
 				...state,
 				editorRecord: null,
 				selectedRecord: null,
-				editorNewRecord: false
-				//tabIndex: Math.min(state.tabIndex, 1)
+				editorNewRecord: false,
+				tabIndex: Math.min(state.tabIndex, 1)
 			};
-
 
 		case ACTION_TYPE.RECORD_PREVIEWED:
 			return {
@@ -81,8 +83,6 @@ export default function(state = initialState, action) {
 				previewedRecord: null
 			};
 
-
-
 		case ACTION_TYPE.EDITOR_NEW_RECORD:
 			return {
 				...state,
@@ -91,7 +91,6 @@ export default function(state = initialState, action) {
 				selectedRecord: null,
 				tabIndex: 2
 			}
-
 
 		case ACTION_TYPE.EDITOR_CLOSE_NEW_RECORD:
 			return {
@@ -102,14 +101,14 @@ export default function(state = initialState, action) {
 		case ACTION_TYPE.TAB_INDEX_SET:
 			return {
 				...state,
-				tabIndex: action.tabIndex
+				tabIndex: action.payload
 			}
 
 		case ACTION_TYPE.RECORD_ADDED:
 			return {
 				...state,
 				records: state.records.concat(action.record),
-				editorRecord:action.record,
+				editorRecord: action.record,
 				selectedRecord: action.record
 			}
 
@@ -117,22 +116,22 @@ export default function(state = initialState, action) {
 			return {
 				...state,
 				records: state.records.filter(r => r['o:id'].toString() !== action.record['o:id'].toString()).concat(action.record),
-				editorRecord:action.record
-				/*selectedRecord: action.record*/
+				editorRecord: action.record
+				/* selectedRecord: action.record */
 			}
 
 		case ACTION_TYPE.RECORD_REMOVED:
 			return {
 				...state,
 				records: state.records.filter(r => r['o:id'].toString() !== action.record['o:id'].toString()),
-				editorRecord:null,
+				editorRecord: null,
 				selectedRecord: null,
-				tabIndex:1
+				tabIndex: 1
 			}
 
-		// Remove this and have map use hidden form
+		// FIXME: Remove this and have map use hidden form
 		case ACTION_TYPE.RECORD_COVERAGE_SET:
-			if( state.editorRecord !== null){
+			if (state.editorRecord !== null) {
 				var thisRecord = state.editorRecord;
 				thisRecord['o:coverage'] = action.coverage;
 				return {
@@ -142,11 +141,8 @@ export default function(state = initialState, action) {
 			}
 			return state;
 
-
-
 		default:
 			return state;
 	}
-
 
 }

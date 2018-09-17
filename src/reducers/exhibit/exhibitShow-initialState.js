@@ -1,5 +1,4 @@
-export default initialState = {
-	records: [],
+export default {
 	exhibit: null,
 	loading: false,
 	errored: false,
@@ -9,4 +8,4 @@ export default initialState = {
 	editorRecord: null,
 	editorNewRecord: false,
 	tabIndex: 0
-}
+};

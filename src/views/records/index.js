@@ -4,6 +4,7 @@ import {selectRecord} from '../../actions';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {strings} from '../../i18nLibrary';
+
 const Records = props => (
 	<div>
 
@@ -12,19 +13,13 @@ const Records = props => (
 			{strings.new_record}
 	</Link>
 	<ul>
-		{
-			props.records.map(record => (
+		{props.records.map(record => (
 				<li key={'record-' + record['o:id']} style={{
 						fontWeight: record === props.selectedRecord? 'bold': 'normal'
 					}}>
-					<Link 	to={`${props.exhibitShowURL}/edit/${record['o:id']}`}
-							onClick={
-								()=>{
-									props.selectRecord(record);
-								}
-							}>
+					<div onClick={()=>{props.selectRecord(record);}}>
 						{record['o:title'] === null?"???":record['o:title']}
-					</Link>
+					</div>
 				</li>
 			))
 		}
@@ -32,7 +27,11 @@ const Records = props => (
 </div>)
 
 
-const mapStateToProps = state => ({record:state.record, records: state.exhibitShow.records, selectedRecord: state.exhibitShow.selectedRecord});
+const mapStateToProps = state => ({
+	record:state.record,
+	records: state.exhibitShow.records,
+	selectedRecord: state.exhibitShow.selectedRecord
+});
 
 const mapDispatchToProps = dispatch => bindActionCreators({
 	selectRecord,

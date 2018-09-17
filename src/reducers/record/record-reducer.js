@@ -71,7 +71,7 @@ export default function(state = initialState, action) {
 					error: strings.update_record_error
 				};
 
-				// Accepted
+			// Accepted
 			} else {
 
 				return {

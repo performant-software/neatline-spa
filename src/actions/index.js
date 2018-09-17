@@ -1,5 +1,5 @@
 import * as ACTION_TYPE from './action-types';
-import {urlFormat, recordsEndpoint, exhibitsEndpoint, parseRecordsJSON, parseExhibitsJSON} from '../sagas/api_helper.js';
+import {urlFormat, exhibitsEndpoint} from '../sagas/api_helper.js';
 import history from '../history';
 import { strings } from '../i18nLibrary';
 
@@ -19,6 +19,8 @@ export const deleteRecord = (payload) => action(ACTION_TYPE.RECORD_DELETE, paylo
 export const setUnsavedChanges = (payload) => action(ACTION_TYPE.HAS_UNSAVED_CHANGES, payload);
 
 export const updateRecordCache = (payload) => action(ACTION_TYPE.RECORD_CACHE_UPDATE, payload);
+export const updateRecordCacheAndSave = (payload) => action(ACTION_TYPE.RECORD_CACHE_UPDATE_AND_SAVE, payload);
+
 export const updateExhibitCache = (payload) => action(ACTION_TYPE.EXHIBIT_CACHE_UPDATE, payload);
 export const recordCacheToDatabase = (payload) => action(ACTION_TYPE.EXHIBIT_CACHE_SAVE, payload);
 
@@ -42,43 +44,15 @@ export const setTabIndex = (payload) => action(ACTION_TYPE.TAB_INDEX_SET, payloa
 export const setCurrentRecordCoverage = (payload) => action(ACTION_TYPE.RECORD_COVERAGE_SET, payload);
 
 
-// FIXME:  Here be dragons
-// The code below is old and needs to be refactored so that it behaves like proper action dispatcher + saga (follow pattern above)
-
-const setExhibitBySlugAndFetchRecords = (exhibits, slug, dispatch) => {
-	const exhibit = exhibits.filter(e => e['o:slug'] === slug)[0];
-	if (exhibit) {
-		dispatch({type: ACTION_TYPE.EXHIBIT_LOADED, exhibit});
-		return fetch(urlFormat(recordsEndpoint, {exhibit_id: exhibit['o:id']})).then(function(response) {
-			if (!response.ok) {
-				throw Error(response.statusText);
-			}
-			return response;
-		}).then(response => parseRecordsJSON(response)).then(records => dispatch({type: ACTION_TYPE.EXHIBIT_FETCH_SUCCESS, records})).then(() => dispatch({type: ACTION_TYPE.EXHIBIT_LOADING, loading: false})).catch(() => dispatch({type: ACTION_TYPE.EXHIBIT_ERRORED, errored: true}));
-	} else {
-		dispatch({type: ACTION_TYPE.EXHIBIT_NOT_FOUND});
-	}
-}
-
-export const fetchExhibitWithRecords = (slug) => {
-	return function(dispatch, getState) {
-		dispatch({type: ACTION_TYPE.EXHIBIT_LOADING, loading: true});
-		const exhibits = getState().exhibits.exhibits;
-		if (exhibits && exhibits.length > 0)
-			return setExhibitBySlugAndFetchRecords(exhibits, slug, dispatch);
-		return fetch(urlFormat(exhibitsEndpoint)).then((response) => {
-			if (!response.ok) {
-				throw Error(response.statusText);
-			}
-			return response;
-		}).then(response => parseExhibitsJSON(response)).then(exhibits => setExhibitBySlugAndFetchRecords(exhibits, slug, dispatch)).catch(() => dispatch({type: ACTION_TYPE.EXHIBIT_ERRORED, errored: true}));
-	};
-}
 
 export const selectRecord = (payload) => action(ACTION_TYPE.RECORD_SELECTED, payload);
 
 export const deselectRecord = (payload) => action(ACTION_TYPE.RECORD_DESELECTED, payload);
 
+export const fetchRecordsBySlug = (payload) => action(ACTION_TYPE.RECORD_FETCH_BY_SLUG, payload);
+
+// FIXME:  Here be dragons
+// The code below is old and needs to be refactored so that it behaves like proper action dispatcher + saga (follow pattern above)
 export const deleteExhibit = (exhibit) => {
 	return function(dispatch) {
 		if (window.confirm(strings.formatString(strings.exhibit_delete_confirmation, exhibit['o:title']))) {

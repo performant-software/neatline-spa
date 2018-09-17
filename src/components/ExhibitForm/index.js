@@ -5,7 +5,6 @@ import {Field, reduxForm, change, formValueSelector} from 'redux-form'
 import {connect} from 'react-redux';
 import {
 	preview_baseLayer,
-	clearRecordCache,
 	set_availableTileLayers,
 	setUnsavedChanges,
 	updateExhibitCache} from '../../actions';
@@ -61,7 +60,7 @@ class ExhibitForm extends Component {
 		});
 
 		// Cache intial values
-		this.props.dispatch(clearRecordCache());
+		//this.props.dispatch(clearRecordCache());
 		this.props.dispatch(updateExhibitCache({setValues:this.props.initialValues}));
 
 		// Set the router

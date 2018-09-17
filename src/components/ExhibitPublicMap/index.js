@@ -1,153 +1,399 @@
+/*
+	READ THIS!:
+
+	Hi... This is a a strange component...
+
+	Leaflet and React don't play that nicely together, so what we do is create
+	a situation where React renders an empty div, which we then pick up after
+	the DOM render which is where leaflet does its thing.
+
+	- Note the empty <div/> in render()
+	- All of the work is in this.updateMap();
+	- Methods that begin with 'ls_' are specific to leaflet and drawing
+	- We toggle rendering off while editing using shouldComponentUpdate()
+
+	For more on the basics of this technique:
+	https://reactjs.org/docs/integrating-with-other-libraries.html
+*/
 import * as TYPE from '../../types';
-import AlertBar from '../AlertBar';
 import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {change} from 'redux-form';
-import {updateRecordCache, leafletIsEditing, leafletIsSaving} from '../../actions';
-import LeafletSupport from './leafletSupport';
-import LeafletDrawEventHandler from './leafletDrawEventHandler';
+import {updateRecordCacheAndSave, leafletIsSaving} from '../../actions';
 import {selectRecord, deselectRecord, previewRecord, unpreviewRecord} from '../../actions';
-import uuid from 'uuid-random';
-
-// Leaflet
-import {
-	Map,
-	LayersControl,
-	FeatureGroup
-} from 'react-leaflet';
 import L from 'leaflet';
-
+import Draw from 'leaflet-draw';
+import leafletSupport from './leafletSupport.js';
 
 class ExhibitPublicMap extends Component {
 
 	constructor(props) {
 		super(props);
 
-		// Modifies the Circle prototype so we can save to geojson
-		// FIXME: This won't work unless we change the datastore
-		let circleToGeoJSON = L.Circle.prototype.toGeoJSON;
-		L.Circle.include({
-		    toGeoJSON: function() {
-		        var feature = circleToGeoJSON.call(this);
-		        feature.properties = {
-		            point_type: 'circle',
-		            radius: this.getRadius()
-		        };
-		        return feature;
-		    }
-		});
-
-		// Map defaults
-		// FIXME: should be moved to exhibit
+		// FIXME: Move these to exhibit settings
 		this.state ={
 			map_center:[51.505, -0.09],
 			map_zoom:13
 		};
-		this.initialDrawSetup=false;
-		this.baselayers=null;
-		this.currentRecordID=null;
-		this.shouldUpdate=false;
+
+		// Render flags, used because we can't use standard react logic
 		this.cacheInitialized=false;
-		this.isSaving=false;
+		this.mapInitialized=false;
+		this.shouldUpdate=true;
+		this.isDrawing=false;
+		this.Draw = Draw; /* Suppresses include warning */
 	}
 
-	reRender=()=>{this.forceUpdate();}
-	enableMapRender=()=>{this.props.dispatch(leafletIsEditing(false));}
-	disableMapRender=()=>{this.props.dispatch(leafletIsEditing(true));}
-	enableSpinner=()=>{this.props.dispatch(leafletIsSaving(true));}
+	// Stub for leaflet to attach to
+	render() {return (<div id='leafletMap'/>)}
 
-	shouldComponentUpdate(){
-		return this.shouldUpdate;
-	}
-	onGeometryClick=(record)=>{
-		if(this.isSaving){return;}
-		this.props.recordClick(record);
-		this.forceUpdate();
-	}
-	onMapClick=()=>{
-			if(this.isSaving){return;}
-			this.props.deselectRecord();
-			/*
-			////console.log("unSet editor record");
-			return function(dispatch, getState) {
-				dispatch({type: ACTION_TYPE.RECORD_CACHE_CLEAR_UNSAVED});
-				dispatch({type: ACTION_TYPE.EDITOR_RECORD_UNSET});
-				const exhibit = getState().exhibitShow.exhibit;
-				if (exhibit){
-					history.push(`${window.baseRoute}/show/${exhibit['o:slug']}`)
-				}
-			}
-			*/
-			this.forceUpdate();
+	// Controls render
+	shouldComponentUpdate(){return this.shouldUpdate;}
 
-	}
-
-	componentDidMount(){
-		document.addEventListener("saveComplete", this.saveComplete);
-		this.forceUpdate();
-	}
-
-
-	componentWillUnMount(){
-		document.removeEventListener("saveComplete", this.saveComplete);
-	}
-
+	// Post-DOM
 	componentDidUpdate = () =>{
-		if(this.isSaving){return;}
-		console.log("Update...");
+		// Initialize map
+		if(!this.mapInitialized){
+			this.ls_mapInit();
+		}
 
-		if(!this.cacheInitialized){
-			// Update cache if we need to
-			let cacheNeededUpdate=false;
-			this.props.records.forEach(
-				record =>{
-				if (record['o:is_coverage']) {
-					cacheNeededUpdate=true;
-					this.props.dispatch(updateRecordCache({setValues:record}));
+		// Update the map
+		if(typeof this.props.records !== 'undefined'){
+			this.ls_mapUpdate();
+		}
+	}
+
+	// Custom event listeners are stopgaps until this gets refactored to follow redux store
+	componentDidMount(){
+		document.addEventListener("saveComplete", this.event_saveComplete);
+		document.addEventListener("refreshMap", this.event_saveComplete);
+	}
+
+	componentWillUnmount(){
+		document.removeEventListener("saveComplete", this.event_saveComplete);
+		document.removeEventListener("refreshMap", this.event_saveComplete);
+	}
+
+	//////////////////////////////////////
+	// Leaflet
+	//////////////////////////////////////
+	ls_mapInit = () => {
+
+		document.getElementById('leafletMap').classList.add('ps_n3_mapComponent');
+
+
+		this.map = L.map('leafletMap');
+		let baselayerType = this.props.mapCache.current.type;
+		let currentMapCache = this.props.mapCache.current;
+		let initialBaselayer;
+		let baseLayers = {};
+		let overlays = {};
+		switch (baselayerType) {
+
+			// Known map layer
+			case TYPE.BASELAYER_TYPE.MAP:
+			case TYPE.BASELAYER_TYPE.TILE:
+				baseLayers[currentMapCache.tileLayer.displayName] = L.tileLayer(currentMapCache.tileLayer.url, { attribution: currentMapCache.tileLayer.attribution});
+				initialBaselayer=baseLayers[currentMapCache.tileLayer.displayName];
+				break;
+
+			// Image layer
+			case TYPE.BASELAYER_TYPE.IMAGE:
+				this.props.dispatch(leafletIsSaving(true));
+				var img = new Image();
+					img.src = currentMapCache.image_address;
+					img.onerror = () => {
+						alert("Invalid Image URL");
+						this.props.dispatch(leafletIsSaving(false));
+					}
+					img.onload = () => {
+						let w = img.width;
+						let h = img.height;
+						let maxZoom = 4;
+						let southWest = this.map.unproject([0, h], maxZoom-1);
+						let northEast = this.map.unproject([w, 0], maxZoom-1);
+						let imageBounds = new L.LatLngBounds(southWest, northEast);
+
+						// Remove existing image layers and add new one
+						this.map.eachLayer(function(layer){
+							if(layer._image){
+								this.map.removeLayer(layer);
+							}
+						});
+						L.imageOverlay(	currentMapCache.image_address,
+										imageBounds,
+										{
+											attribution:currentMapCache.image_attribution
+										}
+									  ).addTo(this.map);
+
+						this.map.attributionControl.addAttribution(currentMapCache.image_attribution);
+
+						// Tell leaflet that the map is exactly as big as the image
+						this.map.setMaxBounds(imageBounds);
+
+						// Set zoom
+						this.map.setZoom(1);
+						this.map.setMaxZoom(maxZoom);
+
+						this.props.dispatch(leafletIsSaving(false));
+					};
+				break;
+
+				case TYPE.BASELAYER_TYPE.WMS:
+					if(currentMapCache.wms_address !== null){
+						baseLayers[currentMapCache.wms_address] = L.tileLayer(currentMapCache.wms_address, {
+							attribution: currentMapCache.wms_attribution,
+							layers: currentMapCache.wms_layers
+						});
+						initialBaselayer=baseLayers[currentMapCache.wms_address];
+					}
+					break;
+
+
+			default:
+				console.error("Unknown baselayer type: "+currentMapCache.type);
+				break;
+		}
+
+		// Other options
+		currentMapCache.basemapOptions.forEach(
+			thisTileLayer => {
+				// Don't allow duplicate
+				if ((typeof currentMapCache.tileLayer !== 'undefined') && thisTileLayer.slug !== currentMapCache.tileLayer.slug) {
+					baseLayers[thisTileLayer.displayName] = L.tileLayer(thisTileLayer.url, { attribution: thisTileLayer.attribution});
+			}
+		});
+
+		if(Object.keys(baseLayers).length > 0){
+			L.control.layers(baseLayers, overlays).addTo(this.map);
+		}
+		if(typeof initialBaselayer !== 'undefined'){
+			initialBaselayer.addTo(this.map);
+		}
+		this.mapInitialized=true;
+		//this.map.on('load', (event)=>{this.ls_onMapDidLoad(event);});
+		this.map.on('click',(event)=>{this.onMapClick(event);});
+		this.map.setView(this.state.map_center,this.state.map_zoom);
+	}
+
+	ls_mapUpdate = () => {
+
+		let mapInstance = this.map;
+		let selectedRecord = this.props.selectedRecord;
+		let saveChanges =  this.syncDrawWithReact;
+		let geometry = this.ls_geometrySetup();
+
+		// Remove geometries and controls
+		mapInstance.eachLayer(function(layer){
+			if(typeof layer.feature !== 'undefined'){
+				mapInstance.removeLayer(layer);
+			}
+		});
+		if(typeof this.ls_fg !== 'undefined'){
+			mapInstance.removeLayer(this.ls_fg);
+			mapInstance.removeControl(this.ls_drawControl);
+			this.ls_fg.clearLayers();
+			this.ls_fg = null;
+			this.ls_drawControl = null;
+		}
+
+		// Rebuild geometry and controls
+		this.ls_fg = new L.FeatureGroup(geometry.editable);
+		let options = {	...leafletSupport.drawingOptions(),
+						edit:{featureGroup:this.ls_fg}
+					  };
+		this.ls_drawControl = new L.Control.Draw(options);
+		if( (typeof selectedRecord !== 'undefined' && selectedRecord !== null) ||
+			this.props.editorNewRecord){
+			mapInstance.addControl(this.ls_drawControl);
+		}
+
+		// Add geometry to map
+		this.ls_fg.addTo(mapInstance);
+		geometry.uneditable.forEach(
+			layer=>{layer.addTo(mapInstance);
+		});
+
+
+		//////////////////////////////////////
+	    // Event handlers
+		//////////////////////////////////////
+		leafletSupport.removeExistingHandlers(mapInstance);
+
+		mapInstance.on('draw:created', (e) => {
+			this.ls_fg.addLayer(e.layer);
+			let geojsonData = this.ls_fg.toGeoJSON();
+			saveChanges(selectedRecord,geojsonData);
+		});
+
+		mapInstance.on('draw:deleted', (e) => {
+			this.ls_hasEditToSave=true;
+		});
+
+		mapInstance.on('draw:deletestart', (e) => {
+			this.ls_hasEditToSave=false;
+			this.shouldUpdate=false;
+		});
+
+		mapInstance.on('draw:deletestop', (e) => {
+			if(this.ls_hasEditToSave){
+				let geojsonData = this.ls_fg.toGeoJSON();
+				if(geojsonData.features.length === 0){
+					// FIXME: This is not really the way to store empty geometries, but it deals with the backend
+					geojsonData={"type": "MultiLineString", "coordinates": []};
 				}
-			});
-			if(cacheNeededUpdate){
-				console.log("Cache established...");
-				this.geometry=null;
-				this.forceUpdate();
+				//this.ls_fg.clearLayers();
+				saveChanges(selectedRecord,geojsonData);
 			}
-			this.cacheInitialized=true;
-		}
+		});
 
+		mapInstance.on('draw:editstart', (e) =>{
+			this.isDrawing=true;
+			this.ls_hasEditToSave=false;
+			this.shouldUpdate=false;
+		});
 
-		// Baselayer setup
-		if(this.baselayers === null){
-			if(typeof this.refs.map.leafletElement !== 'undefined'){
-				this.baselayers = LeafletSupport.mapInit(this.props.mapCache.current,
-														 this.refs.map.leafletElement,
-													 	 this.props.selectedRecord);
+		mapInstance.on('draw:editstop', (e) => {
+			this.isDrawing=false;
+			if(this.ls_hasEditToSave){
+				let geojsonData = this.ls_fg.toGeoJSON();
+				saveChanges(selectedRecord,geojsonData);
 			}
-			this.forceUpdate();
-		}
+		});
 
+		mapInstance.on('draw:edited', (e) =>{
+			this.ls_hasEditToSave=true;
+		});
 
-		if(!this.initialDrawSetup && typeof this.refs.map.leafletElement !== 'undefined'){
-			this.setupDraw(this.props);
-		}else{
-			this.forceUpdate();
-		}
+		mapInstance.on('draw:drawstart', (e) => {
+			this.isDrawing=true;
+		});
+
+		mapInstance.on('draw:drawstop', (e) => {
+			this.isDrawing=false;
+		});
 
 	}
 
+	ls_geometrySetup = () => {
 
+		if(typeof this.props.records === 'undefined'){return;}
+
+		let onGeometryClick = this.onGeometryClick;
+		let selectedRecord = this.props.selectedRecord;
+		let onMouseEnter = this.props.recordMouseEnter;
+		let onMouseLeave = this.props.recordMouseLeave;
+
+
+		let editable_geometry=[];
+		let uneditable_geometry=[];
+		this.props.mapCache.cache.map(record => {
+			let isSelected = ((record !== null && selectedRecord !== null) && (record["o:id"] === selectedRecord["o:id"]));
+				if (record['o:is_wms']) {
+					/*
+					// FIXME: Doesn't belong here anymore
+					console.error("I am probably broken");
+					uneditable_geometry.push(
+						<LayersControl.Overlay name={record['o:title']} checked={true} key={record['o:id'] + '_wms'}>
+							<WMSTileLayer url={record['o:wms_address']} layers={record['o:wms_layers']} transparent={true} format='image/png' opacity={0.8}/>
+						</LayersControl.Overlay>
+					);
+					*/
+				} else if (record['o:is_coverage']) {
+
+					// Sometimes JSON arrives as string, but component below will barf on that, so we cast it
+					let geoJSON=record['o:coverage'];
+					if(typeof geoJSON === 'string'){geoJSON=JSON.parse(geoJSON);}
+
+					// Style for this geometry
+					let defaultGeometryStyle = this.props.mapCache.default.geometryStyles;
+					let record_id = record['o:id'];
+					let style = defaultGeometryStyle;
+					if(record_id in this.props.mapCache.cache){
+						style = this.props.mapCache.cache[record_id];
+						if(style['o:fill_color'] === null){
+							console.log("**** BROKEN STYLE CACHE - USING DEFAULT");
+							style = defaultGeometryStyle;
+						}
+					}else{
+						console.log("**** MISSING STYLE CACHE - USING DEFAULT");
+					}
+
+					let coverageStyle =()=>{
+						return({
+							stroke:true,
+							fill:true,
+							weight: style["o:stroke_width"],
+							color: isSelected ? style["o:stroke_color_select"]:style["o:stroke_color"],
+							opacity: isSelected ? style["o:stroke_opacity_select"]:style["o:stroke_opacity"],
+							fillColor: isSelected ? style["o:fill_color_select"]:style["o:fill_color"],
+							fillOpacity: isSelected ? style["o:fill_opacity_select"]:style["o:fill_opacity"]
+						});
+					}
+
+					if(isSelected){
+						editable_geometry = leafletSupport.convertToVector(geoJSON, coverageStyle());
+					}else{
+						/*
+						// Build circles from points with props
+						// FIXME: Needs to check for props, not stored currently
+						geoJSON.features.forEach(
+							(feature,idx) => {
+								// Circles stored as feature properties
+								if(feature.geometry.type === 'Point'){
+									circles.push(<Circle 	key={`circle_${idx}`}
+															center={{lat:feature.geometry.coordinates[1], lng: feature.geometry.coordinates[0]}}
+															fillColor="red"
+															radius={99000.000}/>);
+								}else{
+									nonCircles.features.push(feature);
+								}
+							}
+						);
+						*/
+
+						var geoJSONLayer = L.geoJSON();
+						geoJSONLayer.addData(geoJSON);
+
+						geoJSONLayer.on('click',(event)=>{onGeometryClick(event,record)});
+
+						// FIXME: The mouse events are wrong
+						geoJSONLayer.on('onmouseover',()=>{onMouseEnter(record)});
+						geoJSONLayer.on('onmouseleave',()=>{onMouseLeave(record)});
+						geoJSONLayer.setStyle(function(feature, layer) {
+							// If the geometry is a line, get rid of fill
+							let style=coverageStyle();
+							if(	feature.geometry.type === 'LineString' ||
+								feature.geometry.type === 'MultiLineString'){
+									style.fillColor='transparent';
+							}
+							return style;
+						});
+						uneditable_geometry.push(geoJSONLayer);
+
+					}
+				}
+				return null;
+			});
+
+		return({editable:editable_geometry,uneditable:uneditable_geometry})
+	}
+
+
+	//////////////////////////////////////
+	// Event handlers
+	//////////////////////////////////////
 	syncDrawWithReact = (selectedRecord,geojsonData) => {
-		if(this.isSaving){return;}
-		console.log("Going to save stuff now...");
+		if(typeof this.props.records === 'undefined' || this.isSaving){return;}
 		this.isSaving=true;
-		this.enableSpinner();
-
-		let recordId = selectedRecord['o:id'] ? selectedRecord['o:id']:TYPE.NEW_UNSAVED_RECORD;
-
+		let recordId = (typeof selectedRecord !== 'undefined' && selectedRecord !== null && selectedRecord['o:id'])?selectedRecord['o:id']:TYPE.NEW_UNSAVED_RECORD;
 		this.props.change('record', 'o:coverage', geojsonData);
 		this.props.change('record', 'o:is_coverage', true);
+		this.props.deselectRecord();
 		this.props.dispatch(
-			updateRecordCache({
+			updateRecordCacheAndSave({
 				setValues: {
 					'o:id': recordId,
 					'o:coverage': geojsonData,
@@ -155,102 +401,35 @@ class ExhibitPublicMap extends Component {
 				}
 		}));
 
-		// Write geometry changes to the database
-		var event = new CustomEvent("saveAll");
-
-		document.dispatchEvent(event);
-
-
 	}
 
-	saveComplete = () => {
-
-		console.log("Save complete");
+	event_saveComplete = () => {
+		this.shouldUpdate=true;
 		this.isSaving=false;
-
-
-
-
+		this.cacheInitialized=false;
+		this.ls_mapUpdate();
+		this.forceUpdate();
 	}
-
-
-	componentWillReceiveProps = (nextProps) => {
-		if(this.isSaving){return;}
-		// Selected geometry switches
-		if((typeof this.props.selectedRecord !== 'undefined' && nextProps.selectedRecord !== null) &&
-			this.currentRecordID !== nextProps.selectedRecord['o:id']){
-			this.currentRecordID = nextProps.selectedRecord['o:id'];
-			console.log("Switching to record: "+this.currentRecordID);
-			this.setupDraw(nextProps);
-
-		}else if(this.currentRecordID !== null &&  nextProps.selectedRecord === null){
-			console.log("Switching to record: NONE");
-			this.currentRecordID=null;
-			this.setupDraw(nextProps);
-		}
+	onGeometryClick=(event,record)=>{
+		if(typeof this.props.records === 'undefined' || this.isSaving || this.isDrawing){return;}
+		L.DomEvent.stop(event);
+		this.props.selectRecord(record);
 	}
-
-	setupDraw = (theseProps) =>{
-		if(this.isSaving){return;}
-		LeafletSupport.drawingSetup(this.refs.map.leafletElement,
-									theseProps.selectedRecord,
-									theseProps.records,
-									this.onGeometryClick,
-									theseProps.mapCache.cache,
-									theseProps.recordMouseEnter,
-									theseProps.recordMouseLeave,
-									this.syncDrawWithReact);
+	onMapClick=()=>{
+			if(typeof this.props.records === 'undefined' || this.isSaving || this.isDrawing){return;}
+			this.map.removeControl(this.ls_drawControl);
+			this.props.deselectRecord();
 	}
-
-	render() {
-
-		console.log("I rendered!"+this.isSaving);
-
-		return (
-			<div style={{height:'100%'}}  key={this.state.map_key}>
-
-				<AlertBar isVisible={this.props.mapCache.hasUnsavedChanges}
-						  message="You have unsaved changes"/>
-
-				<Map ref='map'
-					 center={this.state.map_center}
-					 zoom={this.state.map_zoom}
-					 className={this.props.mapCache.hasUnsavedChanges?"ps_n3_mapComponent_withWarning":"ps_n3_mapComponent"}
-					 onClick={(event) => {if (event.originalEvent.target === event.target.getContainer()){this.onMapClick();}}}>
-
-
-					 <LayersControl position='topright'>
-						{this.baselayers}
-					</LayersControl>
-
-				</Map>
-			</div>
-		)
-	}
-
-
-
-
 }
 
-const mapStateToProps = state => ({
-	mapCache: state.mapCache,
-	exhibit: state.exhibitShow.exhibit,
-	records: state.exhibitShow.records,
-	selectedRecord: state.exhibitShow.selectedRecord,
-	previewedRecord: state.exhibitShow.previewedRecord,
-	editorRecord: state.exhibitShow.editorRecord,
-	editorNewRecord: state.exhibitShow.editorNewRecord,
-	leafletState: state.leaflet
-});
-
 const mapDispatchToProps = dispatch => bindActionCreators({
-	recordClick: record => selectRecord(record),
+	selectRecord,
 	deselectRecord,
 	recordMouseEnter: record => previewRecord(record),
 	recordMouseLeave: unpreviewRecord,
 	change,
-	dispatch
+	dispatch,
+	leafletIsSaving
 }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(ExhibitPublicMap);
+export default connect(null,mapDispatchToProps)(ExhibitPublicMap);

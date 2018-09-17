@@ -59,21 +59,11 @@ class RecordForm extends Component {
 	componentDidMount() {
 		// For the sliders, setup initial values
 		let initialSliderValues = {
-			'o:fill_opacity': isNaN(parseFloat(this.props.initialValues['o:fill_opacity']))
-				? 0
-				: parseFloat(this.props.initialValues['o:fill_opacity']),
-			'o:stroke_opacity': isNaN(parseFloat(this.props.initialValues['o:stroke_opacity']))
-				? 0
-				: parseFloat(this.props.initialValues['o:stroke_opacity']),
-			'o:stroke_opacity_select': isNaN(parseFloat(this.props.initialValues['o:stroke_opacity_select']))
-				? 0
-				: parseFloat(this.props.initialValues['o:stroke_opacity_select']),
-			'o:stroke_width': isNaN(parseFloat(this.props.initialValues['o:stroke_width']))
-				? 0
-				: parseFloat(this.props.initialValues['o:stroke_width']),
-			'o:fill_opacity_select': isNaN(parseFloat(this.props.initialValues['o:fill_opacity_select']))
-				? 0
-				: parseFloat(this.props.initialValues['o:fill_opacity_select'])
+			'o:fill_opacity': isNaN(parseFloat(this.props.initialValues['o:fill_opacity']))?0:parseFloat(this.props.initialValues['o:fill_opacity']),
+			'o:stroke_opacity': isNaN(parseFloat(this.props.initialValues['o:stroke_opacity']))?0:parseFloat(this.props.initialValues['o:stroke_opacity']),
+			'o:stroke_opacity_select': isNaN(parseFloat(this.props.initialValues['o:stroke_opacity_select']))?0:parseFloat(this.props.initialValues['o:stroke_opacity_select']),
+			'o:stroke_width': isNaN(parseFloat(this.props.initialValues['o:stroke_width']))?0:parseFloat(this.props.initialValues['o:stroke_width']),
+			'o:fill_opacity_select': isNaN(parseFloat(this.props.initialValues['o:fill_opacity_select']))?0:parseFloat(this.props.initialValues['o:fill_opacity_select'])
 		}
 		this.setState({sliderValues: initialSliderValues});
 	}
@@ -113,6 +103,7 @@ class RecordForm extends Component {
 	}
 
 	render() {
+
 		let thisRecord = this.props.mapCache.cache[this.props.initialValues['o:id']];
 		let isSelected = (this.props.selectedRecord && this.state.recordID === this.props.selectedRecord["o:id"]);
 

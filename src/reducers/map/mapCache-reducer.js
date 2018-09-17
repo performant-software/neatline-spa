@@ -10,6 +10,10 @@ export default function app(state = initialState, action) {
 		// Ignores keys that don't start with 'o:'
 		case ACTION_TYPE.RECORD_CACHE_UPDATE:
 
+			if(typeof action.payload === 'undefined'){
+				return;
+			}
+
 			let recordID = action.payload.setValues["o:id"];
 			if(typeof  recordID === 'undefined'){
 				 recordID = TYPE.NEW_UNSAVED_RECORD;
@@ -33,7 +37,6 @@ export default function app(state = initialState, action) {
 				}
 			}
 
-
 			return{
 				...state,
 				cache:newCache
@@ -56,10 +59,10 @@ export default function app(state = initialState, action) {
 			}
 
 		case ACTION_TYPE.RECORD_CACHE_CLEAR:
-				return{
-					...state,
-					cache:[]
-				}
+			return{
+				...state,
+				cache:[]
+			}
 
 
 

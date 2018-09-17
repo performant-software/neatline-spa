@@ -1,6 +1,5 @@
 import initialState from './exhibit-initialState';
 import * as ACTION_TYPE from '../../actions/action-types';
-
 export default function(state = initialState, action) {
 	switch (action.type) {
 
@@ -19,7 +18,7 @@ export default function(state = initialState, action) {
      case ACTION_TYPE.EXHIBITS_FETCH_SUCCESS:
    	 return {
    	   ...state,
-   	   exhibits: action.payload
+   	   exhibits:action.payload
    	 };
 
 	 case ACTION_TYPE.EXHIBIT_UPDATED:

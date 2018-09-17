@@ -30,17 +30,6 @@ export default {
 			attribution: '&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors',
 			url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 		},
-		geometryStyle: {
-			default: {
-				stroke: true,
-				fill: true,
-				weight: 2,
-				fillOpacity:0.5,
-				color: '#FF00FF',
-				opacity: 1.0,
-				fillColor: '#FF00FF'
-			}
-		},
 		basemapOptions: [
 			{
 				slug: "OpenStreetMap",
@@ -50,6 +39,19 @@ export default {
 				url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 			}
 		]
+	},
+
+	default: {
+		geometryStyles: {
+			'o:stroke_width': 2,
+			'o:stroke_color': '#000000',
+			'o:stroke_color_select': '#000000',
+			'o:stroke_opacity': 1.0,
+			'o:stroke_opacity_select': 1.0,
+			'o:fill_opacity': 0.5,
+			'o:fill_color': '#00aeff',
+			'o:fill_color_select': '#00aeff'
+		}
 	},
 
 	available: {

@@ -2,19 +2,19 @@ import {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {openEditorToNewRecord,selectRecord} from '../actions';
-import history from '../history';
 class RecordEditorLoader extends Component {
 	componentWillMount() {
-		let recordID = this.props.match.params;
+		let recordID = this.props.match.params.recordId;
 		if (recordID === 'new'){
 			this.props.openEditorToNewRecord();
 		}else{
-			this.props.records.forEach( record => {
-				if(record['o:id'] === recordID){
-					this.selectRecord(record);
-					history.push(`${window.baseRoute}/show/${this.props.exhibitSlug}/edit/${record['o:id']}`);
-				}
-			});
+			if(typeof this.props.records !== 'undefined'){
+				this.props.records.forEach( record => {
+					if(record['o:id'] === recordID){
+						this.selectRecord(record);
+					}
+				});
+			}
 		}
 	}
 
