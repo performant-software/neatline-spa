@@ -42,13 +42,21 @@ export default function app(state = initialState, action) {
 				cache:newCache
 			}
 
+		case ACTION_TYPE.RECORD_CACHE_REMOVE_BY_ID:
+			newCache = state.cache;
+			delete newCache[action.payload];
+			return{
+				...state,
+				cache:newCache
+			}
+
 		case ACTION_TYPE.RECORD_CACHE_CLEAR_UNSAVED:
-				newCache = state.cache;
-				delete newCache[-1];
-				return{
-					...state,
-					cache:newCache
-				}
+			newCache = state.cache;
+			delete newCache[-1];
+			return{
+				...state,
+				cache:newCache
+			}
 
 		case ACTION_TYPE.RECORD_CACHE_REMOVE_RECORD:
 			newCache = state.cache;

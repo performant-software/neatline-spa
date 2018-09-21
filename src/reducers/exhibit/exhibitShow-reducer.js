@@ -47,7 +47,6 @@ export default function(state = initialState, action) {
 
 		case ACTION_TYPE.RECORD_SELECTED:
 			let record = action.payload;
-			console.log("Selecting record: "+record['o:id']);
 			if (typeof record !== 'undefined' && record !== null) {
 				return {
 					...state,

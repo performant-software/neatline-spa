@@ -85,7 +85,7 @@ class ExhibitShow extends Component {
 		if (exhibit) {
 			exhibitDisplay = (
 				<div className='exhibit-public' style={{
-					height: '100%',
+					height: '100vh',
 					display: 'grid',
 					gridTemplateColumns: '320px 1fr',
 					gridGap: 'none'
@@ -158,7 +158,7 @@ class ExhibitShow extends Component {
 			exhibitDisplay = <ExhibitShowHeader>Exhibit with identifier "{props.match.params.slug}" not found</ExhibitShowHeader>;
 		}
 		return (
-			<div className="ps_n3_exhibitShowContainer" style={{height: '100%'}}>
+			<div className="ps_n3_exhibitShowContainer" style={{height: '100%',width:'98%',position:'absolute'}}>
 				<AlertBar isVisible={this.props.mapCache.hasUnsavedChanges} message="You have unsaved changes"/>
 				<SpinnerOverlay isVisible={this.props.leaflet.isSaving || this.props.recordsLoading}/>
 				<LockOverlay isVisible={this.props.leaflet.isEditing}/>

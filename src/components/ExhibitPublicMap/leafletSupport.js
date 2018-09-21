@@ -122,7 +122,16 @@ const leafletSupport = {
 		mapInstance.off('draw:edited');
 		mapInstance.off('draw:drawstart');
 		mapInstance.off('draw:drawstop');
+	},
+
+	clearGeometry : (mapInstance) =>{
+		mapInstance.eachLayer(function(layer){
+			if(typeof layer.feature !== 'undefined'){
+				mapInstance.removeLayer(layer);
+			}
+		});
 	}
+
 
 };
 export default leafletSupport;

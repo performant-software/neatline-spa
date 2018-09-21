@@ -24,7 +24,6 @@ export default function app(state = initialState, action) {
 				cache:newCache
 			}
 
-
 		default:
 			return state;
 	}

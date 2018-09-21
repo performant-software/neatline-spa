@@ -85,6 +85,7 @@ export default function(state = initialState, action) {
 
 		// A wild error appeared!
 		case ACTION_TYPE.RECORD_ERROR:
+			debugger
 			console.error(`RECORD_ERROR: ${action.payload.error}`);
 			return {
 				...state,
