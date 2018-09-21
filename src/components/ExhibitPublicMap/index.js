@@ -43,6 +43,7 @@ class ExhibitPublicMap extends Component {
 		this.shouldUpdate=true;
 		this.isDrawing=false;
 		this.Draw = Draw; /* Suppresses include warning */
+		this.geoClick=false;
 	}
 
 	// Stub for leaflet to attach to
@@ -100,12 +101,12 @@ class ExhibitPublicMap extends Component {
 
 			// Image layer
 			case TYPE.BASELAYER_TYPE.IMAGE:
-				this.props.dispatch(leafletIsSaving(true));
+				this.props.leafletIsSaving(true);
 				var img = new Image();
 					img.src = currentMapCache.image_address;
 					img.onerror = () => {
 						alert("Invalid Image URL");
-						this.props.dispatch(leafletIsSaving(false));
+						this.props.leafletIsSaving(false);
 					}
 					img.onload = () => {
 						let w = img.width;
@@ -137,7 +138,7 @@ class ExhibitPublicMap extends Component {
 						this.map.setZoom(1);
 						this.map.setMaxZoom(maxZoom);
 
-						this.props.dispatch(leafletIsSaving(false));
+						this.props.leafletIsSaving(false);
 					};
 				break;
 
@@ -186,11 +187,7 @@ class ExhibitPublicMap extends Component {
 		let geometry = this.ls_geometrySetup();
 
 		// Remove geometries and controls
-		mapInstance.eachLayer(function(layer){
-			if(typeof layer.feature !== 'undefined'){
-				mapInstance.removeLayer(layer);
-			}
-		});
+		leafletSupport.clearGeometry(mapInstance);
 		if(typeof this.ls_fg !== 'undefined'){
 			mapInstance.removeLayer(this.ls_fg);
 			mapInstance.removeControl(this.ls_drawControl);
@@ -386,39 +383,48 @@ class ExhibitPublicMap extends Component {
 	// Event handlers
 	//////////////////////////////////////
 	syncDrawWithReact = (selectedRecord,geojsonData) => {
-		if(typeof this.props.records === 'undefined' || this.isSaving){return;}
-		this.isSaving=true;
+
+		if(typeof this.props.records === 'undefined'){
+			debugger
+			return;
+		}
 		let recordId = (typeof selectedRecord !== 'undefined' && selectedRecord !== null && selectedRecord['o:id'])?selectedRecord['o:id']:TYPE.NEW_UNSAVED_RECORD;
 		this.props.change('record', 'o:coverage', geojsonData);
 		this.props.change('record', 'o:is_coverage', true);
 		this.props.deselectRecord();
-		this.props.dispatch(
-			updateRecordCacheAndSave({
-				setValues: {
-					'o:id': recordId,
-					'o:coverage': geojsonData,
-					'o:is_coverage': true
-				}
-		}));
+		this.props.updateRecordCacheAndSave({
+			setValues: {
+				'o:id': recordId,
+				'o:coverage': geojsonData,
+				'o:is_coverage': true
+			},
+			selectedRecord:selectedRecord
+		});
 
 	}
 
 	event_saveComplete = () => {
 		this.shouldUpdate=true;
-		this.isSaving=false;
 		this.cacheInitialized=false;
 		this.ls_mapUpdate();
 		this.forceUpdate();
 	}
 	onGeometryClick=(event,record)=>{
-		if(typeof this.props.records === 'undefined' || this.isSaving || this.isDrawing){return;}
+		this.geoClick=true;
+		if(typeof this.props.records === 'undefined' || this.isDrawing){return;}
 		L.DomEvent.stop(event);
 		this.props.selectRecord(record);
+		this.forceUpdate();
 	}
 	onMapClick=()=>{
-			if(typeof this.props.records === 'undefined' || this.isSaving || this.isDrawing){return;}
+		if(this.geoClick){
+			this.geoClick=false;
+		}else{
+			if(typeof this.props.records === 'undefined' || this.isDrawing){return;}
 			this.map.removeControl(this.ls_drawControl);
 			this.props.deselectRecord();
+			this.forceUpdate();
+		}
 	}
 }
 
@@ -429,7 +435,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 	recordMouseLeave: unpreviewRecord,
 	change,
 	dispatch,
-	leafletIsSaving
+	leafletIsSaving,
+	updateRecordCacheAndSave
 }, dispatch);
 
 export default connect(null,mapDispatchToProps)(ExhibitPublicMap);

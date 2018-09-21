@@ -1,6 +1,6 @@
 import * as ACTION_TYPE from '../actions/action-types';
 import {urlFormat, recordsEndpoint, exhibitsEndpoint, parseRecordsJSON,parseExhibitsJSON} from './api_helper.js';
-import {put, takeLatest, all, select} from 'redux-saga/effects';
+import {put, takeLatest, all, select, call} from 'redux-saga/effects';
 import {strings} from '../i18nLibrary';
 import history from '../history';
 
@@ -38,11 +38,12 @@ export default function* rootSaga() {
 		takeLatest(ACTION_TYPE.EXHIBIT_UPDATE, updateExhibit),
 		takeLatest(ACTION_TYPE.EXHIBIT_UPDATE_RESPONSE_RECEIVED, updateExhibitResponseReceived),
 
-		takeLatest(ACTION_TYPE.CREATE_RECORD_RESPONSE_RECEIVED, newRecordCreated),
+
 		takeLatest(ACTION_TYPE.RECORD_CACHE_UPDATE_AND_SAVE, updateRecordCacheAndSave),
 
 		takeLatest(ACTION_TYPE.RECORD_SELECTED, selectRecord),
-		takeLatest(ACTION_TYPE.RECORD_DESELECTED, deselectRecord)
+		takeLatest(ACTION_TYPE.RECORD_DESELECTED, deselectRecord),
+		takeLatest(ACTION_TYPE.EVENT_SAVECOMPLETE, declareSaveComplete)
 	])
 }
 
@@ -70,6 +71,7 @@ function* createRecord(action) {
 			}
 		});
 	}
+
 }
 
 function* selectRecord(action){
@@ -87,10 +89,8 @@ function* deselectRecord(action){
 }
 
 function* createRecordResponseReceived(action) {
-
 	// On success...
 	if (typeof action.payload.errors === 'undefined') {
-		console.log("New record created, adding to cache...");
 		yield put({type: ACTION_TYPE.RECORD_CACHE_UPDATE, payload:{
 			setValues:{
 				'o:id': action.payload['o:id'],
@@ -102,6 +102,7 @@ function* createRecordResponseReceived(action) {
 		yield put({type: ACTION_TYPE.EDITOR_CLOSE_NEW_RECORD});
 		yield put({type: ACTION_TYPE.RECORD_ADDED, record:action.payload});
 		yield put({type: ACTION_TYPE.RECORD_SELECTED, payload:action.payload});
+
 
 	// On failure...
 	} else {}
@@ -140,14 +141,15 @@ function* deleteRecordResponseReceived(action) {
 	// On success...
 	if (typeof action.payload.jsonResponse.errors === 'undefined') {
 		yield put({type: ACTION_TYPE.RECORD_REMOVED, record: action.payload.record});
-		yield put({type:ACTION_TYPE.RECORD_DESELECTED});
-		// On failure...
+		yield put({type: ACTION_TYPE.RECORD_DESELECTED});
+		yield put({type: ACTION_TYPE.RECORD_CACHE_REMOVE_BY_ID, payload:action.payload.record['o:id']});
+
+	// On failure...
 	} else {}
 }
 
 // Update a record
 function* updateRecord(action) {
-	//console.log(action.payload);
 	let record = action.payload;
 	try {
 		let url = urlFormat(recordsEndpoint, {}, record['o:id']);
@@ -159,7 +161,7 @@ function* updateRecord(action) {
 		let response_json = yield response.json();
 		yield put({type: ACTION_TYPE.UPDATE_RECORD_RESPONSE_RECEIVED, payload: response_json});
 
-		// Failed on the fetch call (timeout, etc)
+	// Failed on the fetch call (timeout, etc)
 	} catch (e) {
 		yield put({
 			type: ACTION_TYPE.RECORD_ERROR,
@@ -171,6 +173,7 @@ function* updateRecord(action) {
 		});
 	}
 }
+
 function* updateRecordResponseReceived(action) {
 	// On success...
 	if (typeof action.payload.errors === 'undefined') {
@@ -185,15 +188,17 @@ function* updateRecordResponseReceived(action) {
 	} else {
 		debugger
 	}
+}
 
+function* declareSaveComplete(action){
 	var event = new CustomEvent("saveComplete");
-	document.dispatchEvent(event);
+	yield call(document.dispatchEvent,event);
 }
 
 function* updateRecordCacheAndSave(action) {
-	yield put({type: ACTION_TYPE.LEAFLET_IS_SAVING, payload: true});
 	yield put({type: ACTION_TYPE.RECORD_CACHE_UPDATE, payload:action.payload});
 	yield put({type: ACTION_TYPE.EXHIBIT_CACHE_SAVE, payload:action.payload});
+	yield put({type: ACTION_TYPE.EVENT_SAVECOMPLETE});
 }
 
 // Save cache to the database
@@ -203,16 +208,21 @@ function* saveCacheToDatabase(action) {
 
 	let exhibit = yield select(getExhibitCache);
 	let records = yield select(getMapCache);
-	let selectedRecord = yield select(getSelectedRecord);
+	let selectedRecord = action.payload.selectedRecord;
 	let isNewRecord=false;
 
 	// Create if there's a new one
 	if (typeof records[-1] !== 'undefined') {
 		isNewRecord=true;
 		let newRecord = records[-1];
-		yield put({type: ACTION_TYPE.RECORD_CREATE, payload: newRecord});
-		yield put({type: ACTION_TYPE.RECORD_CACHE_CLEAR_UNSAVED});
+		if(newRecord["o:exhibit"] !== 'undefined'){
+			yield put({type: ACTION_TYPE.RECORD_CREATE, payload: newRecord});
+		}
 	}
+
+	// Clear temp cache item
+	yield put({type: ACTION_TYPE.RECORD_CACHE_CLEAR_UNSAVED});
+
 
 	// Update records
 	for (let x=0; x<records.length; x++) {
@@ -227,7 +237,8 @@ function* saveCacheToDatabase(action) {
 		yield put({type: ACTION_TYPE.EXHIBIT_UPDATE, payload: exhibit});
 	}
 
-	if(typeof selectedRecord !== 'undefined' && !isNewRecord){
+	if(typeof selectedRecord !== 'undefined' && selectedRecord !== null && !isNewRecord){
+		yield put({type: ACTION_TYPE.RECORD_DESELECTED});
 		yield put({type: ACTION_TYPE.RECORD_SELECTED, payload:selectedRecord});
 	}
 
@@ -235,12 +246,6 @@ function* saveCacheToDatabase(action) {
 
 	yield put({type: ACTION_TYPE.LEAFLET_IS_SAVING, payload: false});
 
-}
-
-function* newRecordCreated(action) {
-	if (action.payload !== null) {
-		yield put({type: ACTION_TYPE.RECORD_SELECTED, payload: action.payload});
-	}
 }
 
 function* fetchExhibits(action) {
