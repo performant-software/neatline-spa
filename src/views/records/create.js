@@ -6,10 +6,13 @@ import {createRecord} from '../../actions';
 import {strings} from '../../i18nLibrary';
 
 const RecordCreate = props => (
-<div>
-	<RecordForm onSubmit={props.submit} submitLabel={strings.create} disabled={props.record.loading}/>
-	<p>{props.record.error}</p>
-</div>)
+	<div>
+		<RecordForm onSubmit={props.submit}
+					submitLabel={strings.create}
+					disabled={props.record.loading}/>
+		<p>{props.record.error}</p>
+	</div>
+)
 
 const mapStateToProps = state => ({record: state.record});
 

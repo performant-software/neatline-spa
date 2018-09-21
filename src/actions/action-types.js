@@ -1,18 +1,15 @@
 // All of the actions live here...
 // if this gets unweildy, it can be split into multiple files
+export const PREVIEW_BASELAYER = 'PREVIEW_BASELAYER';
+export const RECORD_PREVIEWED = 'RECORD_PREVIEWED';
+export const RECORD_UNPREVIEWED = 'RECORD_UNPREVIEWED';
 
-// Map preview
 export const RECORD_CACHE_CLEAR = 'RECORD_CACHE_CLEAR';
 export const RECORD_CACHE_CLEAR_UNSAVED = 'RECORD_CACHE_CLEAR_UNSAVED';
 export const EXHIBIT_CACHE_SAVE = 'EXHIBIT_CACHE_SAVE';
 export const RECORD_CACHE_UPDATE = 'RECORD_CACHE_UPDATE';
-export const PREVIEW_FILLCOLOR = 'PREVIEW_FILLCOLOR';
-export const PREVIEW_BASELAYER = 'PREVIEW_BASELAYER';
+export const RECORD_CACHE_UPDATE_AND_SAVE = 'RECORD_CACHE_UPDATE_AND_SAVE';
 export const SET_AVAILABLE_TILELAYERS = 'SET_AVAILABLE_TILELAYERS';
-export const PREVIEW_INIT = 'PREVIEW_INIT';
-export const PREVIEW_UPDATE = 'PREVIEW_UPDATE';
-export const PREVIEW_UPDATE_BULK = 'PREVIEW_UPDATE_BULK';
-export const PREVIEW_MARKSELECTED = 'PREVIEW_MARKSELECTED';
 export const HAS_UNSAVED_CHANGES = 'HAS_UNSAVED_CHANGES';
 
 // Exhibits
@@ -25,12 +22,12 @@ export const EXHIBIT_FETCH_SUCCESS = 'exhibitShow/EXHIBIT_FETCH_SUCCESS';
 export const EXHIBIT_RESET = 'exhibitShow/EXHIBIT_RESET';
 export const EXHIBIT_LOADED = 'exhibitShow/EXHIBIT_LOADED';
 export const EXHIBIT_NOT_FOUND = 'exhibitShow/EXHIBIT_NOT_FOUND';
+
+
 export const RECORD_SELECTED = 'exhibitShow/RECORD_SELECTED';
 export const RECORD_DESELECTED = 'exhibitShow/RECORD_DESELECTED';
-export const RECORD_PREVIEWED = 'exhibitShow/RECORD_PREVIEWED';
-export const RECORD_UNPREVIEWED = 'exhibitShow/RECORD_UNPREVIEWED';
-export const EDITOR_RECORD_SET = 'exhibitShow/EDITOR_RECORD_SET';
-export const EDITOR_RECORD_UNSET = 'exhibitShow/EDITOR_RECORD_UNSET';
+
+
 export const EDITOR_NEW_RECORD = 'exhibitShow/EDITOR_NEW_RECORD';
 export const EDITOR_CLOSE_NEW_RECORD = 'exhibitShow/EDITOR_CLOSE_NEW_RECORD';
 export const TAB_INDEX_SET = 'exhibitShow/TAB_INDEX';
@@ -41,6 +38,8 @@ export const RECORD_COVERAGE_SET = 'exhibitShow/RECORD_COVERAGE_SET';
 
 
 // Records
+export const LEAFLET_IS_SAVING = 'LEAFLET_IS_SAVING';
+export const LEAFLET_IS_EDITING = 'LEAFLET_IS_EDITING';
 export const RECORD_ERROR = 'RECORD_ERROR';
 export const NEW_RECORD_RESET = 'recordCreate/NEW_RECORD_RESET';
 export const RECORD_CACHE_REMOVE_RECORD = 'RECORD_CACHE_REMOVE_RECORD';
@@ -60,13 +59,6 @@ export const EXHIBIT_UPDATED = 'exhibitUpdate/EXHIBIT_CREATED';
 export const EXHIBIT_PATCH_SUCCESS = 'exhibitUpdate/EXHIBIT_POST_SUCCESS';
 export const EXHIBIT_PATCH_ERRORED = 'exhibitUpdate/EXHIBIT_POST_ERRORED';
 
-
-// Layers
-export const LAYER_ADDED = 'LAYER_ADDED';
-export const LAYER_REMOVED = 'LAYER_REMOVED';
-export const LAYER_CLEAR = 'LAYER_CLEAR';
-
-
 // Exhibits
 export const EXHIBIT_CREATED = 'exhibitCreate/EXHIBIT_CREATED';
 export const EXHIBIT_POST_SUCCESS = 'exhibitCreate/EXHIBIT_POST_SUCCESS';
@@ -80,3 +72,9 @@ export const EXHIBIT_DELETE_ERRORED = 'exhibitDelete/EXHIBIT_DELETE_ERRORED';
 export const EXHIBITS_LOADING = 'exhibits/EXHIBITS_LOADING';
 export const EXHIBITS_ERRORED = 'exhibits/EXHIBITS_ERRORED';
 export const EXHIBITS_FETCH_SUCCESS = 'exhibits/EXHIBITS_FETCH_SUCCESS';
+
+export const RECORDS_LOADING = 'RECORDS_LOADING';
+export const RECORD_FETCH_BY_SLUG = 'RECORD_FETCH_BY_SLUG';
+export const RECORDS_FETCH = 'RECORDS_FETCH';
+export const RECORDS_FETCH_RESPONSE_RECEIVED = 'RECORDS_FETCH_RESPONSE_RECEIVED';
+export const RECORDS_FETCH_SUCCESS = 'RECORDS_FETCH_SUCCESS';

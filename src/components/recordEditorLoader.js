@@ -1,32 +1,35 @@
-import { Component } from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import { setEditorRecordById, openEditorToNewRecord } from '../reducers/not_refactored/exhibitShow';
-
+import {Component} from 'react';
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
+import {openEditorToNewRecord,selectRecord} from '../actions';
 class RecordEditorLoader extends Component {
-  componentWillMount() {
-    const { recordId } = this.props.match.params;
-    if (recordId === 'new')
-      this.props.openEditorToNewRecord();
-    else
-      this.props.setEditorRecordById(this.props.match.params.recordId);
-  }
+	componentWillMount() {
+		let recordID = this.props.match.params.recordId;
+		if (recordID === 'new'){
+			this.props.openEditorToNewRecord();
+		}else{
+			if(typeof this.props.records !== 'undefined'){
+				this.props.records.forEach( record => {
+					if(record['o:id'] === recordID){
+						this.selectRecord(record);
+					}
+				});
+			}
+		}
+	}
 
-  render() {
-    return null;
-  }
+	render() {return null;}
 }
 
 const mapStateToProps = state => ({
-  record: state.exhibitShow.editorRecord
+	records: state.exhibitShow.records,
+	record: state.exhibitShow.editorRecord,
+	exhibitSlug: state.exhibitShow.exhibit['o:slug']
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
-  setEditorRecordById,
-  openEditorToNewRecord
+	selectRecord,
+	openEditorToNewRecord
 }, dispatch);
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(RecordEditorLoader);
+export default connect(mapStateToProps, mapDispatchToProps)(RecordEditorLoader);

@@ -228,7 +228,7 @@ input.styleEditor_input {
 
 .ps_n3_mapStatus_warning {
   box-sizing: content-box;
-  position: absolute;
+  position: relative;
   z-index: 9000;
   height: 1.5rem;
   font-size: 1rem;
@@ -490,3 +490,89 @@ input.styleEditor_input {
   display: inline-block;
   top: 10px;
   transform: translate3d(-50%, 0, 0); }
+
+.spinner_container {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  top: 0;
+  z-index: 10000;
+  font-weight: 900;
+  text-align: center;
+  color: #00000073;
+  font-size: 2rem;
+  background-color: #ffffff;
+  padding: 20% 0 0 0;
+  opacity: .5;
+  transition: opacity 0.5s ease-in-out;
+  -moz-transition: opacity 0.5s ease-in-out;
+  -webkit-transition: opacity 0.5s ease-in-out; }
+
+.hidden {
+  display: none; }
+
+.invisible {
+  opacity: 0; }
+
+.spinner {
+  margin: 0 auto 0 auto;
+  width: 70px;
+  text-align: center; }
+
+.spinner_logo {
+  width: 10rem; }
+
+.spinner > div {
+  width: 18px;
+  height: 18px;
+  background-color: #333;
+  border-radius: 100%;
+  display: inline-block;
+  -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+  animation: sk-bouncedelay 1.4s infinite ease-in-out both; }
+
+.spinner .bounce1 {
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s; }
+
+.spinner .bounce2 {
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s; }
+
+@-webkit-keyframes sk-bouncedelay {
+  0%,
+  100%,
+  80% {
+    -webkit-transform: scale(0); }
+  40% {
+    -webkit-transform: scale(1); } }
+
+@keyframes sk-bouncedelay {
+  0%,
+  100%,
+  80% {
+    -webkit-transform: scale(0);
+    transform: scale(0); }
+  40% {
+    -webkit-transform: scale(1);
+    transform: scale(1); } }
+
+.lockOverlay_container {
+  position: fixed;
+  height: 100vh;
+  width: 20rem;
+  top: 0;
+  z-index: 10000;
+  font-weight: 900;
+  text-align: center;
+  color: #00000073;
+  font-size: 2rem;
+  background-color: #ffffff;
+  padding: 20% 0 0 0;
+  opacity: .8;
+  transition: opacity 0.5s ease-in-out;
+  -moz-transition: opacity 0.5s ease-in-out;
+  -webkit-transition: opacity 0.5s ease-in-out; }
+
+.hidden {
+  display: none; }

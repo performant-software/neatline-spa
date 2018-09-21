@@ -2,19 +2,17 @@ import React, {Component} from 'react';
 import {Field, reduxForm, change} from 'redux-form';
 import {Tabs, TabList, Tab, TabPanel} from 'react-tabs';
 import {connect} from 'react-redux';
-import {preview_update,preview_init,setUnsavedChanges,updateRecordCache,removeRecordFromCache,clearLayers} from '../../actions';
-import ColorPicker from './colorPicker.js'
-import DatePicker from './datePicker.js';
+import {setUnsavedChanges, updateRecordCache, removeRecordFromCache} from '../../actions';
+import ColorPicker from '../ColorPicker'
+import DatePicker from '../DatePicker';
 import {strings} from '../../i18nLibrary';
-import {formatDate,parseDate,} from 'react-day-picker/moment';
+import {formatDate, parseDate} from 'react-day-picker/moment';
 import 'react-day-picker/lib/style.css';
 import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
-import * as TYPE from '../../types';
 import moment from 'moment';
 import {bindActionCreators} from 'redux';
 
-//import * as TYPE from '../../types';
 const defaultValues = {
 	'o:fill_color': '#00aeff',
 	'o:fill_color_select': '#00aeff',
@@ -33,358 +31,93 @@ class RecordForm extends Component {
 	constructor(props) {
 		super(props);
 		// Mapping to this
-		this.inputEnforce = this.inputEnforce.bind(this);
 		this.change = change;
 		this.handleSubmit = props.handleSubmit;
 		this.submitLabel = props.submitLabel;
 		this.disabled = props.disabled;
 		this.showDelete = props.showDelete;
 		this.handleDelete = props.handleDelete;
-		this.preview_init=preview_init.bind(this);
-		this.preview_update = preview_update.bind(this);
 
 		this.slider = {
-			fieldName:'',
-			value:''
+			fieldName: '',
+			value: ''
 		};
 
-		this.state={
+		this.state = {
 			strings,
-			exhibitType:'map',
-			colorPickerVisible:false,
-			colorPickerTop:0,
-			colorPickerCurrentColor:'000000',
-			colorPickerCurrentField:'',
-			colorPickerDefaultColor:'#000000',
-			sliderValues:{}
+			exhibitType: 'map',
+			colorPickerVisible: false,
+			colorPickerTop: 0,
+			colorPickerCurrentColor: '000000',
+			colorPickerCurrentField: '',
+			colorPickerDefaultColor: '#000000',
+			sliderValues: {}
 		};
-		this.previewInitialized=false;
+		this.cacheInitialized = false;
 	}
 
-	componentDidMount(){
-		// Cache intial values
-		if(typeof this.props.initialValues["o:id"] === 'undefined'){
-			this.props.initialValues["o:id"] = TYPE.NEW_UNSAVED_RECORD;
-		}
-		this.props.dispatch(updateRecordCache({setValues:this.props.initialValues}));
-
+	componentDidMount() {
 		// For the sliders, setup initial values
 		let initialSliderValues = {
-			'o:fill_opacity':isNaN(parseFloat(this.props.initialValues['o:fill_opacity']))?0:parseFloat(this.props.initialValues['o:fill_opacity']),
-			'o:stroke_opacity':isNaN(parseFloat(this.props.initialValues['o:stroke_opacity']))?0:parseFloat(this.props.initialValues['o:stroke_opacity']),
-			'o:stroke_opacity_select':isNaN(parseFloat(this.props.initialValues['o:stroke_opacity_select']))?0:parseFloat(this.props.initialValues['o:stroke_opacity_select']),
-			'o:stroke_width':isNaN(parseFloat(this.props.initialValues['o:stroke_width']))?0:parseFloat(this.props.initialValues['o:stroke_width']),
-			'o:fill_opacity_select':isNaN(parseFloat(this.props.initialValues['o:fill_opacity_select']))?0:parseFloat(this.props.initialValues['o:fill_opacity_select'])
+			'o:fill_opacity': isNaN(parseFloat(this.props.initialValues['o:fill_opacity']))?0:parseFloat(this.props.initialValues['o:fill_opacity']),
+			'o:stroke_opacity': isNaN(parseFloat(this.props.initialValues['o:stroke_opacity']))?0:parseFloat(this.props.initialValues['o:stroke_opacity']),
+			'o:stroke_opacity_select': isNaN(parseFloat(this.props.initialValues['o:stroke_opacity_select']))?0:parseFloat(this.props.initialValues['o:stroke_opacity_select']),
+			'o:stroke_width': isNaN(parseFloat(this.props.initialValues['o:stroke_width']))?0:parseFloat(this.props.initialValues['o:stroke_width']),
+			'o:fill_opacity_select': isNaN(parseFloat(this.props.initialValues['o:fill_opacity_select']))?0:parseFloat(this.props.initialValues['o:fill_opacity_select'])
 		}
-		this.setState({sliderValues:initialSliderValues});
+		this.setState({sliderValues: initialSliderValues});
+	}
+
+	componentWillReceiveProps(nextprops) {
+
+		// Update the cache if the record changed or not yet initialized
+		if (!this.cacheInitialized || (nextprops.initialValues['o:id'] !== this.props.initialValues['o:id'])) {
+			this.props.dispatch(updateRecordCache({setValues: nextprops.initialValues}));
+			this.setState({recordID: nextprops.initialValues['o:id']});
+			this.cacheInitialized = true;
+		}
 	}
 
 	// Sets the unsaved changes flag
-	// Fixme: should move to saga
+	// FIXME: this event handler is overloaded
 	markUnsaved = (event) => {
-		if(typeof event !== 'undefined'){
-			//console.log("Updating cache:"+event.target.name+":"+event.target.value);
-
+		if (typeof event !== 'undefined') {
 			// Converting moment into string for storage
-			if(event.target.name.includes("date")){
+			if (event.target.name.includes("date")) {
 				event.target.value = moment(event.target.value).format('YYYY-MM-DD');
-				//console.log(moment(event.target.value).format('YYYY-MM-DD'));
 			}
-			this.props.dispatch(updateRecordCache({setValues:{'o:id':this.props.initialValues['o:id'],[event.target.name]:event.target.value}}));
-		}
-		this.props.dispatch(
-			setUnsavedChanges({hasUnsavedChanges:true})
-		);
-	}
-
-	// After mount
-	componentWillReceiveProps(nextprops){
-		// Populate the live preview object with the form fields if the record changed
-		if(!this.previewInitialized || nextprops.initialValues['o:id'] !== this.props.initialValues['o:id']){
-			this.props.dispatch(this.preview_init(nextprops.initialValues));
-			this.setState({
-				recordID:nextprops.initialValues['o:id'],
-				fillColor:nextprops.initialValues['o:fill_color'],
-				fillColor_selected:nextprops.initialValues['o:fill_color_select'],
-				strokeColor:nextprops.initialValues['o:stroke_color'],
-				strokeColor_selected:nextprops.initialValues['o:stroke_color_select']
-			});
-			this.previewInitialized=true;
-		}
-
-	}
-
-	// Color picker
-	// Fixme: Factor out
-	_colorPickerListener = (event) => {
-		let targetElement = event.target;
-		let el = document.getElementById('colorPickerComponent');
-		// Walk the DOM
-		do {
-			// This is a click inside. Do nothing, just return.
-			if (targetElement === el) {return;}
-			targetElement = targetElement.parentNode;
-		} while (targetElement);
-
-		// This is a click outside.
-		if(this.state.colorPickerVisible){
-			this.hideColorPicker(event);
-		};
-	}
-
-	colorPickerEventHandler(enable){
-		if(enable){
-			// Handler to close colorpciker
-			document.addEventListener("click", this._colorPickerListener);
-		}else{
-			document.removeEventListener("click", this._colorPickerListener);
-		}
-	}
-
-	showColorPicker = (event,propertyToColor) => {
-		let parentEl = document.getElementById("scrollArea_stylePropertyPicker");
-		let top = (event.target.offsetTop-parentEl.scrollTop);
-		this.setState({	colorPickerCurrentColor:event.target.dataset.initialcolor,
-						colorPickerCurrentField:event.target.dataset.fieldname,
-						colorPickerCurrentlyEditing:propertyToColor,
-						colorPickerVisible:true,
-						colorPickerTop:`${top}px`});
-
-		this.colorPickerEventHandler(true);
-	}
-
-	// Dismiss the colorpicker
-	hideColorPicker = (event) =>{
-		this.setState({colorPickerVisible:false});
-		this.colorPickerEventHandler(false);
-
-		// Update the form
-		this.props.dispatch(this.change(this.props.form,this.state.colorPickerCurrentField, this.state.colorPickerCurrentColor));
-	}
-
-	// Handle ongoing colorpicker changes
-	handleColorChange = (color,event) =>{
-		this.setState({colorPickerCurrentColor:color.hex});
-		this.setState({[this.state.colorPickerCurrentlyEditing]:color.hex});
-
-		// Update the preview
-		this.props.dispatch(
-			this.preview_update({
-				recordID:this.state.recordID,
-				property: this.state.colorPickerCurrentlyEditing,
-			 	value: color.hex
-			})
-		);
-
-
-		// FIXME: we should rename these props to o:
-		// this.onFieldBlur({target:{value:color.hex,name:this.state.colorPickerCurrentlyEditing}});
-		let property;
-		let value=color.hex;
-		switch (this.state.colorPickerCurrentlyEditing) {
-			case 'fillColor':
-				property='o:fill_color';
-				break;
-			case 'fillColor_selected':
-				property='o:fill_color_select';
-				break;
-			case 'strokeColor':
-				property='o:stroke_color';
-				break;
-			case 'strokeColor_selected':
-				property='o:stroke_color_select';
-				break;
-			default:
-
-		}
-		if(typeof property === 'undefined'){
-			debugger
-			console.error('Cannot update cache with undefined prop!:'+value);
-		}else{
-			this.props.dispatch(updateRecordCache({setValues:{'o:id':this.props.initialValues['o:id'],[property]:value}}));
-			this.markUnsaved();
-		}
-
-
-	}
-
-	// When the field blurs, write the value to the appropriate field
-	onFieldBlur = (event) =>{
-		let value = event.target.value;
-		let currentField = event.target.name;
-		let property = '';
-		switch (currentField) {
-			case 'o:fill_color':
-				property = 'fillColor';
-				break;
-
-			case 'o:fill_color_select':
-				property = 'fillColor_selected';
-				break;
-
-			case 'o:stroke_color':
-				property = 'stroke_color';
-				break;
-
-			case 'o:stroke_color_select':
-				property = 'stroke_color_selected';
-				break;
-
-			case 'o:fill_opacity':
-				property = 'fill_opacity';
-				break;
-
-			case 'o:fill_opacity_select':
-				property = 'fill_opacity_selected';
-				break;
-
-			case 'o:stroke_opacity':
-				property = 'stroke_opacity';
-				break;
-
-			case 'o:stroke_opacity_select':
-				property = 'stroke_opacity_selected';
-				break;
-
-			case 'o:fill_color_selected':
-				property = 'fillColor_selected';
-				break;
-
-			case 'o:stroke_width':
-				property = 'stroke_weight';
-				break;
-
-			default:
-				console.log("UpdatePreview: I don't know how to update: "+currentField);
-		}
-
-		// Dispatch update
-		if(property.length > 0){
-			this.props.dispatch(
-				this.preview_update({recordID:this.state.recordID, property:property, value:value})
-			);
-		}
-	}
-
-
-	// Input enforcer
-	// FIXME: Factor out into its own file
-	// FIXME: Consider removing, we don't really need this since we added dates, sliders, and color picker
-	inputEnforce(event){
-		let enforcementType = event.target.dataset.enforce;
-		let currentVal = event.target.value;
-		let currentField = event.target.name;
-		let forcedValue=null;
-		switch (enforcementType) {
-
-			case 'float':
-				if (/[^.\d]/.test(currentVal)) {
-					forcedValue = parseFloat(currentVal);
-					forcedValue= isNaN(forcedValue)?"":forcedValue.toString();
-				};
-				break;
-
-			case 'normal':
-					if (/[^.\d]/.test(currentVal)) {
-						forcedValue = parseFloat(currentVal);
-					}else{
-						forcedValue = currentVal;
-					}
-					forcedValue = (forcedValue>1)?1:forcedValue;
-					forcedValue = (forcedValue<0)?0:forcedValue;
-					forcedValue= isNaN(forcedValue)?"":forcedValue.toString();
-					break;
-
-			case 'hex':
-				// If the input is 7 chars or over, or if it is at least 1 but doesn't start with #
-				if( (currentVal.length >= 7) ||
-					(currentVal.length > 0 && (currentVal.substring(0,1)!=='#')) ){
-
-					// Check to see if it's a valid hex
-					if(! /^#+([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/.test(currentVal)){
-						// Fixme... this detects but does not handle bad hex that matches
-						// the format. For example #00X0000 is invalid but passes through
-						if(currentVal.substring(0,1)!=='#'){
-							forcedValue="#"+currentVal.substring(0,6);
-						}else{
-							forcedValue=currentVal.substring(0,7);
-						}
-					}
+			this.props.dispatch(updateRecordCache({
+				setValues: {
+					'o:id': this.props.initialValues['o:id'],
+					[event.target.name]: event.target.value
 				}
-				break;
-
-			default:
-				console.log("RecordForm inputEnforce: I don't know how to enforce: " +enforcementType);
+			}));
 		}
-		if(forcedValue !== null){
-			// FIXME: time delay workaround because this doesn't get dispatched until next click
-			setTimeout(()=> { this.props.dispatch(this.change(this.props.form,currentField,forcedValue)); }, 100);
-		}
-		this.markUnsaved();
-	}
-
-	// Slider handling
-	// FIXME: Factor out into its own file
-	slider_changeStart = (fieldName) =>{
-		// Register the name of the field we're adjusting
-		this.slider.fieldName=fieldName;
-	}
-	slider_change = (value) =>{
-		if(this.slider.fieldName.length > 0 ){
-			// Hold the changed value
-			this.slider.value=value.toFixed(2);
-
-			// Set the state (updates the UI)
-			let updatedSliderValues = {
-				...this.state.sliderValues,
-				[this.slider.fieldName]:parseFloat(this.slider.value)
-			}
-			this.setState({sliderValues:updatedSliderValues});
-
-			// Fake a blur event to update the value (updates the map)
-			this.onFieldBlur({target:{value:this.slider.value,name:this.slider.fieldName}});
-		}
-	}
-	slider_changeComplete = (event) =>{
-		// Change the hidden form field
-		this.props.dispatch(change(this.props.form, this.slider.fieldName, this.slider.value));
-
-		// Flag the map needs saving
-		this.markUnsaved({target:{value:this.slider.value,name:this.slider.fieldName}});
-
-		this.slider={
-			fieldName:'',value:''
-		}
+		this.props.dispatch(setUnsavedChanges({hasUnsavedChanges: true}));
 	}
 
 	// Delete a record
 	deleteRecord = () => {
-		// 1. Remove from Cache
-		this.props.dispatch(removeRecordFromCache({recordID:this.props.initialValues['o:id']}));
-
-		// 2. Actually delete the record with API call
+		this.props.dispatch(removeRecordFromCache({recordID: this.props.initialValues['o:id']}));
 		this.handleDelete();
 	}
 
+	render() {
 
-	render(){
-		let thisRecord = this.props.mapPreview.cache[this.props.initialValues['o:id']];
+		let thisRecord = this.props.mapCache.cache[this.props.initialValues['o:id']];
 		let isSelected = (this.props.selectedRecord && this.state.recordID === this.props.selectedRecord["o:id"]);
 
-		return (
-			<form className='ps_n3_exhibit-form' onSubmit={this.handleSubmit}>
+		return (<form className='ps_n3_exhibit-form' onSubmit={this.handleSubmit}>
 
-			<ColorPicker color={this.state.colorPickerCurrentColor}
-						 isVisible={this.state.colorPickerVisible}
-						 top={this.state.colorPickerTop}
-					 	 handleChange={this.handleColorChange}/>
+			<ColorPicker color={this.state.colorPickerCurrentColor} isVisible={this.state.colorPickerVisible} top={this.state.colorPickerTop} handleChange={this.handleColorChange}/>
 			<Tabs>
-				{/* Form buttons */}
 				<div className="ps_n3_buttonGroup">
-					{this.showDelete &&
-						<div>
-							<div className="ps_n3_button" onClick={this.deleteRecord} type='button'>Delete</div>
-						</div>
+					{
+						this.showDelete && <div>
+								<div 	className="ps_n3_button"
+										onClick={this.deleteRecord}
+										type='button'>Delete</div>
+							</div>
 					}
 				</div>
 
@@ -401,20 +134,20 @@ class RecordForm extends Component {
 									padding: '0'
 								}}>
 								<div>
-									<label htmlFor='o:title'>{strings.title}</label>
+									<label 	htmlFor='o:title'>{strings.title}</label>
 									<Field 	name='o:title'
 											component='textarea'
 											onChange={this.markUnsaved}/>
 								</div>
 								<div>
-									<label htmlFor='o:slug'>{strings.slug}</label>
+									<label 	htmlFor='o:slug'>{strings.slug}</label>
 									<Field 	name='o:slug'
 											component='input'
 											type='text'
 											onChange={this.markUnsaved}/>
 								</div>
 								<div>
-									<label htmlFor='o:body'>{strings.body}</label>
+									<label 	htmlFor='o:body'>{strings.body}</label>
 									<Field 	name='o:body'
 											component='textarea'
 											onChange={this.markUnsaved}/>
@@ -424,287 +157,248 @@ class RecordForm extends Component {
 					</TabPanel>
 					<TabPanel>
 
-						{(typeof this.state.recordID === 'undefined') &&
-							<div><i>save record before editing style</i></div>
+						{
+							(typeof this.state.recordID === 'undefined') && <div>
+									<i>save record before editing style</i>
+								</div>
 						}
 
-						{(typeof this.state.recordID !== 'undefined') &&
-							 <div>
-	 							<fieldset id="scrollArea_stylePropertyPicker" className="ps_n3_recordFormContainer" disabled={this.disabled}>
+						{
+							(typeof this.state.recordID !== 'undefined') && <div>
+									<fieldset id="scrollArea_stylePropertyPicker" className="ps_n3_recordFormContainer" disabled={this.disabled}>
 
-	 								<div className={!isSelected?"ps_n3_highlight":""}>
-	 									<div className="ps_n3_optionHeader">{strings.colors}</div>
-	 									<div>
-	 										<label 	htmlFor='o:fill_color'>{strings.fill_color}</label>
+										<div className={!isSelected ? "ps_n3_highlight":""}>
+											<div className="ps_n3_optionHeader">{strings.colors}</div>
+											<div>
+												<label 	htmlFor='o:fill_color'>{strings.fill_color}</label>
 
-	 										<div 	className="ps_n3_inputColorSwatch"
-	 												data-initialcolor={this.state.fillColor}
-	 												data-fieldname='o:fill_color'
-	 												onClick={(event)=>this.showColorPicker(event,'fillColor')}
-	 												style={{backgroundColor:this.state.fillColor}}/>
+												<div 	className="ps_n3_inputColorSwatch"
+														data-initialcolor={this.props.initialValues['o:fill_color']}
+														data-fieldname='o:fill_color'
+														onClick={(event) => this.showColorPicker(event, 'o:fill_color')}
+														style={{backgroundColor:(typeof thisRecord !== 'undefined')?thisRecord['o:fill_color']:'#0000FF'}}/>
 
-	 										<Field 	className="styleEditor_input"
-	 												name='o:fill_color'
-	 												component='input'
-	 												type='text'
-	 												data-enforce='hex'
-	 												onBlur={this.onFieldBlur}
-	 												onChange={this.inputEnforce}/>
-	 									</div>
+												<Field 	className="styleEditor_input"
+														name='o:fill_color'
+														component='input'
+														type='text'
+														data-enforce='hex'
+														onChange={this.inputEnforce}/>
+											</div>
 
-	 									<div>
-	 										<label 	htmlFor='o:stroke_color'>{strings.stroke_color}</label>
-	 										<div 	className="ps_n3_inputColorSwatch"
-	 												data-fieldname='o:stroke_color'
-	 												data-initialcolor={this.state.strokeColor}
-	 												onClick={(event)=>this.showColorPicker(event,'strokeColor')}
-	 												style={{backgroundColor:this.state.strokeColor}}/>
+											<div>
+												<label 	htmlFor='o:stroke_color'>{strings.stroke_color}</label>
+												<div 	className="ps_n3_inputColorSwatch"
+														data-fieldname='o:stroke_color'
+														data-initialcolor={this.props.initialValues['o:stroke_color']}
+														onClick={(event) => this.showColorPicker(event, 'o:stroke_color')}
+														style={{backgroundColor:(typeof thisRecord !== 'undefined')?thisRecord['o:stroke_color']:'#0000FF'}}/>
 
-	 										<Field 	className="styleEditor_input"
-	 												name='o:stroke_color'
-	 												component='input'
-	 												type='text'
-	 												data-enforce='hex'
-	 												onBlur={this.onFieldBlur}
-	 												onChange={this.inputEnforce}/>
-	 									</div>
+												<Field 	className="styleEditor_input"
+														name='o:stroke_color'
+														component='input'
+														type='text'
+														data-enforce='hex'
+														onChange={this.inputEnforce}/>
+											</div>
 
-	 									<div>
-	 										<label 	htmlFor='o:fill_opacity'>{strings.fill_opacity}</label>
-	 										<Slider
-	 											value={this.state.sliderValues['o:fill_opacity']}
-	 											min={0.1}
-	 											max={1.0}
-	 											step={0.01}
-	 											orientation="horizontal"
-	 											onChangeStart={()=>this.slider_changeStart('o:fill_opacity')}
-	 											onChange={this.slider_change}
-	 											onChangeComplete={this.slider_changeComplete}/>
-	 										<Field 	name='o:fill_opacity'
-	 												component='input'
-	 												type='hidden'/>
-	 									</div>
-	 									<div>
-	 										<label 	htmlFor='o:stroke_opacity'>{strings.stroke_opacity}</label>
-	 										<Slider
-	 											value={this.state.sliderValues['o:stroke_opacity']}
-	 											min={0.1}
-	 											max={1.0}
-	 											step={0.01}
-	 											orientation="horizontal"
-	 											onChangeStart={()=>this.slider_changeStart('o:stroke_opacity')}
-	 											onChange={this.slider_change}
-	 											onChangeComplete={this.slider_changeComplete}/>
-	 										<Field 	name='o:fill_opacity'
-	 												component='input'
-	 												type='hidden'/>
-	 									</div>
-	 								</div>
-	 								<div className={isSelected?"ps_n3_highlight":""}>
-	 									<div className="ps_n3_optionHeader">{strings.selected}</div>
-	 									<div>
-	 										<label 	htmlFor='o:fill_color_select'>{strings.selected_fill_color}</label>
+											<div>
+												<label htmlFor='o:fill_opacity'>{strings.fill_opacity}</label>
+												<Slider value={this.state.sliderValues['o:fill_opacity']}
+														min={0.1} max={1.0} step={0.01}
+														orientation="horizontal"
+														onChangeStart={() => this.slider_changeStart('o:fill_opacity')}
+														onChange={this.slider_change}
+														onChangeComplete={this.slider_changeComplete}/>
 
-	 										<div 	onClick={(event)=>this.showColorPicker(event,'fillColor_selected')}
-	 												className="ps_n3_inputColorSwatch"
-	 												data-initialcolor={this.state.fillColor_selected}
-	 												data-fieldname='o:fill_color_select'
-	 												style={{backgroundColor:this.state.fillColor_selected}}></div>
+												<Field 	name='o:fill_opacity'
+														component='input'
+														type='hidden'/>
+											</div>
+											<div>
+												<label htmlFor='o:stroke_opacity'>{strings.stroke_opacity}</label>
+												<Slider value={this.state.sliderValues['o:stroke_opacity']}
+														min={0.1} max={1.0} step={0.01}
+														orientation="horizontal"
+														onChangeStart={() => this.slider_changeStart('o:stroke_opacity')}
+														onChange={this.slider_change}
+														onChangeComplete={this.slider_changeComplete}/>
 
-	 										<Field 	className="styleEditor_input"
-	 												name='o:fill_color_select'
-	 												component='input'
-	 												type='text'
-	 												data-enforce='hex'
-	 												onBlur={this.onFieldBlur}
-	 												onChange={this.inputEnforce}/>
-	 									</div>
-	 									<div>
-	 										<label 	htmlFor='o:stroke_color_select'>{strings.selected_stroke_color}</label>
-	 										<div 	onClick={(event)=>this.showColorPicker(event,'strokeColor_selected')}
-	 												className="ps_n3_inputColorSwatch"
-	 												data-initialcolor={this.state.strokeColor_selected}
-	 												data-fieldname='o:stroke_color_select'
-	 												style={{backgroundColor:this.state.strokeColor_selected}}></div>
-	 										<Field 	className="styleEditor_input"
-	 												name='o:stroke_color_select'
-	 												component='input'
-	 												type='text'
-	 												data-enforce='hex'
-	 												onBlur={this.onFieldBlur}
-	 												onChange={this.inputEnforce}/>
-	 									</div>
-	 									<div>
-	 										<label 	htmlFor='o:stroke_opacity_select'>{strings.selected_stroke_opacity}</label>
-	 										<Slider
-	 											value={this.state.sliderValues['o:stroke_opacity_select']}
-	 											min={0.1}
-	 											max={1.0}
-	 											step={0.01}
-	 											orientation="horizontal"
-	 											onChangeStart={()=>this.slider_changeStart('o:stroke_opacity_select')}
-	 											onChange={this.slider_change}
-	 											onChangeComplete={this.slider_changeComplete}/>
-	 										<Field 	name='o:stroke_opacity_select'
-	 												component='input'
-	 												type='hidden'/>
-	 									</div>
-	 									<div>
-	 										<label 	htmlFor='o:fill_opacity_select'>{strings.selected_fill_opacity}</label>
-	 										<Slider
-	 											value={this.state.sliderValues['o:fill_opacity_select']}
-	 											min={0.1}
-	 											max={1.0}
-	 											step={0.01}
-	 											orientation="horizontal"
-	 											onChangeStart={()=>this.slider_changeStart('o:fill_opacity_select')}
-	 											onChange={this.slider_change}
-	 											onChangeComplete={this.slider_changeComplete}/>
-	 										<Field 	name='o:fill_opacity_select'
-	 												component='input'
-	 												type='hidden'/>
-	 									</div>
-	 								</div>
+												<Field 	name='o:fill_opacity'
+														component='input'
+														type='hidden'/>
+											</div>
+										</div>
+										<div className={isSelected
+												? "ps_n3_highlight"
+												: ""}>
+											<div className="ps_n3_optionHeader">{strings.selected}</div>
+											<div>
+												<label htmlFor='o:fill_color_select'>{strings.selected_fill_color}</label>
 
-	 								<div className="ps_n3_optionHeader">{strings.dimensions}</div>
-	 								<div>
-	 									<label 	htmlFor='o:stroke_width'>{strings.stroke_width}</label>
-	 									<Slider
-	 										value={this.state.sliderValues['o:stroke_width']}
-	 										min={0}
-	 										max={20}
-	 										step={0.01}
-	 										orientation="horizontal"
-	 										onChangeStart={()=>this.slider_changeStart('o:stroke_width')}
-	 										onChange={this.slider_change}
-	 										onChangeComplete={this.slider_changeComplete}/>
-	 										<Field 	name='o:stroke_width'
-	 												component='hidden'/>
-	 								</div>
-	 								<div>
-	 									<label 	htmlFor='o:point_radius'>{strings.point_radius}</label>
-	 									<Field 	className="styleEditor_input"
-	 											name='o:point_radius'
-	 											component='input'
-	 											type='number'
-	 											data-enforce='float'
-	 											onChange={this.inputEnforce}/>
-	 								</div>
-	 								<div>
-	 									<label 	htmlFor='o:zindex'>{strings.z_index}</label>
-	 									<Field 	className="styleEditor_input"
-	 											name='o:zindex'
-	 											component='input'
-	 											type='number'
-	 											data-enforce='float'
-	 											onChange={this.inputEnforce}/>
-	 								</div>
-	 								<div>
-	 									<label	htmlFor='o:weight'>{strings.order_weight}</label>
-	 									<Field 	className="styleEditor_input"
-	 											name='o:weight'
-	 											component='input'
-	 											type='number'
-	 											data-enforce='float'
-	 											onChange={this.inputEnforce}/>
-	 								</div>
+												<div 	onClick={(event) => this.showColorPicker(event, 'o:fill_color_select')}
+														className="ps_n3_inputColorSwatch"
+														data-initialcolor={this.props.initialValues['o:fill_color_select']}
+														data-fieldname='o:fill_color_select'
+														style={{backgroundColor:(typeof thisRecord !== 'undefined')?thisRecord['o:fill_color_select']:'#0000FF'}}/>
 
-	 								<div className="ps_n3_optionHeader">{strings.dates}</div>
-	 								<div>
-	 									<DatePicker	fieldName='o:end_date'
-	 												value={(typeof thisRecord !== 'undefined')?thisRecord['o:start_date']:''}
-	 												label={strings.start_date}
-	 												formatDate={formatDate}
-	 												parseDate={parseDate}
-	 												onDayChange={this.markUnsaved}/>
-	 								</div>
-	 								<div>
-	 									<DatePicker	fieldName='o:end_date'
-	 												value={(typeof thisRecord !== 'undefined')?thisRecord['o:end_date']:''}
-	 												label={strings.end_date}
-	 												formatDate={formatDate}
-	 												parseDate={parseDate}
-	 												onDayChange={this.markUnsaved}/>
-	 								</div>
-	 								<div>
-	 									<DatePicker	fieldName='o:after_date'
-	 												value={(typeof thisRecord !== 'undefined')?thisRecord['o:after_date']:''}
-	 												label={strings.after_date}
-	 												formatDate={formatDate}
-	 												parseDate={parseDate}
-	 												onDayChange={this.markUnsaved}/>
-	 								</div>
-	 								<div>
-	 									<DatePicker	fieldName='o:before_date'
-	 												value={(typeof thisRecord !== 'undefined')?thisRecord['o:before_date']:''}
-	 												label={strings.before_date}
-	 												formatDate={formatDate}
-	 												parseDate={parseDate}
-	 												onDayChange={this.markUnsaved}/>
-	 								</div>
+												<Field 	className="styleEditor_input"
+														name='o:fill_color_select'
+														component='input'
+														type='text'
+														data-enforce='hex'
+														onChange={this.inputEnforce}/>
+											</div>
+											<div>
+												<label htmlFor='o:stroke_color_select'>{strings.selected_stroke_color}</label>
+												<div 	onClick={(event) => this.showColorPicker(event, 'o:stroke_color_select')}
+														className="ps_n3_inputColorSwatch"
+														data-initialcolor={this.props.initialValues['o:stroke_color_select']}
+														data-fieldname='o:stroke_color_select'
+														style={{backgroundColor:(typeof thisRecord !== 'undefined')?thisRecord['o:stroke_color_select']:'#0000FF'}}/>
 
-	 								<div className="ps_n3_optionHeader">{strings.imagery}</div>
-	 								<div>
-	 									<label 	htmlFor='o:point_image'>{strings.point_image}</label>
-	 									<Field 	className="styleEditor_input"
-	 											name='o:point_image'
-	 											component='input'
-	 											type='text'
-	 											onChange={this.markUnsaved}/>
-	 								</div>
-	 								<div>
-	 									<label 	htmlFor='o:wms_address'>{strings.wms_address}</label>
-	 									<Field 	className="styleEditor_input"
-	 											name='o:wms_address'
-	 											component='input'
-	 											type='text'
-	 											onChange={this.markUnsaved}/>
-	 								</div>
-	 								<div>
-	 									<label 	htmlFor='o:wms_layers'>{strings.wms_layers}</label>
-	 									<Field 	className="styleEditor_input"
-	 											name='o:wms_layers'
-	 											component='input'
-	 											type='text'
-	 											onChange={this.markUnsaved}/>
-	 								</div>
+												<Field 	className="styleEditor_input"
+														name='o:stroke_color_select'
+														component='input'
+														type='text'
+														data-enforce='hex'
+														onChange={this.inputEnforce}/>
+											</div>
+											<div>
+												<label htmlFor='o:stroke_opacity_select'>{strings.selected_stroke_opacity}</label>
 
-	 								<div className="ps_n3_optionHeader">{strings.visibility}</div>
-	 								<div>
-	 									<label 	htmlFor='o:min_zoom'>{strings.min_zoom}</label>
-	 									<Field 	className="styleEditor_input"
-	 											name='o:min_zoom'
-	 											component='input'
-	 											type='number'
-	 											onChange={this.markUnsaved}/>
-	 								</div>
-	 								<div>
-	 									<label 	htmlFor='o:max_zoom'>{strings.max_zoom}</label>
-	 									<Field 	className="styleEditor_input"
-	 											name='o:max_zoom'
-	 											component='input'
-	 											type='number'
-	 											onChange={this.markUnsaved}/>
-	 								</div>
-	 								<div>
-	 									<label 	htmlFor='o:map_zoom'>{strings.default_zoom}</label>
-	 									<Field 	className="styleEditor_input"
-	 											name='o:map_zoom'
-	 											component='input'
-	 											type='number'
-	 											onChange={this.markUnsaved}/>
-	 								</div>
+												<Slider value={this.state.sliderValues['o:stroke_opacity_select']}
+														min={0.1} max={1.0} step={0.01}
+														orientation="horizontal"
+														onChangeStart={() => this.slider_changeStart('o:stroke_opacity_select')}
+														onChange={this.slider_change}
+														onChangeComplete={this.slider_changeComplete}/>
 
-	 								<div>
-	 									<label 	htmlFor='o:map_focus'>{strings.default_focus}</label>
-	 									<Field 	className="styleEditor_input"
-	 											name='o:map_focus'
-	 											component='input'
-	 											type='text'
-	 											onChange={this.markUnsaved}/>
-	 								</div>
-	 							</fieldset>
-	 						 </div>
+												<Field 	name='o:stroke_opacity_select'
+														component='input'
+														type='hidden'/>
+											</div>
+											<div>
+												<label htmlFor='o:fill_opacity_select'>{strings.selected_fill_opacity}</label>
+												<Slider value={this.state.sliderValues['o:fill_opacity_select']}
+														min={0.1} max={1.0} step={0.01}
+														orientation="horizontal"
+														onChangeStart={() => this.slider_changeStart('o:fill_opacity_select')}
+														onChange={this.slider_change}
+														onChangeComplete={this.slider_changeComplete}/>
+												<Field 	name='o:fill_opacity_select'
+														component='input'
+														type='hidden'/>
+											</div>
+										</div>
+
+										<div className="ps_n3_optionHeader">{strings.dimensions}</div>
+										<div>
+											<label htmlFor='o:stroke_width'>{strings.stroke_width}</label>
+											<Slider value={this.state.sliderValues['o:stroke_width']}
+													min={0} max={20} step={0.01}
+													orientation="horizontal"
+													onChangeStart={() => this.slider_changeStart('o:stroke_width')}
+													onChange={this.slider_change}
+													onChangeComplete={this.slider_changeComplete}/>
+											<Field 	name='o:stroke_width'
+													component='hidden'/>
+										</div>
+										<div>
+											<label htmlFor='o:point_radius'>{strings.point_radius}</label>
+											<Field 	className="styleEditor_input"
+													name='o:point_radius'
+													component='input'
+													type='number'
+													data-enforce='float'
+													onChange={this.inputEnforce}/>
+										</div>
+										<div>
+											<label htmlFor='o:zindex'>{strings.z_index}</label>
+											<Field 	className="styleEditor_input"
+													name='o:zindex'
+													component='input'
+													type='number'
+													data-enforce='float'
+													onChange={this.inputEnforce}/>
+										</div>
+										<div>
+											<label htmlFor='o:weight'>{strings.order_weight}</label>
+											<Field 	className="styleEditor_input"
+													name='o:weight'
+													component='input'
+													type='number'
+													data-enforce='float'
+													onChange={this.inputEnforce}/>
+										</div>
+
+										<div className="ps_n3_optionHeader">{strings.dates}</div>
+										<div>
+											<DatePicker fieldName='o:end_date'
+														value={(typeof thisRecord !== 'undefined')? thisRecord['o:start_date']: ''}
+														label={strings.start_date}
+														formatDate={formatDate}
+														parseDate={parseDate}
+														onDayChange={this.markUnsaved}/>
+										</div>
+										<div>
+											<DatePicker fieldName='o:end_date'
+														value={(typeof thisRecord !== 'undefined')? thisRecord['o:end_date']: ''}
+														label={strings.end_date}
+														formatDate={formatDate}
+														parseDate={parseDate}
+														onDayChange={this.markUnsaved}/>
+										</div>
+										<div>
+											<DatePicker fieldName='o:after_date' value={(typeof thisRecord !== 'undefined')? thisRecord['o:after_date']: ''}
+														label={strings.after_date}
+														formatDate={formatDate}
+														parseDate={parseDate}
+														onDayChange={this.markUnsaved}/>
+										</div>
+										<div>
+											<DatePicker fieldName='o:before_date'
+														value={(typeof thisRecord !== 'undefined')? thisRecord['o:before_date']: ''}
+														label={strings.before_date}
+														formatDate={formatDate}
+														parseDate={parseDate}
+														onDayChange={this.markUnsaved}/>
+										</div>
+
+										<div className="ps_n3_optionHeader">{strings.imagery}</div>
+										<div>
+											<label htmlFor='o:point_image'>{strings.point_image}</label>
+											<Field className="styleEditor_input" name='o:point_image' component='input' type='text' onChange={this.markUnsaved}/>
+										</div>
+										<div>
+											<label htmlFor='o:wms_address'>{strings.wms_address}</label>
+											<Field className="styleEditor_input" name='o:wms_address' component='input' type='text' onChange={this.markUnsaved}/>
+										</div>
+										<div>
+											<label htmlFor='o:wms_layers'>{strings.wms_layers}</label>
+											<Field className="styleEditor_input" name='o:wms_layers' component='input' type='text' onChange={this.markUnsaved}/>
+										</div>
+
+										<div className="ps_n3_optionHeader">{strings.visibility}</div>
+										<div>
+											<label htmlFor='o:min_zoom'>{strings.min_zoom}</label>
+											<Field className="styleEditor_input" name='o:min_zoom' component='input' type='number' onChange={this.markUnsaved}/>
+										</div>
+										<div>
+											<label htmlFor='o:max_zoom'>{strings.max_zoom}</label>
+											<Field className="styleEditor_input" name='o:max_zoom' component='input' type='number' onChange={this.markUnsaved}/>
+										</div>
+										<div>
+											<label htmlFor='o:map_zoom'>{strings.default_zoom}</label>
+											<Field className="styleEditor_input" name='o:map_zoom' component='input' type='number' onChange={this.markUnsaved}/>
+										</div>
+
+										<div>
+											<label htmlFor='o:map_focus'>{strings.default_focus}</label>
+											<Field className="styleEditor_input" name='o:map_focus' component='input' type='text' onChange={this.markUnsaved}/>
+										</div>
+									</fieldset>
+								</div>
 						}
 
 					</TabPanel>
@@ -715,14 +409,190 @@ class RecordForm extends Component {
 			<Field className="styleEditor_input" name='o:is_coverage' component='input' type='hidden'/>
 			<Field className="styleEditor_input" name='o:exhibit_id' component='input' type='hidden'/>
 
-		</form>
-		)
+		</form>)
 	}
+
+	// FIXME: Factor out ColorPicker
+	_colorPickerListener = (event) => {
+		let targetElement = event.target;
+		let el = document.getElementById('colorPickerComponent');
+		// Walk the DOM
+		do {
+			// This is a click inside. Do nothing, just return.
+			if (targetElement === el) {
+				return;
+			}
+			targetElement = targetElement.parentNode;
+		} while (targetElement);
+
+		// this. is a click outside.
+		if (this.state.colorPickerVisible) {
+			this.hideColorPicker(event);
+		};
+	}
+
+	colorPickerEventHandler = (enable) => {
+		if (enable) {
+			// Handler to close colorpciker
+			document.addEventListener("click", this._colorPickerListener);
+		} else {
+			document.removeEventListener("click", this._colorPickerListener);
+		}
+	}
+
+	showColorPicker = (event, propertyToColor) => {
+		let parentEl = document.getElementById("scrollArea_stylePropertyPicker");
+		let top = (event.target.offsetTop - parentEl.scrollTop);
+		this.setState({colorPickerCurrentColor: event.target.dataset.initialcolor, colorPickerCurrentField: event.target.dataset.fieldname, colorPickerCurrentlyEditing: propertyToColor, colorPickerVisible: true, colorPickerTop: `${top}px`});
+
+		this.colorPickerEventHandler(true);
+	}
+
+	hideColorPicker = (event) => {
+		this.setState({colorPickerVisible: false});
+		this.colorPickerEventHandler(false);
+
+		// Update the form
+		this.props.dispatch(this.change(this.props.form, this.state.colorPickerCurrentField, this.state.colorPickerCurrentColor));
+	}
+
+	handleColorChange = (color, event) => {
+
+		let property = this.state.colorPickerCurrentlyEditing;
+		let value = color.hex;
+
+		this.setState({colorPickerCurrentColor: value, [property]: value});
+
+		if (typeof property === 'undefined') {
+			debugger
+			console.error('Cannot update cache with undefined prop!:' + value);
+		} else {
+			this.props.dispatch(updateRecordCache({
+				setValues: {
+					'o:id': this.props.initialValues['o:id'],
+					[property]: value
+				}
+			}));
+			this.markUnsaved();
+		}
+
+	}
+
+	// FIXME: Factor out Slider
+	slider_changeStart = (fieldName) => {
+		// Register the name of the field we're adjusting
+		this.slider.fieldName = fieldName;
+	}
+
+	slider_change = (value) => {
+		if (this.slider.fieldName.length > 0) {
+			// Hold the changed value
+			this.slider.value = value.toFixed(2);
+
+			// Set the state (updates the UI)
+			let updatedSliderValues = {
+				...this.state.sliderValues,
+				[this.slider.fieldName]: parseFloat(this.slider.value)
+			}
+			this.setState({sliderValues: updatedSliderValues});
+
+			// Fake a blur event to update the value (updates the map)
+			this.markUnsaved({
+				target: {
+					value: this.slider.value,
+					name: this.slider.fieldName
+				}
+			});
+		}
+	}
+
+	slider_changeComplete = (event) => {
+		// Change the hidden form field
+		this.props.dispatch(this.change(this.props.form, this.slider.fieldName, this.slider.value));
+
+		// Flag the map needs saving
+		this.markUnsaved({
+			target: {
+				value: this.slider.value,
+				name: this.slider.fieldName
+			}
+		});
+
+		this.slider = {
+			fieldName: '',
+			value: ''
+		}
+	}
+
+	// FIXME: Factor out inputenforcer (NOTE: should probably remove)
+	inputEnforce = (event) => {
+		let enforcementType = event.target.dataset.enforce;
+		let currentVal = event.target.value;
+		let currentField = event.target.name;
+		let forcedValue = null;
+		switch (enforcementType) {
+
+			case 'float':
+				if (/[^.\d]/.test(currentVal)) {
+					forcedValue = parseFloat(currentVal);
+					forcedValue = isNaN(forcedValue)
+						? ""
+						: forcedValue.toString();
+				};
+				break;
+
+			case 'normal':
+				if (/[^.\d]/.test(currentVal)) {
+					forcedValue = parseFloat(currentVal);
+				} else {
+					forcedValue = currentVal;
+				}
+				forcedValue = (forcedValue > 1)
+					? 1
+					: forcedValue;
+				forcedValue = (forcedValue < 0)
+					? 0
+					: forcedValue;
+				forcedValue = isNaN(forcedValue)
+					? ""
+					: forcedValue.toString();
+				break;
+
+			case 'hex':
+				// If the input is 7 chars or over, or if it is at least 1 but doesn't start with #
+				if ((currentVal.length >= 7) || (currentVal.length > 0 && (currentVal.substring(0, 1) !== '#'))) {
+
+					// Check to see if it's a valid hex
+					if (!/^#+([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/.test(currentVal)) {
+						// Fixme... this detects but does not handle bad hex that matches
+						// the format. For example #00X0000 is invalid but passes through
+						if (currentVal.substring(0, 1) !== '#') {
+							forcedValue = "#" + currentVal.substring(0, 6);
+						} else {
+							forcedValue = currentVal.substring(0, 7);
+						}
+					}
+				}
+				break;
+
+			default:
+				console.log("RecordForm inputEnforce: I don't know how to enforce: " + enforcementType);
+		}
+		if (forcedValue !== null) {
+			// FIXME: time delay workaround because this doesn't get dispatched until next click
+			setTimeout(() => {
+				this.props.dispatch(this.change(this.props.form, currentField, forcedValue));
+			}, 100);
+		}
+		this.markUnsaved();
+	}
+
 }
 
-RecordForm = reduxForm({form:'record',enableReinitialize:true})(RecordForm);
+RecordForm = reduxForm({form: 'record', enableReinitialize: true})(RecordForm);
 const mapStateToProps = state => ({
-	mapPreview: state.mapPreview,
+	record: state.record,
+	mapCache: state.mapCache,
 	selectedRecord: state.exhibitShow.selectedRecord,
 	initialValues: state.exhibitShow.editorRecord
 		? state.exhibitShow.editorRecord
@@ -734,8 +604,6 @@ const mapStateToProps = state => ({
 		}
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators({
-	clearLayers
-}, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({}, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(RecordForm);
