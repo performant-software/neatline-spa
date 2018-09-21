@@ -46,7 +46,7 @@ export default function(state = initialState, action) {
 			};
 
 		case ACTION_TYPE.RECORD_SELECTED:
-			let record = action.payload;
+			let record = action.payload.record;
 			if (typeof record !== 'undefined' && record !== null) {
 				return {
 					...state,

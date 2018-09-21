@@ -354,7 +354,7 @@ class ExhibitPublicMap extends Component {
 						var geoJSONLayer = L.geoJSON();
 						geoJSONLayer.addData(geoJSON);
 
-						geoJSONLayer.on('click',(event)=>{onGeometryClick(event,record)});
+						geoJSONLayer.on('click',(event)=>{onGeometryClick(event,record,this.props.exhibitShowURL)});
 
 						// FIXME: The mouse events are wrong
 						geoJSONLayer.on('onmouseover',()=>{onMouseEnter(record)});
@@ -391,7 +391,7 @@ class ExhibitPublicMap extends Component {
 		let recordId = (typeof selectedRecord !== 'undefined' && selectedRecord !== null && selectedRecord['o:id'])?selectedRecord['o:id']:TYPE.NEW_UNSAVED_RECORD;
 		this.props.change('record', 'o:coverage', geojsonData);
 		this.props.change('record', 'o:is_coverage', true);
-		this.props.deselectRecord();
+		this.props.deselectRecord({baseURL:this.props.exhibitShowURL});
 		this.props.updateRecordCacheAndSave({
 			setValues: {
 				'o:id': recordId,
@@ -409,11 +409,12 @@ class ExhibitPublicMap extends Component {
 		this.ls_mapUpdate();
 		this.forceUpdate();
 	}
-	onGeometryClick=(event,record)=>{
+	onGeometryClick=(event,record,baseURL)=>{
 		this.geoClick=true;
 		if(typeof this.props.records === 'undefined' || this.isDrawing){return;}
 		L.DomEvent.stop(event);
-		this.props.selectRecord(record);
+
+		this.props.selectRecord({record:record,baseURL:this.props.exhibitShowURL});
 		this.forceUpdate();
 	}
 	onMapClick=()=>{
@@ -422,7 +423,7 @@ class ExhibitPublicMap extends Component {
 		}else{
 			if(typeof this.props.records === 'undefined' || this.isDrawing){return;}
 			this.map.removeControl(this.ls_drawControl);
-			this.props.deselectRecord();
+			this.props.deselectRecord({baseURL:this.props.exhibitShowURL});
 			this.forceUpdate();
 		}
 	}

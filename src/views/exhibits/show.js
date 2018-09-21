@@ -80,7 +80,13 @@ class ExhibitShow extends Component {
 		let exhibitDisplay = <ExhibitShowHeader>{strings.loading}</ExhibitShowHeader>;
 
 		let recordTitle = props.editorNewRecord?strings.new_record:props.editorRecord?props.editorRecord['o:title']:'';
-		    recordTitle =(recordTitle === null || recordTitle.length === 0)?"???":recordTitle;
+
+		try {
+			recordTitle = (recordTitle === null || recordTitle.length === 0)?"???":recordTitle;
+
+		} catch (e) {
+				debugger
+		}
 
 		if (exhibit) {
 			exhibitDisplay = (
@@ -113,7 +119,7 @@ class ExhibitShow extends Component {
 								{recordTitle}
 								<span onClick={e => {
 										history.replace(window.baseRoute + '/show/' + props.match.params.slug);
-										props.deselectRecord();
+										props.deselectRecord({baseURL:window.baseRoute});
 										e.stopPropagation();
 									}} style={{
 										fontWeight: 'bold'

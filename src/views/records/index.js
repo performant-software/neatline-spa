@@ -7,7 +7,6 @@ import {strings} from '../../i18nLibrary';
 
 const Records = props => (
 	<div>
-
 	<Link 	className="ps_n3_button"
 			to={`${props.exhibitShowURL}/edit/new`}>
 			{strings.new_record}
@@ -17,7 +16,7 @@ const Records = props => (
 				<li key={'record-' + record['o:id']} style={{
 						fontWeight: record === props.selectedRecord? 'bold': 'normal'
 					}}>
-					<div onClick={()=>{props.selectRecord(record);}}>
+					<div onClick={()=>{props.selectRecord({record:record,baseURL:props.exhibitShowURL});}}>
 						{record['o:title'] === null?"???":record['o:title']}
 					</div>
 				</li>

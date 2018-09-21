@@ -74,17 +74,15 @@ function* createRecord(action) {
 
 }
 
-function* selectRecord(action){
-	let exhibit = yield select(getExhibitCache);
-	let slug = exhibit['o:slug'];
-	let url = `/show/${slug}/edit/${action.payload['o:id']}`;
+function selectRecord(action){
+	//let exhibit = yield select(getExhibitCache);
+	//let slug = exhibit['o:slug'];
+	let url = `${action.payload.baseURL}/edit/${action.payload.record['o:id']}`;
 	history.replace(url);
 }
 
 function* deselectRecord(action){
-	let exhibit = yield select(getExhibitCache);
-	let slug = exhibit['o:slug'];
-	let url = `/show/${slug}/`;
+	let url = `${action.payload.baseURL}`;
 	history.replace(url);
 }
 
@@ -101,7 +99,7 @@ function* createRecordResponseReceived(action) {
 		});
 		yield put({type: ACTION_TYPE.EDITOR_CLOSE_NEW_RECORD});
 		yield put({type: ACTION_TYPE.RECORD_ADDED, record:action.payload});
-		yield put({type: ACTION_TYPE.RECORD_SELECTED, payload:action.payload});
+		yield put({type: ACTION_TYPE.RECORD_SELECTED, payload:{record:action.payload,baseURL:action.payload.baseURL}});
 
 
 	// On failure...
@@ -239,7 +237,7 @@ function* saveCacheToDatabase(action) {
 
 	if(typeof selectedRecord !== 'undefined' && selectedRecord !== null && !isNewRecord){
 		yield put({type: ACTION_TYPE.RECORD_DESELECTED});
-		yield put({type: ACTION_TYPE.RECORD_SELECTED, payload:selectedRecord});
+		yield put({type: ACTION_TYPE.RECORD_SELECTED, payload:{record:selectedRecord,baseURL:action.payload.baseURL}});
 	}
 
 	yield put({type: ACTION_TYPE.RECORDS_FETCH, payload: exhibit});

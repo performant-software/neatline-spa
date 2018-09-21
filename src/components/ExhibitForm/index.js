@@ -195,7 +195,7 @@ class ExhibitForm extends Component {
 			let nextSlug = nextprops.exhibit['o:slug'];
 			if(this.currentSlug !== nextSlug && nextSlug.length > 0){
 				this.setState({currentSlug:nextSlug});
-				history.replace(window.baseRoute + '/show/' + nextSlug);
+				history.push(window.baseRoute + '/show/' + nextSlug);
 				this.currentSlug=nextSlug;
 			}
 		}
