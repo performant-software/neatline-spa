@@ -139,7 +139,7 @@ function* deleteRecordResponseReceived(action) {
 	// On success...
 	if (typeof action.payload.jsonResponse.errors === 'undefined') {
 		yield put({type: ACTION_TYPE.RECORD_REMOVED, record: action.payload.record});
-		yield put({type: ACTION_TYPE.RECORD_DESELECTED});
+		yield put({type: ACTION_TYPE.RECORD_DESELECTED,payload:{baseURL:action.payload.baseURL} });
 		yield put({type: ACTION_TYPE.RECORD_CACHE_REMOVE_BY_ID, payload:action.payload.record['o:id']});
 
 	// On failure...
@@ -178,7 +178,7 @@ function* updateRecordResponseReceived(action) {
 		//yield put({type: ACTION_TYPE.EDITOR_RECORD_SET, record: action.payload});
 		yield put({type: ACTION_TYPE.RECORD_REPLACED, record: action.payload});
 
-		yield put({type: ACTION_TYPE.RECORD_DESELECTED, payload: action.payload});
+		yield put({type: ACTION_TYPE.RECORD_DESELECTED, payload:{baseURL:action.payload.baseURL}});
 
 		yield put({type: ACTION_TYPE.LEAFLET_IS_EDITING, payload: false});
 
@@ -236,7 +236,7 @@ function* saveCacheToDatabase(action) {
 	}
 
 	if(typeof selectedRecord !== 'undefined' && selectedRecord !== null && !isNewRecord){
-		yield put({type: ACTION_TYPE.RECORD_DESELECTED});
+		yield put({type: ACTION_TYPE.RECORD_DESELECTED,payload:{baseURL:action.payload.baseURL} });
 		yield put({type: ACTION_TYPE.RECORD_SELECTED, payload:{record:selectedRecord,baseURL:action.payload.baseURL}});
 	}
 
@@ -262,7 +262,7 @@ function* fetchExhibits(action) {
 
 function* fetchExhibitsResponseReceived(action) {
 
-	yield put({type: ACTION_TYPE.EXHIBITS_LOADING,payload: {loading: false}});
+	yield put({type: ACTION_TYPE.EXHIBITS_LOADING, payload: {loading: false}});
 
 	// On success...
 	if (typeof action.payload.errors === 'undefined') {
