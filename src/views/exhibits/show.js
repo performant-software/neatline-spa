@@ -90,8 +90,7 @@ class ExhibitShow extends Component {
 
 		if (exhibit) {
 			exhibitDisplay = (
-				<div className='exhibit-public' style={{
-					height: '100vh',
+				<div className='ps_n3_exhibit-public' style={{
 					display: 'grid',
 					gridTemplateColumns: '320px 1fr',
 					gridGap: 'none'
@@ -118,8 +117,8 @@ class ExhibitShow extends Component {
 								}}>
 								{recordTitle}
 								<span onClick={e => {
-										history.replace(window.baseRoute + '/show/' + props.match.params.slug);
-										props.deselectRecord({baseURL:window.baseRoute});
+										let destURL = window.baseRoute + '/show/' + props.match.params.slug;
+										props.deselectRecord({redirectTo:destURL});
 										e.stopPropagation();
 									}} style={{
 										fontWeight: 'bold'
@@ -151,7 +150,8 @@ class ExhibitShow extends Component {
 						editorRecord = {this.props.editorRecord}
 						editorNewRecord = {this.props.editorNewRecord}
 						leafletState = {this.props.leaflet}
-						exhibitShowURL={props.match.url}/>
+						exhibitShowURL={props.match.url}
+						hasWarning={this.props.mapCache.hasUnsavedChanges}/>
 					<RecordInfoPanel isVisible={!this.props.leaflet.isEditing}/>
 				</div>
 			</div>);
@@ -164,7 +164,7 @@ class ExhibitShow extends Component {
 			exhibitDisplay = <ExhibitShowHeader>Exhibit with identifier "{props.match.params.slug}" not found</ExhibitShowHeader>;
 		}
 		return (
-			<div className="ps_n3_exhibitShowContainer" style={{height: '100%',width:'98%',position:'absolute'}}>
+			<div className="ps_n3_exhibitShowContainer" style={{height: '100%',width:'100%',position:'relative'}}>
 				<AlertBar isVisible={this.props.mapCache.hasUnsavedChanges} message="You have unsaved changes"/>
 				<SpinnerOverlay isVisible={this.props.leaflet.isSaving || this.props.recordsLoading}/>
 				<LockOverlay isVisible={this.props.leaflet.isEditing}/>

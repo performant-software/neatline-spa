@@ -63,6 +63,12 @@ class ExhibitPublicMap extends Component {
 		if(typeof this.props.records !== 'undefined'){
 			this.ls_mapUpdate();
 		}
+
+		if(this.props.hasWarning){
+			document.getElementById('leafletMap').classList.add('ps_n3_mapComponent_withWarning');
+		}else{
+			document.getElementById('leafletMap').classList.remove('ps_n3_mapComponent_withWarning');
+		}
 	}
 
 	// Custom event listeners are stopgaps until this gets refactored to follow redux store
@@ -81,8 +87,7 @@ class ExhibitPublicMap extends Component {
 	//////////////////////////////////////
 	ls_mapInit = () => {
 
-		document.getElementById('leafletMap').classList.add('ps_n3_mapComponent');
-
+		document.getElementById('leafletMap').classList.add('ps_n3_leafletMap');
 
 		this.map = L.map('leafletMap');
 		let baselayerType = this.props.mapCache.current.type;
@@ -283,7 +288,6 @@ class ExhibitPublicMap extends Component {
 		let onMouseEnter = this.props.recordMouseEnter;
 		let onMouseLeave = this.props.recordMouseLeave;
 
-
 		let editable_geometry=[];
 		let uneditable_geometry=[];
 		this.props.mapCache.cache.map(record => {
@@ -331,7 +335,7 @@ class ExhibitPublicMap extends Component {
 					}
 
 					if(isSelected){
-						editable_geometry = leafletSupport.convertToVector(geoJSON, coverageStyle());
+						editable_geometry = leafletSupport.convertToVector(geoJSON, coverageStyle(), (event)=>{onGeometryClick(event,record,this.props.exhibitShowURL)});
 					}else{
 						/*
 						// Build circles from points with props
@@ -391,7 +395,7 @@ class ExhibitPublicMap extends Component {
 		let recordId = (typeof selectedRecord !== 'undefined' && selectedRecord !== null && selectedRecord['o:id'])?selectedRecord['o:id']:TYPE.NEW_UNSAVED_RECORD;
 		this.props.change('record', 'o:coverage', geojsonData);
 		this.props.change('record', 'o:is_coverage', true);
-		this.props.deselectRecord({baseURL:this.props.exhibitShowURL});
+		this.props.deselectRecord();
 		this.props.updateRecordCacheAndSave({
 			setValues: {
 				'o:id': recordId,
@@ -410,22 +414,20 @@ class ExhibitPublicMap extends Component {
 		this.forceUpdate();
 	}
 	onGeometryClick=(event,record,baseURL)=>{
-		this.geoClick=true;
+		if(typeof record === 'undefined'){
+			debugger
+		}
 		if(typeof this.props.records === 'undefined' || this.isDrawing){return;}
 		L.DomEvent.stop(event);
-
 		this.props.selectRecord({record:record,baseURL:this.props.exhibitShowURL});
 		this.forceUpdate();
 	}
 	onMapClick=()=>{
-		if(this.geoClick){
-			this.geoClick=false;
-		}else{
-			if(typeof this.props.records === 'undefined' || this.isDrawing){return;}
-			this.map.removeControl(this.ls_drawControl);
-			this.props.deselectRecord({baseURL:this.props.exhibitShowURL});
-			this.forceUpdate();
-		}
+		if(typeof this.props.records === 'undefined' || this.isDrawing){return;}
+		if(typeof this.props.records === 'undefined' || this.isDrawing){return;}
+		this.map.removeControl(this.ls_drawControl);
+		this.props.deselectRecord();
+		this.forceUpdate();
 	}
 }
 

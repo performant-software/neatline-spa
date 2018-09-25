@@ -1,14 +1,13 @@
-.ps_n3_mapComponent {
-	height: 100%;
-	top: 0;
-	margin: 0;
-
+.ps_n3_leafletMap {
+	position: relative;
+	min-height: calc(100% - 3rem);
+	max-height: calc(100% - 3rem);
+	outline: none;
 }
 
 .ps_n3_mapComponent_withWarning {
-	height: calc(100% - 2.8rem);
-	top: 2.8rem;
-
+	min-height: calc(100% - 6rem);
+	max-height: calc(100% - 6rem);
 }
 
 .ps_n3_mapStatus_warning:before {

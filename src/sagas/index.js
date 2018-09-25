@@ -74,15 +74,21 @@ function* createRecord(action) {
 
 }
 
-function selectRecord(action){
-	//let exhibit = yield select(getExhibitCache);
-	//let slug = exhibit['o:slug'];
-	let url = `${action.payload.baseURL}/edit/${action.payload.record['o:id']}`;
+function *selectRecord(action){
+	let exhibit = yield select(getExhibitCache);
+	let slug = exhibit['o:slug'];
+	let url = (typeof window.baseURL !== 'undefined')?`${window.baseURL}`:"";
+	    url += `/show/${slug}/edit/${action.payload.record['o:id']}`;
+	console.log("Select, redirect to:"+url);
 	history.replace(url);
 }
 
-function* deselectRecord(action){
-	let url = `${action.payload.baseURL}`;
+function *deselectRecord(){
+	let exhibit = yield select(getExhibitCache);
+	let slug = exhibit['o:slug'];
+	let url = (typeof window.baseURL !== 'undefined')?`${window.baseURL}`:"";
+	    url += `/show/${slug}`;
+	console.log("Deselect, redirect to:"+url);
 	history.replace(url);
 }
 
@@ -121,7 +127,7 @@ function* deleteRecord(action) {
 			}
 			yield put({type: ACTION_TYPE.DELETE_RECORD_RESPONSE_RECEIVED, payload: newPayload});
 
-			// Failed on the fetch call (timeout, etc)
+		// Failed on the fetch call (timeout, etc)
 		} catch (e) {
 			yield put({
 				type: ACTION_TYPE.RECORD_ERROR,
@@ -139,11 +145,10 @@ function* deleteRecordResponseReceived(action) {
 	// On success...
 	if (typeof action.payload.jsonResponse.errors === 'undefined') {
 		yield put({type: ACTION_TYPE.RECORD_REMOVED, record: action.payload.record});
-		yield put({type: ACTION_TYPE.RECORD_DESELECTED,payload:{baseURL:action.payload.baseURL} });
 		yield put({type: ACTION_TYPE.RECORD_CACHE_REMOVE_BY_ID, payload:action.payload.record['o:id']});
 
-	// On failure...
-	} else {}
+	}
+	yield put({type: ACTION_TYPE.RECORD_DESELECTED,payload:{redirectTo:action.payload.baseURL}});
 }
 
 // Update a record
@@ -175,17 +180,12 @@ function* updateRecord(action) {
 function* updateRecordResponseReceived(action) {
 	// On success...
 	if (typeof action.payload.errors === 'undefined') {
-		//yield put({type: ACTION_TYPE.EDITOR_RECORD_SET, record: action.payload});
 		yield put({type: ACTION_TYPE.RECORD_REPLACED, record: action.payload});
-
-		yield put({type: ACTION_TYPE.RECORD_DESELECTED, payload:{baseURL:action.payload.baseURL}});
-
-		yield put({type: ACTION_TYPE.LEAFLET_IS_EDITING, payload: false});
-
-		// On failure...
-	} else {
-		debugger
 	}
+
+	yield put({type: ACTION_TYPE.RECORD_DESELECTED, payload:{redirectTo:action.payload.baseURL}});
+
+	yield put({type: ACTION_TYPE.LEAFLET_IS_EDITING, payload: false});
 }
 
 function* declareSaveComplete(action){
@@ -236,7 +236,7 @@ function* saveCacheToDatabase(action) {
 	}
 
 	if(typeof selectedRecord !== 'undefined' && selectedRecord !== null && !isNewRecord){
-		yield put({type: ACTION_TYPE.RECORD_DESELECTED,payload:{baseURL:action.payload.baseURL} });
+		yield put({type: ACTION_TYPE.RECORD_DESELECTED,payload:{redirectTo:action.payload.baseURL} });
 		yield put({type: ACTION_TYPE.RECORD_SELECTED, payload:{record:selectedRecord,baseURL:action.payload.baseURL}});
 	}
 

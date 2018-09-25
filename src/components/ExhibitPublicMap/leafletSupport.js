@@ -66,7 +66,7 @@ const leafletSupport = {
 	},
 
 	// Unpacks geojson and returns an array of leaflet vector objects
-	convertToVector : (geojson, style) => {
+	convertToVector : (geojson, style, onClick) => {
 		if (typeof geojson === 'undefined' || geojson === null) {
 			console.error("Cannot convert empty geojson");
 			return null;
@@ -84,6 +84,7 @@ const leafletSupport = {
 
 					case "Polygon":
 						let polygon = L.polygon(positions,options);
+						polygon.on('click', onClick);
 						convertedGeometry.push(polygon);
 						break;
 
@@ -92,6 +93,7 @@ const leafletSupport = {
 						// options = {...options,radius:10};
 						// let circle = L.circle(position,options);
 						let marker = L.marker(position,options);
+						marker.on('click', onClick);
 						convertedGeometry.push(marker);
 						break;
 
@@ -99,6 +101,7 @@ const leafletSupport = {
 					case "MultiLineString":
 						options = {	...options, fillColor:"transparent"};
 						let polyline = L.polyline(positions,options);
+						polyline.on('click', onClick);
 						convertedGeometry.push(polyline);
 
 						break;

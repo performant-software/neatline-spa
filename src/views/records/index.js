@@ -6,7 +6,7 @@ import {connect} from 'react-redux';
 import {strings} from '../../i18nLibrary';
 
 const Records = props => (
-	<div>
+	<div className="ps_n3_recordFormContainer">
 	<Link 	className="ps_n3_button"
 			to={`${props.exhibitShowURL}/edit/new`}>
 			{strings.new_record}

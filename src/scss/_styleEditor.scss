@@ -1,5 +1,6 @@
 .ps_n3_recordFormContainer {
-	height: calc(100vh - 12rem);
+	max-height: calc(100vh - 10rem);
+	height: 100%;
 	overflow: scroll;
 	border: 0;
 	margin:0 0 0 0;
