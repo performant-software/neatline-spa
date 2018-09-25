@@ -16,7 +16,7 @@ const Records = props => (
 				<li key={'record-' + record['o:id']} style={{
 						fontWeight: record === props.selectedRecord? 'bold': 'normal'
 					}}>
-					<div onClick={()=>{props.selectRecord({record:record,baseURL:props.exhibitShowURL});}}>
+					<div onClick={()=>{props.selectRecord({record:record});}}>
 						{record['o:title'] === null?"???":record['o:title']}
 					</div>
 				</li>

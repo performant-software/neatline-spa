@@ -77,7 +77,7 @@ function* createRecord(action) {
 function *selectRecord(action){
 	let exhibit = yield select(getExhibitCache);
 	let slug = exhibit['o:slug'];
-	let url = (typeof window.baseURL !== 'undefined')?`${window.baseURL}`:"";
+	let url = (typeof window.baseRoute !== 'undefined')?`${window.baseRoute}`:"";
 	    url += `/show/${slug}/edit/${action.payload.record['o:id']}`;
 	history.replace(url);
 }
@@ -85,7 +85,7 @@ function *selectRecord(action){
 function *deselectRecord(){
 	let exhibit = yield select(getExhibitCache);
 	let slug = exhibit['o:slug'];
-	let url = (typeof window.baseURL !== 'undefined')?`${window.baseURL}`:"";
+	let url = (typeof window.baseRoute !== 'undefined')?`${window.baseRoute}`:"";
 	    url += `/show/${slug}`;
 	history.replace(url);
 }
@@ -103,7 +103,7 @@ function* createRecordResponseReceived(action) {
 		});
 		yield put({type: ACTION_TYPE.EDITOR_CLOSE_NEW_RECORD});
 		yield put({type: ACTION_TYPE.RECORD_ADDED, record:action.payload});
-		yield put({type: ACTION_TYPE.RECORD_SELECTED, payload:{record:action.payload,baseURL:action.payload.baseURL}});
+		yield put({type: ACTION_TYPE.RECORD_SELECTED, payload:{record:action.payload}});
 
 
 	// On failure...
@@ -146,7 +146,7 @@ function* deleteRecordResponseReceived(action) {
 		yield put({type: ACTION_TYPE.RECORD_CACHE_REMOVE_BY_ID, payload:action.payload.record['o:id']});
 
 	}
-	yield put({type: ACTION_TYPE.RECORD_DESELECTED,payload:{redirectTo:action.payload.baseURL}});
+	yield put({type: ACTION_TYPE.RECORD_DESELECTED});
 }
 
 // Update a record
@@ -181,7 +181,7 @@ function* updateRecordResponseReceived(action) {
 		yield put({type: ACTION_TYPE.RECORD_REPLACED, record: action.payload});
 	}
 
-	yield put({type: ACTION_TYPE.RECORD_DESELECTED, payload:{redirectTo:action.payload.baseURL}});
+	yield put({type: ACTION_TYPE.RECORD_DESELECTED});
 
 	yield put({type: ACTION_TYPE.LEAFLET_IS_EDITING, payload: false});
 }
@@ -234,8 +234,8 @@ function* saveCacheToDatabase(action) {
 	}
 
 	if(typeof selectedRecord !== 'undefined' && selectedRecord !== null && !isNewRecord){
-		yield put({type: ACTION_TYPE.RECORD_DESELECTED,payload:{redirectTo:action.payload.baseURL} });
-		yield put({type: ACTION_TYPE.RECORD_SELECTED, payload:{record:selectedRecord,baseURL:action.payload.baseURL}});
+		yield put({type: ACTION_TYPE.RECORD_DESELECTED});
+		yield put({type: ACTION_TYPE.RECORD_SELECTED, payload:{record:selectedRecord}});
 	}
 
 	yield put({type: ACTION_TYPE.RECORDS_FETCH, payload: exhibit});

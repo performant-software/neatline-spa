@@ -335,7 +335,7 @@ class ExhibitPublicMap extends Component {
 					}
 
 					if(isSelected){
-						editable_geometry = leafletSupport.convertToVector(geoJSON, coverageStyle(), (event)=>{onGeometryClick(event,record,this.props.exhibitShowURL)});
+						editable_geometry = leafletSupport.convertToVector(geoJSON, coverageStyle(), (event)=>{onGeometryClick(event,record)});
 					}else{
 						/*
 						// Build circles from points with props
@@ -358,7 +358,7 @@ class ExhibitPublicMap extends Component {
 						var geoJSONLayer = L.geoJSON();
 						geoJSONLayer.addData(geoJSON);
 
-						geoJSONLayer.on('click',(event)=>{onGeometryClick(event,record,this.props.exhibitShowURL)});
+						geoJSONLayer.on('click',(event)=>{onGeometryClick(event,record)});
 
 						// FIXME: The mouse events are wrong
 						geoJSONLayer.on('onmouseover',()=>{onMouseEnter(record)});
@@ -413,13 +413,13 @@ class ExhibitPublicMap extends Component {
 		this.ls_mapUpdate();
 		this.forceUpdate();
 	}
-	onGeometryClick=(event,record,baseURL)=>{
+	onGeometryClick=(event,record)=>{
 		if(typeof record === 'undefined'){
 			debugger
 		}
 		if(typeof this.props.records === 'undefined' || this.isDrawing){return;}
 		L.DomEvent.stop(event);
-		this.props.selectRecord({record:record,baseURL:this.props.exhibitShowURL});
+		this.props.selectRecord({record:record});
 		this.forceUpdate();
 	}
 	onMapClick=()=>{
