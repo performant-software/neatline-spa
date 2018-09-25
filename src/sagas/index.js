@@ -79,7 +79,6 @@ function *selectRecord(action){
 	let slug = exhibit['o:slug'];
 	let url = (typeof window.baseURL !== 'undefined')?`${window.baseURL}`:"";
 	    url += `/show/${slug}/edit/${action.payload.record['o:id']}`;
-	console.log("Select, redirect to:"+url);
 	history.replace(url);
 }
 
@@ -88,7 +87,6 @@ function *deselectRecord(){
 	let slug = exhibit['o:slug'];
 	let url = (typeof window.baseURL !== 'undefined')?`${window.baseURL}`:"";
 	    url += `/show/${slug}`;
-	console.log("Deselect, redirect to:"+url);
 	history.replace(url);
 }
 
