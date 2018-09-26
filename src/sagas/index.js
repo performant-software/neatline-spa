@@ -259,11 +259,10 @@ function* fetchExhibits(action) {
 }
 
 function* fetchExhibitsResponseReceived(action) {
-
 	yield put({type: ACTION_TYPE.EXHIBITS_LOADING, payload: {loading: false}});
 
 	// On success...
-	if (typeof action.payload.errors === 'undefined') {
+	if (action.payload.response.status === 200) {
 		let exhibits = yield parseExhibitsJSON(action.payload.response);
 		yield put({type: ACTION_TYPE.EXHIBITS_FETCH_SUCCESS, payload:exhibits});
 

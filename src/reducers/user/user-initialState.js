@@ -1,3 +1,3 @@
 export default {
-  userSignedIn: window.jwt !== null && window.jwt !== undefined
+  userSignedIn: (window.jwt !== null && window.jwt !== 'null' && window.jwt !== undefined)
 }

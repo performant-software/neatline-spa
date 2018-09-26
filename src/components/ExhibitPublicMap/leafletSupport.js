@@ -135,6 +135,5 @@ const leafletSupport = {
 		});
 	}
 
-
 };
 export default leafletSupport;

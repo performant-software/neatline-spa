@@ -47,7 +47,9 @@ class ExhibitPublicMap extends Component {
 	}
 
 	// Stub for leaflet to attach to
-	render() {return (<div id='leafletMap'/>)}
+	render() {
+		return (<div id='leafletMap'/>)
+	}
 
 	// Controls render
 	shouldComponentUpdate(){return this.shouldUpdate;}
@@ -413,6 +415,7 @@ class ExhibitPublicMap extends Component {
 		this.ls_mapUpdate();
 		this.forceUpdate();
 	}
+
 	onGeometryClick=(event,record)=>{
 		if(typeof record === 'undefined'){
 			debugger
@@ -422,6 +425,7 @@ class ExhibitPublicMap extends Component {
 		this.props.selectRecord({record:record});
 		this.forceUpdate();
 	}
+
 	onMapClick=()=>{
 		if(typeof this.props.records === 'undefined' || this.isDrawing){return;}
 		if(typeof this.props.records === 'undefined' || this.isDrawing){return;}

@@ -13,15 +13,15 @@ import RecordCreate from '../records/create';
 import RecordUpdate from '../records/update';
 import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import { strings } from '../../i18nLibrary';
-import {recordCacheToDatabase} from '../../actions';
+import {recordCacheToDatabase, updateExhibitCache, clearRecordCache} from '../../actions';
 import LockOverlay from '../../components/LockOverlay';
 import SpinnerOverlay from '../../components/SpinnerOverlay';
 import AlertBar from '../../components/AlertBar';
-import history from '../../history';
 
 const ExhibitShowHeader = props => (
 	<div>
-		<div className="ps_n3_button save" onClick={props.onSave}>Save</div>
+		{props.userSignedIn &&
+			<div className="ps_n3_button save" onClick={props.onSave}>Save</div>}
 		<h3><Link to={`${window.baseRoute}/`}>Neatline</Link> | {props.children}</h3>
 	</div>
 );
@@ -47,6 +47,10 @@ class ExhibitShow extends Component {
 	componentDidMount() {
 		this.props.fetchExhibits();
 		this.cacheIntitialized=false;
+		this.exhibitCacheInitialized=false;
+
+		this.props.dispatch(clearRecordCache());
+
 
 	}
 
@@ -68,6 +72,13 @@ class ExhibitShow extends Component {
 				this.cacheIntitialized=true;
 			}
 		}
+
+		if(!this.exhibitCacheInitialized
+			&& typeof this.props.exhibit !== 'undefined'
+			&& this.props.exhibit !== null){
+				this.props.dispatch(updateExhibitCache({setValues:this.props.exhibit}));
+				this.exhibitCacheInitialized=true;
+		}
 	}
 
 
@@ -77,16 +88,10 @@ class ExhibitShow extends Component {
 		const props = this.props;
 		const {exhibit} = props;
 
-		let exhibitDisplay = <ExhibitShowHeader>{strings.loading}</ExhibitShowHeader>;
+		let exhibitDisplay = <ExhibitShowHeader userSignedIn={props.userSignedIn}>{strings.loading}</ExhibitShowHeader>;
 
 		let recordTitle = props.editorNewRecord?strings.new_record:props.editorRecord?props.editorRecord['o:title']:'';
-
-		try {
 			recordTitle = (recordTitle === null || recordTitle.length === 0)?"???":recordTitle;
-
-		} catch (e) {
-				debugger
-		}
 
 		if (exhibit) {
 			exhibitDisplay = (
@@ -102,7 +107,7 @@ class ExhibitShow extends Component {
 				}
 				<div>
 
-					<ExhibitShowHeader onSave={this.saveAll}>
+					<ExhibitShowHeader  userSignedIn={props.userSignedIn} onSave={this.saveAll}>
 						{exhibit['o:title']}
 					</ExhibitShowHeader>
 					<Tabs selectedIndex={this.props.tabIndex} onSelect={tabIndex => props.setTabIndex(tabIndex)}>
@@ -117,8 +122,7 @@ class ExhibitShow extends Component {
 								}}>
 								{recordTitle}
 								<span onClick={e => {
-										let destURL = window.baseRoute + '/show/' + props.match.params.slug;
-										props.deselectRecord({redirectTo:destURL});
+										props.deselectRecord();
 										e.stopPropagation();
 									}} style={{
 										fontWeight: 'bold'
@@ -126,10 +130,12 @@ class ExhibitShow extends Component {
 							</Tab>
 						</TabList>
 						<TabPanel>
-							<ExhibitPanelContent exhibit={exhibit} userSignedIn={props.userSignedIn}/>
+							<ExhibitPanelContent exhibit={exhibit}
+												 userSignedIn={props.userSignedIn}/>
 						</TabPanel>
 						<TabPanel>
-							<Records exhibitShowURL={props.match.url}/>
+							<Records exhibitShowURL={props.match.url}
+									 userSignedIn={props.userSignedIn}/>
 						</TabPanel>
 						<TabPanel>
 							<RecordEditor editorNewRecord={props.editorNewRecord}/>
@@ -157,14 +163,14 @@ class ExhibitShow extends Component {
 			</div>);
 
 		} else if (props.exhibitsLoading) {
-			exhibitDisplay = <ExhibitShowHeader>Loading...</ExhibitShowHeader>;
+			exhibitDisplay = <ExhibitShowHeader userSignedIn={props.userSignedIn}>Loading...</ExhibitShowHeader>;
 		} else if (props.exhibitsErrored) {
-			exhibitDisplay = <ExhibitShowHeader>*ERROR*</ExhibitShowHeader>;
+			exhibitDisplay = <ExhibitShowHeader userSignedIn={props.userSignedIn}>*ERROR*</ExhibitShowHeader>;
 		} else if (props.exhibitNotFound) {
-			exhibitDisplay = <ExhibitShowHeader>Exhibit with identifier "{props.match.params.slug}" not found</ExhibitShowHeader>;
+			exhibitDisplay = <ExhibitShowHeader userSignedIn={props.userSignedIn}>Exhibit with identifier "{props.match.params.slug}" not found</ExhibitShowHeader>;
 		}
 		return (
-			<div className="ps_n3_exhibitShowContainer" style={{height: '100%',width:'100%',position:'relative'}}>
+			<div className="ps_n3_exhibitShowContainer" style={{width:'100%',position:'relative'}}>
 				<AlertBar isVisible={this.props.mapCache.hasUnsavedChanges} message="You have unsaved changes"/>
 				<SpinnerOverlay isVisible={this.props.leaflet.isSaving || this.props.recordsLoading}/>
 				<LockOverlay isVisible={this.props.leaflet.isEditing}/>
@@ -196,6 +202,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 	deselectRecord,
 	fetchRecordsBySlug,
 	updateRecordCache,
+	updateExhibitCache,
 	dispatch
 }, dispatch);
 

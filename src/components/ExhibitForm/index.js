@@ -59,9 +59,6 @@ class ExhibitForm extends Component {
 			isNewExhibit:isNewExhibit
 		});
 
-		// Cache intial values
-		//this.props.dispatch(clearRecordCache());
-		this.props.dispatch(updateExhibitCache({setValues:this.props.initialValues}));
 
 		// Set the router
 		this.setState({currentSlug:this.props.initialValues['o:slug']})

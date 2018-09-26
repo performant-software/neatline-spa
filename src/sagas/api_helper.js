@@ -5,7 +5,7 @@ export const recordsEndpoint = 'neatline_records';
 
 export const urlFormat = (endpoint, params = {}, id = null) => {
 	const apiRoot = '/api/';
-	if (window.jwt && !params.hasOwnProperty('jwt'))
+	if (window.jwt && !params.hasOwnProperty('jwt') && (window.jwt !== null && window.jwt !== 'null') )
 		params.jwt = window.jwt;
 	const urlParams = new URLSearchParams(params);
 	let url = apiRoot + endpoint;

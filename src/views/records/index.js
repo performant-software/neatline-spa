@@ -7,10 +7,12 @@ import {strings} from '../../i18nLibrary';
 
 const Records = props => (
 	<div className="ps_n3_recordFormContainer">
-	<Link 	className="ps_n3_button"
-			to={`${props.exhibitShowURL}/edit/new`}>
-			{strings.new_record}
-	</Link>
+		{props.userSignedIn &&
+			<Link 	className="ps_n3_button"
+					to={`${props.exhibitShowURL}/edit/new`}>
+					{strings.new_record}
+			</Link>
+		}
 	<ul>
 		{props.records.map(record => (
 				<li key={'record-' + record['o:id']} style={{

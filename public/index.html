@@ -24,13 +24,13 @@
 
 		// If still not what we expect, complain
 		if(typeof jwt === 'undefined' || jwt === 'null' || jwt == null || jwt.length == 0){
-			alert("Please provide a valid JWT as a GET param, /index.html?jwt=...");
+			console.warn("Please provide a valid JWT as a GET param, /index.html?jwt=...");
+			console.warn("Using JWT: "+jwt+"\nIf page is empty or otherwise unexpected, JWT is likely bad/stale, check and set again: ?jwt=");
 
 		// We're good
 		}else{
 			localStorage.setItem('jwt', jwt);
 			window.jwt = jwt;
-			console.warn("Using JWT: "+jwt+"\nIf page is empty or otherwise unexpected, JWT is likely bad/stale, check and set again: ?jwt=");
 		}
 
 		// Helper: parse GET params
