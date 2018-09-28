@@ -48,10 +48,7 @@ class ExhibitShow extends Component {
 		this.props.fetchExhibits();
 		this.cacheIntitialized=false;
 		this.exhibitCacheInitialized=false;
-
 		this.props.dispatch(clearRecordCache());
-
-
 	}
 
 	saveAll = (event) => {
@@ -62,23 +59,8 @@ class ExhibitShow extends Component {
 		if(	typeof this.props.records === 'undefined' &&
 			typeof this.props.match.params.slug !== 'undefined' &&
 			!this.props.recordsLoading){
-			this.props.fetchRecordsBySlug(this.props.match.params.slug);
-		}else if(typeof this.props.records !== 'undefined') {
-
-			if(!this.cacheIntitialized){
-				this.props.records.forEach(record =>{
-					this.props.dispatch(updateRecordCache({setValues: record}));
-				});
-				this.cacheIntitialized=true;
+				this.props.fetchRecordsBySlug(this.props.match.params.slug);
 			}
-		}
-
-		if(!this.exhibitCacheInitialized
-			&& typeof this.props.exhibit !== 'undefined'
-			&& this.props.exhibit !== null){
-				this.props.dispatch(updateExhibitCache({setValues:this.props.exhibit}));
-				this.exhibitCacheInitialized=true;
-		}
 	}
 
 

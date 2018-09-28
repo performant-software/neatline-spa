@@ -102,12 +102,17 @@ class RecordForm extends Component {
 		this.handleDelete();
 	}
 
+	scrollEvent = (event) =>{
+		this.hideColorPicker(event);
+	}
+
 	render() {
 
 		let thisRecord = this.props.mapCache.cache[this.props.initialValues['o:id']];
 		let isSelected = (this.props.selectedRecord && this.state.recordID === this.props.selectedRecord["o:id"]);
 
-		return (<form className='ps_n3_exhibit-form' onSubmit={this.handleSubmit}>
+		return (
+			<form className='ps_n3_exhibit-form' onSubmit={this.handleSubmit}>
 
 			<ColorPicker color={this.state.colorPickerCurrentColor} isVisible={this.state.colorPickerVisible} top={this.state.colorPickerTop} handleChange={this.handleColorChange}/>
 			<Tabs>
@@ -128,7 +133,8 @@ class RecordForm extends Component {
 
 				<div>
 					<TabPanel>
-						<div id="scrollArea_stylePropertyPicker" className="ps_n3_recordFormContainer">
+						<div className="ps_n3_recordFormContainer"
+							onScroll={this.scrollEvent}>
 							<fieldset disabled={this.disabled} style={{
 									border: 'none',
 									padding: '0'
@@ -156,15 +162,15 @@ class RecordForm extends Component {
 						</div>
 					</TabPanel>
 					<TabPanel>
-
-						{
-							(typeof this.state.recordID === 'undefined') && <div>
+						<div
+							className="ps_n3_recordFormContainer"
+							onScroll={this.scrollEvent}>
+								{(typeof this.state.recordID === 'undefined') && <div>
 									<i>save record before editing style</i>
 								</div>
-						}
+								}
 
-						{
-							(typeof this.state.recordID !== 'undefined') && <div>
+								{(typeof this.state.recordID !== 'undefined') && <div>
 									<fieldset id="scrollArea_stylePropertyPicker" className="ps_n3_recordFormContainer" disabled={this.disabled}>
 
 										<div className={!isSelected ? "ps_n3_highlight":""}>
@@ -368,39 +374,55 @@ class RecordForm extends Component {
 										<div className="ps_n3_optionHeader">{strings.imagery}</div>
 										<div>
 											<label htmlFor='o:point_image'>{strings.point_image}</label>
-											<Field className="styleEditor_input" name='o:point_image' component='input' type='text' onChange={this.markUnsaved}/>
+											<Field 	className="styleEditor_input"
+													name='o:point_image'
+													component='input'
+													type='text'
+													onChange={this.markUnsaved}/>
 										</div>
 										<div>
 											<label htmlFor='o:wms_address'>{strings.wms_address}</label>
-											<Field className="styleEditor_input" name='o:wms_address' component='input' type='text' onChange={this.markUnsaved}/>
+											<Field 	className="styleEditor_input"
+													name='o:wms_address'
+													component='input'
+													type='text'
+													onChange={this.markUnsaved}/>
 										</div>
 										<div>
 											<label htmlFor='o:wms_layers'>{strings.wms_layers}</label>
-											<Field className="styleEditor_input" name='o:wms_layers' component='input' type='text' onChange={this.markUnsaved}/>
+											<Field 	className="styleEditor_input"
+													name='o:wms_layers'
+													component='input'
+													type='text'
+													onChange={this.markUnsaved}/>
 										</div>
+										{/*
+											Zoom/Visibility disabled for alpha
+											Issue: https://github.com/performant-software/neatline-3/issues/30
 
-										<div className="ps_n3_optionHeader">{strings.visibility}</div>
-										<div>
-											<label htmlFor='o:min_zoom'>{strings.min_zoom}</label>
-											<Field className="styleEditor_input" name='o:min_zoom' component='input' type='number' onChange={this.markUnsaved}/>
-										</div>
-										<div>
-											<label htmlFor='o:max_zoom'>{strings.max_zoom}</label>
-											<Field className="styleEditor_input" name='o:max_zoom' component='input' type='number' onChange={this.markUnsaved}/>
-										</div>
-										<div>
-											<label htmlFor='o:map_zoom'>{strings.default_zoom}</label>
-											<Field className="styleEditor_input" name='o:map_zoom' component='input' type='number' onChange={this.markUnsaved}/>
-										</div>
+											<div className="ps_n3_optionHeader">{strings.visibility}</div>
+											<div>
+												<label htmlFor='o:min_zoom'>{strings.min_zoom}</label>
+												<Field className="styleEditor_input" name='o:min_zoom' component='input' type='number' onChange={this.markUnsaved}/>
+											</div>
+											<div>
+												<label htmlFor='o:max_zoom'>{strings.max_zoom}</label>
+												<Field className="styleEditor_input" name='o:max_zoom' component='input' type='number' onChange={this.markUnsaved}/>
+											</div>
+											<div>
+												<label htmlFor='o:map_zoom'>{strings.default_zoom}</label>
+												<Field className="styleEditor_input" name='o:map_zoom' component='input' type='number' onChange={this.markUnsaved}/>
+											</div>
 
-										<div>
-											<label htmlFor='o:map_focus'>{strings.default_focus}</label>
-											<Field className="styleEditor_input" name='o:map_focus' component='input' type='text' onChange={this.markUnsaved}/>
-										</div>
+											<div>
+												<label htmlFor='o:map_focus'>{strings.default_focus}</label>
+												<Field className="styleEditor_input" name='o:map_focus' component='input' type='text' onChange={this.markUnsaved}/>
+											</div>
+										*/}
 									</fieldset>
 								</div>
 						}
-
+					</div>
 					</TabPanel>
 				</div>
 
@@ -433,7 +455,6 @@ class RecordForm extends Component {
 
 	colorPickerEventHandler = (enable) => {
 		if (enable) {
-			// Handler to close colorpciker
 			document.addEventListener("click", this._colorPickerListener);
 		} else {
 			document.removeEventListener("click", this._colorPickerListener);
@@ -443,6 +464,7 @@ class RecordForm extends Component {
 	showColorPicker = (event, propertyToColor) => {
 		let parentEl = document.getElementById("scrollArea_stylePropertyPicker");
 		let top = (event.target.offsetTop - parentEl.scrollTop);
+		top +=8;
 		this.setState({colorPickerCurrentColor: event.target.dataset.initialcolor, colorPickerCurrentField: event.target.dataset.fieldname, colorPickerCurrentlyEditing: propertyToColor, colorPickerVisible: true, colorPickerTop: `${top}px`});
 
 		this.colorPickerEventHandler(true);

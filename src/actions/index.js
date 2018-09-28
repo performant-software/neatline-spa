@@ -3,12 +3,9 @@ import {urlFormat, exhibitsEndpoint} from '../sagas/api_helper.js';
 import history from '../history';
 import { strings } from '../i18nLibrary';
 
-// Action Helper
-function action(type, payload = {}) {
-	return {type, payload}
-}
+function action(type, payload = {}) {return {type, payload}}
 
-// Action dispatchers
+
 export const preview_baseLayer = (payload) => action(ACTION_TYPE.PREVIEW_BASELAYER, payload);
 export const set_availableTileLayers = (payload) => action(ACTION_TYPE.SET_AVAILABLE_TILELAYERS, payload);
 
@@ -24,16 +21,16 @@ export const updateRecordCacheAndSave = (payload) => action(ACTION_TYPE.RECORD_C
 export const updateExhibitCache = (payload) => action(ACTION_TYPE.EXHIBIT_CACHE_UPDATE, payload);
 export const recordCacheToDatabase = (payload) => action(ACTION_TYPE.EXHIBIT_CACHE_SAVE, payload);
 
-export const fetchExhibits = () => action(ACTION_TYPE.EXHIBIT_FETCH);
-export const updateExhibit = (payload) => action(ACTION_TYPE.EXHIBIT_UPDATE, payload);
-
 export const clearRecordCache = () => action(ACTION_TYPE.RECORD_CACHE_CLEAR);
 export const removeRecordFromCache = (payload) => action(ACTION_TYPE.RECORD_CACHE_REMOVE_RECORD, payload);
 export const clearUnsavedRecordCache = () => action(ACTION_TYPE.RECORD_CACHE_CLEAR_UNSAVED);
 
+
 export const leafletIsEditing = (payload) => action(ACTION_TYPE.LEAFLET_IS_EDITING, payload);
 export const leafletIsSaving = (payload) => action(ACTION_TYPE.LEAFLET_IS_SAVING, payload);
 
+export const fetchExhibits = () => action(ACTION_TYPE.EXHIBIT_FETCH);
+export const updateExhibit = (payload) => action(ACTION_TYPE.EXHIBIT_UPDATE, payload);
 
 export const resetExhibit = () => action(ACTION_TYPE.EXHIBIT_RESET);
 
@@ -43,12 +40,8 @@ export const openEditorToNewRecord = () => action(ACTION_TYPE.EDITOR_NEW_RECORD)
 export const setTabIndex = (payload) => action(ACTION_TYPE.TAB_INDEX_SET, payload);
 export const setCurrentRecordCoverage = (payload) => action(ACTION_TYPE.RECORD_COVERAGE_SET, payload);
 
-
-
 export const selectRecord = (payload) => action(ACTION_TYPE.RECORD_SELECTED, payload);
-
 export const deselectRecord = (payload) => action(ACTION_TYPE.RECORD_DESELECTED, payload);
-
 export const fetchRecordsBySlug = (payload) => action(ACTION_TYPE.RECORD_FETCH_BY_SLUG, payload);
 
 // FIXME:  Here be dragons

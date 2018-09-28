@@ -6,36 +6,45 @@ export default function app(state = initialState, action) {
 	let newState;
 	switch (action.type) {
 
-		// Accepts an object of kvps, replaces existing values
-		// Ignores keys that don't start with 'o:'
+		// Accepts an object of kvps, or an array of same
+		// - replaces existing values
+		// - ignores keys that don't start with 'o:'
 		case ACTION_TYPE.RECORD_CACHE_UPDATE:
 
 			if(typeof action.payload === 'undefined'){
 				return;
 			}
 
-			let recordID = action.payload.setValues["o:id"];
-			if(typeof  recordID === 'undefined'){
-				 recordID = TYPE.NEW_UNSAVED_RECORD;
+			let records=[];
+			if(Array.isArray(action.payload)){
+				records=action.payload;
+			}else{
+				records.push(action.payload.setValues);
 			}
-
 
 			let newCache = state.cache;
+			records.forEach(record =>{
 
-			if(typeof newCache[recordID] === 'undefined'){
-				newCache[recordID] = {};
-			}
-
-			// Loop over and overwrite any o: values
-			let newValues=action.payload.setValues;
-			let keys = Object.keys(newValues);
-			for (let idx=0; idx < keys.length;idx++) {
-				let key = keys[idx];
-				let value = newValues[key];
-				if(key.substring(0, 2) === 'o:' || key.substring(0, 1) === '@'){
-					newCache[recordID][key]=value;
+				let recordID = record["o:id"];
+				if(typeof  recordID === 'undefined'){
+					 recordID = TYPE.NEW_UNSAVED_RECORD;
 				}
-			}
+
+				if(typeof newCache[recordID] === 'undefined'){
+					newCache[recordID] = {};
+				}
+
+				// Loop over and overwrite any o: values
+				let newValues=record;
+				let keys = Object.keys(newValues);
+				for (let idx=0; idx < keys.length;idx++) {
+					let key = keys[idx];
+					let value = newValues[key];
+					if(key.substring(0, 2) === 'o:' || key.substring(0, 1) === '@'){
+						newCache[recordID][key]=value;
+					}
+				}
+			});
 
 			return{
 				...state,

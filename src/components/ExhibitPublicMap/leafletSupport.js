@@ -1,6 +1,17 @@
 import L from 'leaflet';
 
 const leafletSupport = {
+	/*
+		NOTE: Circles disabled for alpha
+		Issue: https://github.com/performant-software/neatline-3/issues/94
+
+		circle: {
+			showRadius: showUnits,
+			feet: useImperialUnits,
+			metric: !useImperialUnits,
+			nautic: false
+		}
+	*/
 
 	// Drawing options
 	// Leaflet docs: http://leaflet.github.io/Leaflet.draw/docs/leaflet-draw-latest.html
@@ -24,18 +35,13 @@ const leafletSupport = {
 					metric: !useImperialUnits,
 					nautic: false
 				},
-				circle: {
-					showRadius: showUnits,
-					feet: useImperialUnits,
-					metric: !useImperialUnits,
-					nautic: false
-				},
 				polyline: {
 					showLength: showUnits,
 					feet: useImperialUnits,
 					metric: !useImperialUnits,
 					nautic: false
-				}
+				},
+				circle: false
 			}
 		});
 	},
@@ -85,6 +91,7 @@ const leafletSupport = {
 					case "Polygon":
 						let polygon = L.polygon(positions,options);
 						polygon.on('click', onClick);
+						polygon.options.editing || (polygon.options.editing = {});
 						convertedGeometry.push(polygon);
 						break;
 
@@ -102,8 +109,8 @@ const leafletSupport = {
 						options = {	...options, fillColor:"transparent"};
 						let polyline = L.polyline(positions,options);
 						polyline.on('click', onClick);
+						polyline.options.editing || (polyline.options.editing = {});
 						convertedGeometry.push(polyline);
-
 						break;
 
 					default:

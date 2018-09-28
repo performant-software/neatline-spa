@@ -130,7 +130,12 @@ h3 {
   height: 80vh; }
 
 .ps_n3_exhibit-form {
-  height: 100%; }
+  /*border:1px solid blue;*/
+  overflow: hidden;
+  height: calc(100vh - 12.5rem);
+  width: 100%;
+  padding: 0 0 10rem 0;
+  margin: 0; }
 
 .ps_n3_exhibit-form fieldset > div {
   margin-bottom: 1em; }
@@ -199,8 +204,8 @@ h3 {
   padding: 0;
   position: relative;
   left: 16rem;
-  top: 2.93rem;
-  height: 2.3rem;
+  top: 2.91rem;
+  height: 2.2rem;
   width: 2.2rem;
   border: 1px solid grey; }
 
@@ -296,7 +301,9 @@ input.styleEditor_input {
 .ps_n3_recordFormContainer {
   overflow: scroll;
   border: 0;
-  margin: 0 0 0 0; }
+  margin: 0 0 0 0;
+  height: calc(100vh - 16rem);
+  /*border:1px solid red;*/ }
 
 .ps_n3_optionHeader {
   font-weight: bold;

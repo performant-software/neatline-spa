@@ -16,9 +16,7 @@ class Exhibits extends Component {
   }
 
   render() {
-
     const props = this.props;
-
     const changeLanguage = lng => {
       strings.setLanguage(lng);
       this.setState({});

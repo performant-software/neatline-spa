@@ -59,10 +59,11 @@ class ExhibitForm extends Component {
 			isNewExhibit:isNewExhibit
 		});
 
-
-		// Set the router
+		// Set the slug for the router
 		this.setState({currentSlug:this.props.initialValues['o:slug']})
 
+		// Reset save warning
+		this.props.dispatch(setUnsavedChanges({hasUnsavedChanges:false}));
 	}
 
 	// Update the live-preview of the spatial layer
@@ -157,9 +158,7 @@ class ExhibitForm extends Component {
 		}
 
 		// Mark unsaved
-		this.props.dispatch(
-			setUnsavedChanges({hasUnsavedChanges:true})
-		);
+		this.props.dispatch(setUnsavedChanges({hasUnsavedChanges:true}));
 	}
 
 	// Build layerTYPE from the set of non-deprecated maps
@@ -353,11 +352,15 @@ class ExhibitForm extends Component {
 						}
 
 						<div className="ps_n3_checkboxPair">
+							{/*
+								Spatial querying disabled for alpha:
+								https://github.com/performant-software/neatline-3/issues/114
+							*/}
 							<Field 	name='o:spatial_querying'
 									component='input'
-									type='checkbox'
+									type='hidden'
 									onChange={this.markUnsaved}/>
-							<label 	htmlFor='o:spatial_querying'>Spatial Querying</label>
+							{/*<label 	htmlFor='o:spatial_querying'>Spatial Querying</label>*/}
 						</div>
 						<div className="ps_n3_checkboxPair">
 							<Field 	name='o:public'

@@ -20,7 +20,7 @@ import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {change} from 'redux-form';
-import {updateRecordCacheAndSave, leafletIsSaving} from '../../actions';
+import {updateRecordCacheAndSave, leafletIsSaving, leafletIsEditing} from '../../actions';
 import {selectRecord, deselectRecord, previewRecord, unpreviewRecord} from '../../actions';
 import L from 'leaflet';
 import Draw from 'leaflet-draw';
@@ -32,6 +32,7 @@ class ExhibitPublicMap extends Component {
 		super(props);
 
 		// FIXME: Move these to exhibit settings
+		// Issue: https://github.com/performant-software/neatline-3/issues/110
 		this.state ={
 			map_center:[51.505, -0.09],
 			map_zoom:13
@@ -75,13 +76,11 @@ class ExhibitPublicMap extends Component {
 
 	// Custom event listeners are stopgaps until this gets refactored to follow redux store
 	componentDidMount(){
-		document.addEventListener("saveComplete", this.event_saveComplete);
-		document.addEventListener("refreshMap", this.event_saveComplete);
+		document.addEventListener("refreshMap", this.event_refreshMap);
 	}
 
 	componentWillUnmount(){
-		document.removeEventListener("saveComplete", this.event_saveComplete);
-		document.removeEventListener("refreshMap", this.event_saveComplete);
+		document.removeEventListener("refreshMap", this.event_refreshMap);
 	}
 
 	//////////////////////////////////////
@@ -180,10 +179,20 @@ class ExhibitPublicMap extends Component {
 		if(typeof initialBaselayer !== 'undefined'){
 			initialBaselayer.addTo(this.map);
 		}
-		this.mapInitialized=true;
-		//this.map.on('load', (event)=>{this.ls_onMapDidLoad(event);});
+
 		this.map.on('click',(event)=>{this.onMapClick(event);});
 		this.map.setView(this.state.map_center,this.state.map_zoom);
+
+		this.ls_fg = new L.FeatureGroup();
+		this.ls_fg.addTo(this.map);
+		this.ls_drawControl = new L.Control.Draw({
+									...leafletSupport.drawingOptions(),
+									edit:{featureGroup:this.ls_fg}
+								});
+
+
+
+		this.mapInitialized=true;
 	}
 
 	ls_mapUpdate = () => {
@@ -193,32 +202,45 @@ class ExhibitPublicMap extends Component {
 		let saveChanges =  this.syncDrawWithReact;
 		let geometry = this.ls_geometrySetup();
 
+		/*
+
 		// Remove geometries and controls
-		leafletSupport.clearGeometry(mapInstance);
-		if(typeof this.ls_fg !== 'undefined'){
+
+		if(this.ls_fg !== null){
 			mapInstance.removeLayer(this.ls_fg);
 			mapInstance.removeControl(this.ls_drawControl);
-			this.ls_fg.clearLayers();
-			this.ls_fg = null;
-			this.ls_drawControl = null;
 		}
 
-		// Rebuild geometry and controls
-		this.ls_fg = new L.FeatureGroup(geometry.editable);
-		let options = {	...leafletSupport.drawingOptions(),
-						edit:{featureGroup:this.ls_fg}
-					  };
-		this.ls_drawControl = new L.Control.Draw(options);
-		if( (typeof selectedRecord !== 'undefined' && selectedRecord !== null) ||
-			this.props.editorNewRecord){
-			mapInstance.addControl(this.ls_drawControl);
-		}
 
 		// Add geometry to map
-		this.ls_fg.addTo(mapInstance);
+
+
+
+
+		// Rebuild geometry and controls
+
+		if(this.ls_drawControl){
+			mapInstance.removeControl(this.ls_drawControl);
+		}*/
+
+		this.ls_fg.eachLayer(layer =>{
+			this.ls_fg.removeLayer(layer);
+		});
+		geometry.editable.forEach(layer =>{
+			this.ls_fg.addLayer(layer);
+		});
+
+		leafletSupport.clearGeometry(mapInstance);
+		mapInstance.removeControl(this.ls_drawControl);
 		geometry.uneditable.forEach(
 			layer=>{layer.addTo(mapInstance);
 		});
+
+		if( (typeof selectedRecord !== 'undefined' && selectedRecord !== null) || this.props.editorNewRecord){
+			mapInstance.addControl(this.ls_drawControl);
+		}
+
+
 
 
 		//////////////////////////////////////
@@ -237,11 +259,15 @@ class ExhibitPublicMap extends Component {
 		});
 
 		mapInstance.on('draw:deletestart', (e) => {
+			this.props.leafletIsEditing(true);
 			this.ls_hasEditToSave=false;
 			this.shouldUpdate=false;
+			this.isDrawing=true;
 		});
 
 		mapInstance.on('draw:deletestop', (e) => {
+			this.props.leafletIsEditing(false);
+			this.isDrawing=false;
 			if(this.ls_hasEditToSave){
 				let geojsonData = this.ls_fg.toGeoJSON();
 				if(geojsonData.features.length === 0){
@@ -251,20 +277,24 @@ class ExhibitPublicMap extends Component {
 				//this.ls_fg.clearLayers();
 				saveChanges(selectedRecord,geojsonData);
 			}
+			this.shouldUpdate=true;
 		});
 
 		mapInstance.on('draw:editstart', (e) =>{
+			this.shouldUpdate=false;
+			this.props.leafletIsEditing(true);
 			this.isDrawing=true;
 			this.ls_hasEditToSave=false;
-			this.shouldUpdate=false;
 		});
 
 		mapInstance.on('draw:editstop', (e) => {
+			this.props.leafletIsEditing(false);
 			this.isDrawing=false;
 			if(this.ls_hasEditToSave){
 				let geojsonData = this.ls_fg.toGeoJSON();
 				saveChanges(selectedRecord,geojsonData);
 			}
+			this.shouldUpdate=true;
 		});
 
 		mapInstance.on('draw:edited', (e) =>{
@@ -272,11 +302,15 @@ class ExhibitPublicMap extends Component {
 		});
 
 		mapInstance.on('draw:drawstart', (e) => {
+			this.shouldUpdate=false;
+			this.props.leafletIsEditing(true);
 			this.isDrawing=true;
 		});
 
 		mapInstance.on('draw:drawstop', (e) => {
+			this.props.leafletIsEditing(false);
 			this.isDrawing=false;
+			this.shouldUpdate=true;
 		});
 
 	}
@@ -391,7 +425,6 @@ class ExhibitPublicMap extends Component {
 	syncDrawWithReact = (selectedRecord,geojsonData) => {
 
 		if(typeof this.props.records === 'undefined'){
-			debugger
 			return;
 		}
 		let recordId = (typeof selectedRecord !== 'undefined' && selectedRecord !== null && selectedRecord['o:id'])?selectedRecord['o:id']:TYPE.NEW_UNSAVED_RECORD;
@@ -409,17 +442,15 @@ class ExhibitPublicMap extends Component {
 
 	}
 
-	event_saveComplete = () => {
-		this.shouldUpdate=true;
+	event_refreshMap = () => {
 		this.cacheInitialized=false;
 		this.ls_mapUpdate();
 		this.forceUpdate();
+		this.props.leafletIsEditing(false);
+		this.shouldUpdate=true;
 	}
 
 	onGeometryClick=(event,record)=>{
-		if(typeof record === 'undefined'){
-			debugger
-		}
 		if(typeof this.props.records === 'undefined' || this.isDrawing){return;}
 		L.DomEvent.stop(event);
 		this.props.selectRecord({record:record});
@@ -427,7 +458,6 @@ class ExhibitPublicMap extends Component {
 	}
 
 	onMapClick=()=>{
-		if(typeof this.props.records === 'undefined' || this.isDrawing){return;}
 		if(typeof this.props.records === 'undefined' || this.isDrawing){return;}
 		this.map.removeControl(this.ls_drawControl);
 		this.props.deselectRecord();
@@ -437,6 +467,7 @@ class ExhibitPublicMap extends Component {
 
 const mapDispatchToProps = dispatch => bindActionCreators({
 	selectRecord,
+	leafletIsEditing,
 	deselectRecord,
 	recordMouseEnter: record => previewRecord(record),
 	recordMouseLeave: unpreviewRecord,

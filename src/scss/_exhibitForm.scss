@@ -13,7 +13,12 @@
 }
 
 .ps_n3_exhibit-form {
-	height: 100%;
+	/*border:1px solid blue;*/
+	overflow: hidden;
+	height: calc(100vh - 12.5rem);
+	width: 100%;
+	padding:0 0 10rem 0;
+	margin:0;
 }
 
 .ps_n3_exhibit-form fieldset > div {

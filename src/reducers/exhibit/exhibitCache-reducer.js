@@ -7,7 +7,6 @@ export default function app(state = initialState, action) {
 		// Accepts an object of kvps, replaces existing values
 		// Ignores keys that don't start with 'o:'
 		case ACTION_TYPE.EXHIBIT_CACHE_UPDATE:
-
 			// Loop over and overwrite any o: values
 			let newCache = state.cache;
 			let newValues=action.payload.setValues;
