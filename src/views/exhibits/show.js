@@ -130,6 +130,7 @@ class ExhibitShow extends Component {
 						position: 'relative'
 					}}>
 					<ExhibitPublicMap
+						userSignedIn={this.props.userSignedIn}
 						mapCache = {this.props.mapCache}
 						exhibit = {this.props.exhibit}
 						records = {this.props.records}

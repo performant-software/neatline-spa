@@ -101,15 +101,15 @@ export default function app(state = initialState, action) {
 
 
 		// Set the tilelayer object based on an ID (array position)
-			case ACTION_TYPE.PREVIEW_BASELAYER:
-				return {
-					...state,
-					current: {
-						...state.current,
-						...action.payload,
-						tileLayer: state.available.baseMaps[action.payload.id]
-					}
-				};
+		case ACTION_TYPE.PREVIEW_BASELAYER:
+			return {
+				...state,
+				current: {
+					...state.current,
+					...action.payload,
+					tileLayer: state.available.baseMaps[action.payload.id]
+				}
+			};
 
 		// Create a subset of tilelayer objects based on array of IDs
 		case ACTION_TYPE.SET_AVAILABLE_TILELAYERS:

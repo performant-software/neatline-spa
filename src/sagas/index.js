@@ -81,7 +81,6 @@ function* selectRecord(action){
 	let url = (typeof window.baseRoute !== 'undefined')?`${window.baseRoute}`:"";
 	    url += `/show/${slug}/edit/${action.payload.record['o:id']}`;
 	history.replace(url);
-	//yield put({type: ACTION_TYPE.EVENT_REFRESHMAP});
 }
 
 function* deselectRecord(){
@@ -275,6 +274,37 @@ function* fetchRecordsBySlug(action) {
 		yield put({type: ACTION_TYPE.EXHIBIT_LOADED, payload: exhibit});
 		yield put({type: ACTION_TYPE.EXHIBIT_CACHE_UPDATE, payload:{setValues:exhibit}});
 		yield put({type: ACTION_TYPE.RECORDS_FETCH, payload: exhibit});
+
+		// FIXME: this could be a lot more efficient, an it's not great to
+		// unpack the type like this
+		let baselayerType="MAP";
+		switch (exhibit['o:exhibit_type']) {
+			case 1:
+				baselayerType="IMAGE";
+				break;
+			case 2:
+				baselayerType="WMS";
+				break;
+			case 3:
+				baselayerType="TILE";
+				break;
+			default:
+		}
+		yield put({ type: ACTION_TYPE.PREVIEW_BASELAYER,
+					payload:{
+						id: exhibit['o:exhibit_type'],
+						image_address: exhibit['o:image_layer'],
+						image_attribution: exhibit['o:image_attribution'],
+						image_layer:  exhibit['o:image_layer'],
+						tile_address: exhibit['o:tile_address'],
+						tile_attribution: exhibit['o:tile_attribution'],
+						type: baselayerType,
+						wms_address: exhibit['o:wms_address'],
+						wms_attribution: exhibit['o:wms_attribution'],
+						wms_layers: exhibit['o:wms_layers']
+					}});
+
+
 	}
 }
 

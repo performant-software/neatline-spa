@@ -41,7 +41,7 @@ class ExhibitPublicMap extends Component {
 		// Render flags, used because we can't use standard react logic
 		this.cacheInitialized=false;
 		this.mapInitialized=false;
-		this.shouldUpdate=true;
+		this.allowRender=true;
 		this.isDrawing=false;
 		this.Draw = Draw; /* Suppresses include warning */
 		this.geoClick=false;
@@ -52,11 +52,12 @@ class ExhibitPublicMap extends Component {
 		return (<div id='leafletMap'/>)
 	}
 
-	// Controls render
-	shouldComponentUpdate(){return this.shouldUpdate;}
+	// enables/disables render
+	shouldComponentUpdate(){return this.allowRender;}
 
 	// Post-DOM
 	componentDidUpdate = () =>{
+
 		// Initialize map
 		if(!this.mapInitialized){
 			this.ls_mapInit();
@@ -87,9 +88,7 @@ class ExhibitPublicMap extends Component {
 	// Leaflet
 	//////////////////////////////////////
 	ls_mapInit = () => {
-
 		document.getElementById('leafletMap').classList.add('ps_n3_leafletMap');
-
 		this.map = L.map('leafletMap');
 		let baselayerType = this.props.mapCache.current.type;
 		let currentMapCache = this.props.mapCache.current;
@@ -190,39 +189,16 @@ class ExhibitPublicMap extends Component {
 									edit:{featureGroup:this.ls_fg}
 								});
 
-
-
 		this.mapInitialized=true;
 	}
 
 	ls_mapUpdate = () => {
-
 		let mapInstance = this.map;
 		let selectedRecord = this.props.selectedRecord;
 		let saveChanges =  this.syncDrawWithReact;
 		let geometry = this.ls_geometrySetup();
 
-		/*
-
-		// Remove geometries and controls
-
-		if(this.ls_fg !== null){
-			mapInstance.removeLayer(this.ls_fg);
-			mapInstance.removeControl(this.ls_drawControl);
-		}
-
-
-		// Add geometry to map
-
-
-
-
-		// Rebuild geometry and controls
-
-		if(this.ls_drawControl){
-			mapInstance.removeControl(this.ls_drawControl);
-		}*/
-
+		// Rebuild editable
 		this.ls_fg.eachLayer(layer =>{
 			this.ls_fg.removeLayer(layer);
 		});
@@ -230,17 +206,19 @@ class ExhibitPublicMap extends Component {
 			this.ls_fg.addLayer(layer);
 		});
 
+		// Rebuild not-editable
 		leafletSupport.clearGeometry(mapInstance);
 		mapInstance.removeControl(this.ls_drawControl);
 		geometry.uneditable.forEach(
 			layer=>{layer.addTo(mapInstance);
 		});
 
-		if( (typeof selectedRecord !== 'undefined' && selectedRecord !== null) || this.props.editorNewRecord){
-			mapInstance.addControl(this.ls_drawControl);
+		// Selectively show the draw control
+		if(this.props.userSignedIn){
+			if( (typeof selectedRecord !== 'undefined' && selectedRecord !== null) || this.props.editorNewRecord){
+				mapInstance.addControl(this.ls_drawControl);
+			}
 		}
-
-
 
 
 		//////////////////////////////////////
@@ -261,7 +239,7 @@ class ExhibitPublicMap extends Component {
 		mapInstance.on('draw:deletestart', (e) => {
 			this.props.leafletIsEditing(true);
 			this.ls_hasEditToSave=false;
-			this.shouldUpdate=false;
+			this.allowRender=false;
 			this.isDrawing=true;
 		});
 
@@ -277,11 +255,11 @@ class ExhibitPublicMap extends Component {
 				//this.ls_fg.clearLayers();
 				saveChanges(selectedRecord,geojsonData);
 			}
-			this.shouldUpdate=true;
+			this.allowRender=true;
 		});
 
 		mapInstance.on('draw:editstart', (e) =>{
-			this.shouldUpdate=false;
+			this.allowRender=false;
 			this.props.leafletIsEditing(true);
 			this.isDrawing=true;
 			this.ls_hasEditToSave=false;
@@ -294,7 +272,7 @@ class ExhibitPublicMap extends Component {
 				let geojsonData = this.ls_fg.toGeoJSON();
 				saveChanges(selectedRecord,geojsonData);
 			}
-			this.shouldUpdate=true;
+			this.allowRender=true;
 		});
 
 		mapInstance.on('draw:edited', (e) =>{
@@ -302,7 +280,7 @@ class ExhibitPublicMap extends Component {
 		});
 
 		mapInstance.on('draw:drawstart', (e) => {
-			this.shouldUpdate=false;
+			this.allowRender=false;
 			this.props.leafletIsEditing(true);
 			this.isDrawing=true;
 		});
@@ -310,7 +288,7 @@ class ExhibitPublicMap extends Component {
 		mapInstance.on('draw:drawstop', (e) => {
 			this.props.leafletIsEditing(false);
 			this.isDrawing=false;
-			this.shouldUpdate=true;
+			this.allowRender=true;
 		});
 
 	}
@@ -393,12 +371,11 @@ class ExhibitPublicMap extends Component {
 
 						var geoJSONLayer = L.geoJSON();
 						geoJSONLayer.addData(geoJSON);
-
 						geoJSONLayer.on('click',(event)=>{onGeometryClick(event,record)});
 
 						// FIXME: The mouse events are wrong
-						geoJSONLayer.on('onmouseover',()=>{onMouseEnter(record)});
-						geoJSONLayer.on('onmouseleave',()=>{onMouseLeave(record)});
+						geoJSONLayer.on('mouseover',()=>{onMouseEnter(record)});
+						geoJSONLayer.on('mouseout',()=>{onMouseLeave(record)});
 						geoJSONLayer.setStyle(function(feature, layer) {
 							// If the geometry is a line, get rid of fill
 							let style=coverageStyle();
@@ -447,7 +424,7 @@ class ExhibitPublicMap extends Component {
 		this.ls_mapUpdate();
 		this.forceUpdate();
 		this.props.leafletIsEditing(false);
-		this.shouldUpdate=true;
+		this.allowRender=true;
 	}
 
 	onGeometryClick=(event,record)=>{
