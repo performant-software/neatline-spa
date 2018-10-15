@@ -159,6 +159,7 @@ class ExhibitForm extends Component {
 
 		// Mark unsaved
 		this.props.dispatch(setUnsavedChanges({hasUnsavedChanges:true}));
+
 	}
 
 	// Build layerTYPE from the set of non-deprecated maps
@@ -395,9 +396,7 @@ const formSelector = formValueSelector('exhibit');
 const mapStateToProps = state => ({
 	state,
 	mapCache: state.mapCache,
-	initialValues: state.exhibitShow.exhibit
-		? state.exhibitShow.exhibit
-		: TYPE.EXHIBIT_DEFAULT_VALUES
+	initialValues: state.exhibitShow.exhibit?state.exhibitShow.exhibit:TYPE.EXHIBIT_DEFAULT_VALUES
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
