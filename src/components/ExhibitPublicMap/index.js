@@ -89,10 +89,13 @@ class ExhibitPublicMap extends Component {
 	//////////////////////////////////////
 	ls_mapInit = () => {
 		document.getElementById('leafletMap').classList.add('ps_n3_leafletMap');
-		this.map = L.map('leafletMap');
+		if(typeof this.map === 'undefined'){
+			this.map = L.map('leafletMap');
+		}else{
+			this.initialBaselayer.remove();
+		}
 		let baselayerType = this.props.mapCache.current.type;
 		let currentMapCache = this.props.mapCache.current;
-		let initialBaselayer;
 		let baseLayers = {};
 		let overlays = {};
 		switch (baselayerType) {
@@ -100,8 +103,10 @@ class ExhibitPublicMap extends Component {
 			// Known map layer
 			case TYPE.BASELAYER_TYPE.MAP:
 			case TYPE.BASELAYER_TYPE.TILE:
-				baseLayers[currentMapCache.tileLayer.displayName] = L.tileLayer(currentMapCache.tileLayer.url, { attribution: currentMapCache.tileLayer.attribution});
-				initialBaselayer=baseLayers[currentMapCache.tileLayer.displayName];
+				if(typeof currentMapCache.tileLayer !== 'undefined'){
+					baseLayers[currentMapCache.tileLayer.displayName] = L.tileLayer(currentMapCache.tileLayer.url, { attribution: currentMapCache.tileLayer.attribution});
+					this.initialBaselayer=baseLayers[currentMapCache.tileLayer.displayName];
+				}
 				break;
 
 			// Image layer
@@ -153,7 +158,7 @@ class ExhibitPublicMap extends Component {
 							attribution: currentMapCache.wms_attribution,
 							layers: currentMapCache.wms_layers
 						});
-						initialBaselayer=baseLayers[currentMapCache.wms_address];
+						this.initialBaselayer=baseLayers[currentMapCache.wms_address];
 					}
 					break;
 
@@ -173,21 +178,25 @@ class ExhibitPublicMap extends Component {
 		});
 
 		if(Object.keys(baseLayers).length > 0){
-			L.control.layers(baseLayers, overlays).addTo(this.map);
+			if(typeof this.layerControl !== 'undefined'){
+				this.layerControl.remove();
+			}
+			this.layerControl = L.control.layers(baseLayers, overlays).addTo(this.map);
 		}
-		if(typeof initialBaselayer !== 'undefined'){
-			initialBaselayer.addTo(this.map);
+		if(typeof this.initialBaselayer !== 'undefined'){
+			this.initialBaselayer.addTo(this.map);
 		}
 
 		this.map.on('click',(event)=>{this.onMapClick(event);});
 		this.map.setView(this.state.map_center,this.state.map_zoom);
-
-		this.ls_fg = new L.FeatureGroup();
-		this.ls_fg.addTo(this.map);
-		this.ls_drawControl = new L.Control.Draw({
-									...leafletSupport.drawingOptions(),
-									edit:{featureGroup:this.ls_fg}
-								});
+		if(typeof this.ls_fg === 'undefined'){
+			this.ls_fg = new L.FeatureGroup();
+			this.ls_fg.addTo(this.map);
+			this.ls_drawControl = new L.Control.Draw({
+										...leafletSupport.drawingOptions(),
+										edit:{featureGroup:this.ls_fg}
+									});
+		}
 
 		this.mapInitialized=true;
 	}
@@ -197,6 +206,10 @@ class ExhibitPublicMap extends Component {
 		let selectedRecord = this.props.selectedRecord;
 		let saveChanges =  this.syncDrawWithReact;
 		let geometry = this.ls_geometrySetup();
+
+		if(typeof geometry === 'undefined'){
+			return;
+		}
 
 		// Rebuild editable
 		this.ls_fg.eachLayer(layer =>{
@@ -237,13 +250,17 @@ class ExhibitPublicMap extends Component {
 		});
 
 		mapInstance.on('draw:deletestart', (e) => {
-			this.props.leafletIsEditing(true);
-			this.ls_hasEditToSave=false;
 			this.allowRender=false;
+			this.props.leafletIsEditing(true);
 			this.isDrawing=true;
+			this.ls_hasEditToSave=false;
+
+			console.log("Delete: START");
 		});
 
 		mapInstance.on('draw:deletestop', (e) => {
+			console.log("Delete: STOP");
+			debugger
 			this.props.leafletIsEditing(false);
 			this.isDrawing=false;
 			if(this.ls_hasEditToSave){
@@ -420,6 +437,8 @@ class ExhibitPublicMap extends Component {
 	}
 
 	event_refreshMap = () => {
+		console.log("Refresh requested");
+		this.mapInitialized=false;
 		this.cacheInitialized=false;
 		this.ls_mapUpdate();
 		this.forceUpdate();
@@ -434,7 +453,9 @@ class ExhibitPublicMap extends Component {
 		this.forceUpdate();
 	}
 
-	onMapClick=()=>{
+	onMapClick=(event)=>{
+		console.log("Map Clicked");
+		L.DomEvent.stop(event);
 		if(typeof this.props.records === 'undefined' || this.isDrawing){return;}
 		this.map.removeControl(this.ls_drawControl);
 		this.props.deselectRecord();

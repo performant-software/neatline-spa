@@ -11,8 +11,12 @@ import {fetchExhibits} from '../../actions';
 
 class Exhibits extends Component {
   componentWillMount() {
-	this.props.dispatch(fetchExhibits());
-    this.props.dispatch(resetExhibit());
+		this.props.dispatch(fetchExhibits());
+		this.props.dispatch(resetExhibit());
+  }
+
+  createExhibitView =  () => {
+	  history.push(`${window.baseRoute}/add`);
   }
 
   render() {
@@ -31,7 +35,7 @@ class Exhibits extends Component {
         <h3><Link to={`${window.baseRoute}/`}>Neatline</Link> | {strings.browseExhibit}</h3>
 		<div className="ps_n3_buttonGroup">
 	        {props.userSignedIn &&
-	          <button onClick={props.createExhibitView}>{strings.createExhibit}</button>
+	          <button onClick={this.createExhibitView}>{strings.createExhibit}</button>
 	        }
 			{lngButtons}
 		</div>
@@ -83,7 +87,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
   fetchExhibits,
   resetExhibit,
-  createExhibitView: () => history.push(`${window.baseRoute}/add`),
   deleteExhibit,
   dispatch
 }, dispatch);

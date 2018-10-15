@@ -43,7 +43,9 @@ export default function* rootSaga() {
 
 		takeLatest(ACTION_TYPE.RECORD_CACHE_UPDATE_AND_SAVE, updateRecordCacheAndSave),
 		takeLatest(ACTION_TYPE.EXHIBIT_CACHE_SAVE, saveCacheToDatabase),
-		takeLatest(ACTION_TYPE.EVENT_REFRESHMAP, declareSaveComplete)
+		
+		takeLatest(ACTION_TYPE.EVENT_REFRESHMAP, requestMapRefresh),
+		takeLatest(ACTION_TYPE.HAS_UNSAVED_CHANGES, requestMapRefresh)
 
 	])
 }
@@ -190,7 +192,7 @@ function* updateRecordResponseReceived(action) {
 	yield put({type: ACTION_TYPE.LEAFLET_IS_EDITING, payload: false});
 }
 
-function declareSaveComplete(action){
+function requestMapRefresh(action){
 	var event = new CustomEvent("refreshMap");
 	document.dispatchEvent(event);
 }
