@@ -92,7 +92,10 @@ class ExhibitPublicMap extends Component {
 		if(typeof this.map === 'undefined'){
 			this.map = L.map('leafletMap');
 		}else{
-			this.initialBaselayer.remove();
+			if(typeof this.initialBaselayer !== 'undefined'){
+				this.initialBaselayer.remove();
+
+			}
 		}
 		let baselayerType = this.props.mapCache.current.type;
 		let currentMapCache = this.props.mapCache.current;
@@ -127,9 +130,10 @@ class ExhibitPublicMap extends Component {
 						let imageBounds = new L.LatLngBounds(southWest, northEast);
 
 						// Remove existing image layers and add new one
-						this.map.eachLayer(function(layer){
+						let leafletMap=this.map;
+						leafletMap.eachLayer(function(layer){
 							if(layer._image){
-								this.map.removeLayer(layer);
+								leafletMap.removeLayer(layer);
 							}
 						});
 						L.imageOverlay(	currentMapCache.image_address,
@@ -438,7 +442,7 @@ class ExhibitPublicMap extends Component {
 
 	event_refreshMap = () => {
 		console.log("Refresh requested");
-		this.mapInitialized=false;
+		//this.mapInitialized=false;
 		this.cacheInitialized=false;
 		this.ls_mapUpdate();
 		this.forceUpdate();
