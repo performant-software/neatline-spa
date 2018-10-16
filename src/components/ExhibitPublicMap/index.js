@@ -77,10 +77,12 @@ class ExhibitPublicMap extends Component {
 
 	// Custom event listeners are stopgaps until this gets refactored to follow redux store
 	componentDidMount(){
+		document.addEventListener("refreshMapGeometry", this.event_refreshMapGeometry);
 		document.addEventListener("refreshMap", this.event_refreshMap);
 	}
 
 	componentWillUnmount(){
+		document.removeEventListener("refreshMapGeometry", this.event_refreshMapGeometry);
 		document.removeEventListener("refreshMap", this.event_refreshMap);
 	}
 
@@ -191,7 +193,7 @@ class ExhibitPublicMap extends Component {
 			this.initialBaselayer.addTo(this.map);
 		}
 
-		this.map.on('click',(event)=>{this.onMapClick(event);});
+		this.map.off('click').on('click',(event)=>{this.onMapClick(event);});
 		this.map.setView(this.state.map_center,this.state.map_zoom);
 		if(typeof this.ls_fg === 'undefined'){
 			this.ls_fg = new L.FeatureGroup();
@@ -258,13 +260,9 @@ class ExhibitPublicMap extends Component {
 			this.props.leafletIsEditing(true);
 			this.isDrawing=true;
 			this.ls_hasEditToSave=false;
-
-			console.log("Delete: START");
 		});
 
 		mapInstance.on('draw:deletestop', (e) => {
-			console.log("Delete: STOP");
-			debugger
 			this.props.leafletIsEditing(false);
 			this.isDrawing=false;
 			if(this.ls_hasEditToSave){
@@ -440,9 +438,12 @@ class ExhibitPublicMap extends Component {
 
 	}
 
-	event_refreshMap = () => {
-		console.log("Refresh requested");
-		//this.mapInitialized=false;
+	event_refreshMap = (event) => {
+		this.mapInitialized=false;
+		this.event_refreshMapGeometry(event);
+	}
+
+	event_refreshMapGeometry = (event) => {
 		this.cacheInitialized=false;
 		this.ls_mapUpdate();
 		this.forceUpdate();
@@ -458,7 +459,6 @@ class ExhibitPublicMap extends Component {
 	}
 
 	onMapClick=(event)=>{
-		console.log("Map Clicked");
 		L.DomEvent.stop(event);
 		if(typeof this.props.records === 'undefined' || this.isDrawing){return;}
 		this.map.removeControl(this.ls_drawControl);
