@@ -11,12 +11,13 @@ import RecordEditorLoader from '../../components/recordEditorLoader';
 import Records from '../records';
 import RecordCreate from '../records/create';
 import RecordUpdate from '../records/update';
-import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
+// import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import { strings } from '../../i18nLibrary';
 import {recordCacheToDatabase, updateExhibitCache, clearRecordCache} from '../../actions';
 import LockOverlay from '../../components/LockOverlay';
 import SpinnerOverlay from '../../components/SpinnerOverlay';
 import AlertBar from '../../components/AlertBar';
+import { Tab } from 'semantic-ui-react';
 
 const ExhibitShowHeader = props => (
 	<div>
@@ -34,8 +35,8 @@ const ExhibitPanelContent = props => {
 	}
 }
 
-const RecordEditor = props => {
-	if (props.editorNewRecord) {
+const RecordEditor = (recordType) => {
+	if (recordType === 'new') {
 		return <RecordCreate/>;
 	} else {
 		return <RecordUpdate/>;
@@ -43,17 +44,22 @@ const RecordEditor = props => {
 }
 
 class ExhibitShow extends Component {
-
+	constructor(props) {
+		super(props)
+		this.state = {showRecords:true, recordEditorType: ''}
+	}
 	componentDidMount() {
 		this.props.fetchExhibits();
 		this.cacheIntitialized=false;
 		this.exhibitCacheInitialized=false;
 		this.props.dispatch(clearRecordCache());
+
 	}
 
 	saveAll = (event) => {
 		this.props.dispatch(recordCacheToDatabase());
 	}
+	
 
 	componentWillUpdate = () =>{
 		if(	typeof this.props.records === 'undefined' &&
@@ -62,20 +68,37 @@ class ExhibitShow extends Component {
 				this.props.fetchRecordsBySlug(this.props.match.params.slug);
 			}
 	}
-
-
-
+	toggleRecords = (val) => { this.setState({ showRecords: val }); console.log(this.state.showRecords, val) };
+	recordEditorType = (val) => { this.setState({ recordEditorType: val }); console.log(this.state.recordEditorType, val)};
 	render() {
+		
 
 		const props = this.props;
 		const {exhibit} = props;
-
 		let exhibitDisplay = <ExhibitShowHeader userSignedIn={props.userSignedIn}>{strings.loading}</ExhibitShowHeader>;
 
 		let recordTitle = props.editorNewRecord?strings.new_record:props.editorRecord?props.editorRecord['o:title']:'';
 			recordTitle = (recordTitle === null || recordTitle.length === 0)?"???":recordTitle;
-
+		
 		if (exhibit) {
+			console.log(this.state.recordEditorType === 'new');
+			const panes = [
+				{
+					menuItem: `${strings.exhibit}`,
+					render: () => <Tab.Pane><ExhibitPanelContent exhibit={exhibit}
+						userSignedIn={props.userSignedIn} /></Tab.Pane>
+				},
+				{
+					menuItem: `${strings.records}`,
+					render: () => <Tab.Pane> {this.state.showRecords ? <Records exhibitShowURL={props.match.url}
+						userSignedIn={props.userSignedIn}
+						toggleRecords={this.toggleRecords}
+						setRecordEditorType={this.recordEditorType} /> : 
+						(this.state.recordEditorType === 'new' ? <RecordCreate toggleRecords={this.toggleRecords} deselect={props.deselectRecord} /> : <RecordUpdate toggleRecords={this.toggleRecords} deselect={props.deselectRecord}/>)
+						 }
+					</Tab.Pane>
+				},
+			]
 			exhibitDisplay = (
 				<div className='ps_n3_exhibit-public' style={{
 					display: 'grid',
@@ -92,7 +115,8 @@ class ExhibitShow extends Component {
 					<ExhibitShowHeader  userSignedIn={props.userSignedIn} onSave={this.saveAll}>
 						{exhibit['o:title']}
 					</ExhibitShowHeader>
-					<Tabs selectedIndex={this.props.tabIndex} onSelect={tabIndex => props.setTabIndex(tabIndex)}>
+					<Tab panes={panes} />
+					{/* <Tabs selectedIndex={this.props.tabIndex} onSelect={tabIndex => props.setTabIndex(tabIndex)}>
 						<TabList>
 							<Tab>{strings.exhibit}</Tab>
 							<Tab>{strings.records}</Tab>
@@ -117,12 +141,14 @@ class ExhibitShow extends Component {
 						</TabPanel>
 						<TabPanel>
 							<Records exhibitShowURL={props.match.url}
-									 userSignedIn={props.userSignedIn}/>
+									userSignedIn={props.userSignedIn}
+									toggleRecords={this.toggleRecords}
+									 />
 						</TabPanel>
 						<TabPanel>
 							<RecordEditor editorNewRecord={props.editorNewRecord}/>
 						</TabPanel>
-					</Tabs>
+					</Tabs> */}
 				</div>
 				<div style={{
 						gridRow: '1',
