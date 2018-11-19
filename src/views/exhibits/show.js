@@ -68,7 +68,7 @@ class ExhibitShow extends Component {
 				this.props.fetchRecordsBySlug(this.props.match.params.slug);
 			}
 	}
-	toggleRecords = (val) => { this.setState({ showRecords: val }); console.log(this.state.showRecords, val) };
+	toggleRecords = (val) => this.setState({ showRecords: val });
 	recordEditorType = (val) => { this.setState({ recordEditorType: val }); console.log(this.state.recordEditorType, val)};
 	render() {
 		

@@ -7,7 +7,7 @@ import history from '../../history';
 import 'semantic-ui-css/semantic.min.css';
 
 const App = () => (
-	<main id="ps_n3_main">
+	<main>
 	<Router history={history}>
 		<Switch>
 			<Route exact path={`${window.baseRoute}/`} component={Exhibits}/>
