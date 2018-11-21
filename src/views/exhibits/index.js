@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Menu, Button, Icon, Table } from 'semantic-ui-react';
+import { Menu, Button, Icon, Table, Modal } from 'semantic-ui-react';
 //import { fetchExhibits } from '../../reducers/not_refactored/exhibits';
 import { resetExhibit } from '../../actions';
 import { deleteExhibit } from '../../actions';
@@ -13,7 +13,7 @@ import {fetchExhibits} from '../../actions';
 class Exhibits extends Component {
   componentWillMount() {
 		this.props.dispatch(fetchExhibits());
-		this.props.dispatch(resetExhibit());
+    this.props.dispatch(resetExhibit());
   }
 
   createExhibitView =  () => {
@@ -36,13 +36,13 @@ class Exhibits extends Component {
         <Menu.Item header as={Link} to={`${window.baseRoute}/`}><h3>Neatline | {strings.browseExhibit}</h3></Menu.Item>
         <Menu.Item position='right'><div>
               {props.userSignedIn &&
-              <Button 
-                icon
-                onClick={this.createExhibitView}
-              >
-              {strings.createExhibit} 
-              <Icon name="add"/>
-              </Button>
+                <Button
+                  icon
+                  onClick={this.createExhibitView}
+                >
+                  {strings.createExhibit}
+                  <Icon name="add" />
+                </Button>
               }
           {lngButtons}
         </div></Menu.Item>
@@ -63,7 +63,7 @@ class Exhibits extends Component {
             {props.exhibits.map((exhibit, idx) => (
               <Table.Row key={idx}>
                 <Table.Cell>
-                  <Link to={`${window.baseRoute}/show/${exhibit['o:slug']}`} style={{ marginRight: '0.5em' }}>{exhibit['o:title']}</Link>
+                  <Link to={`${window.baseRoute}/show/${exhibit['o:slug']}`} >{exhibit['o:title']}</Link>
                 </Table.Cell>
                 
                 <Table.Cell>{exhibit['o:added']}</Table.Cell>
@@ -76,9 +76,7 @@ class Exhibits extends Component {
                     >
                       {strings.delete}
                     </Button>
-                    <Button disabled
-                      
-                    >
+                    <Button disabled>
                       Duplicate
                     </Button>
                   </Table.Cell>

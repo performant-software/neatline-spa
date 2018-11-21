@@ -199,6 +199,7 @@ class ExhibitForm extends Component {
 	}
 
 	render() {
+		console.log(this.props.fullscreen);
 		return (
 			<div>
 				<form className='ps_n3_exhibit-form' onSubmit={this.handleSubmit}>
