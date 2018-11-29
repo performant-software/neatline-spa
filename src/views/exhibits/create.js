@@ -25,8 +25,9 @@ class ExhibitCreate extends Component {
 		const props = this.props;
 		return (
 			<div>
-				<Menu >
-					<Menu.Item header as={Link} to={`${window.baseRoute}/`}><h3>Neatline | {strings.createExhibit}</h3></Menu.Item>
+				<Menu size='massive'>
+					<Menu.Item header as={Link} to={`${window.baseRoute}/`}><h3>NEATLINE </h3></Menu.Item>
+					<Menu.Item> {strings.createExhibit}</Menu.Item>
 					<Menu.Item position='right'><div>
 						
 						{lngButtons}

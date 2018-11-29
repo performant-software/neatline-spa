@@ -32,8 +32,9 @@ class Exhibits extends Component {
     );
     return (
       <div>
-        <Menu >
-        <Menu.Item header as={Link} to={`${window.baseRoute}/`}><h3>Neatline | {strings.browseExhibit}</h3></Menu.Item>
+        <Menu size='massive'>
+        <Menu.Item header as={Link} to={`${window.baseRoute}/`}><h3>NEATLINE </h3></Menu.Item>
+        <Menu.Item>{strings.browseExhibit}</Menu.Item>
         <Menu.Item position='right'><div>
               {props.userSignedIn &&
                 <Button

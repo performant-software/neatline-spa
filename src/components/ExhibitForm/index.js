@@ -3,6 +3,7 @@ import {bindActionCreators} from 'redux';
 import history from '../../history';
 import {Field, reduxForm, change, formValueSelector} from 'redux-form'
 import {connect} from 'react-redux';
+import { Button, Card, Form, Grid } from 'semantic-ui-react'
 import {
 	preview_baseLayer,
 	set_availableTileLayers,
@@ -24,7 +25,8 @@ class ExhibitForm extends Component {
 		this.state={
 			exhibitType:TYPE.EXHIBIT_TYPE.MAP,
 			baseLayerType:TYPE.BASELAYER_TYPE.MAP,
-			isNewExhibit:true
+			isNewExhibit:true,
+			mapType: 'map',
 		};
 	}
 
@@ -197,11 +199,63 @@ class ExhibitForm extends Component {
 			}
 		}
 	}
+	handleChange = (e, { value }) => this.setState({'mapType': value })
+	createNewExhibit() {
+		// const baseOptions = []
+		console.log(TYPE.BASELAYER_TYPE.WMS);
+		return (
+			<Card fluid>
+				<Card.Content >
+					<Card.Header>New Exhibit</Card.Header>
+				</Card.Content>
+				<Card.Content>
+					<Form>
+						<Grid>
+							<Grid.Row>
+								<Grid.Column width={10}>
+									<Form.Input label='Title' placeholder='Enter exhibit title'/>
+								</Grid.Column>
+								<Grid.Column width={6}>
+									<Form.Input label='URL slug' placeholder='Enter exhibit url slug' />
+								</Grid.Column>
+							</Grid.Row>
+							<Grid.Row>
+								<Grid.Column width={10}>
+									<Form.TextArea label='Narrative' placeholder='Enter exhibit narrative'/>
+								</Grid.Column>
+								<Grid.Column width={6}>
+									<Form.Input label='Alternative Accessible URL' placeholder='Enter alternative url' />
+									<Form.Group inline>
+										<label>Select Map Type</label>
+										<Form.Radio
+											label='Map'
+											value='map'
+											checked={this.state.mapType === 'map'}
+											onChange={this.handleChange}
+										/>
+										<Form.Radio
+											label='Image'
+											value='image'
+											checked={this. state.mapType === 'image'}
+											onChange={this.handleChange}
+										/>
+									</Form.Group>
+									
+
+								</Grid.Column>
+							</Grid.Row>
+						</Grid>
+					</Form>
+				</Card.Content>
+			</Card>
+		);
+	}
 
 	render() {
 		console.log(this.props.fullscreen);
 		return (
 			<div>
+				{ this.props.fullscreen ? this.createNewExhibit() : 
 				<form className='ps_n3_exhibit-form' onSubmit={this.handleSubmit}>
 					<fieldset disabled={this.disabled} style={{
 							border: 'none',
@@ -387,6 +441,7 @@ class ExhibitForm extends Component {
 					</fieldset>
 					{this.state.isNewExhibit && <button type="submit">Create Exhibit</button> }
 				</form>
+				}
 		</div>);
 	}
 }
