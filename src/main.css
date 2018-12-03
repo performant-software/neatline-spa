@@ -35,8 +35,7 @@
   height: 100vh;
   margin: 0;
   padding: 0 0 0 0.5rem !important;
-  /* box-sizing: content-box !important;  */
-  box-sizing: inherit}
+  box-sizing: content-box !important; }
 
 #ps_n3_body button {
   background-color: #dedede;
