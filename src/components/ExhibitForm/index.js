@@ -168,6 +168,9 @@ class ExhibitForm extends Component {
 	layerTYPE = () => {
 		let retval = [];
 		var availableBaseMaps = this.props.mapCache.available.baseMaps;
+		let test  = Object.values(availableBaseMaps).filter( obj => 
+			!obj.deprecated).map((obj, i) => { return { 'value': i, 'title': obj.displayName }});
+		console.log(test);
 		Object.keys(availableBaseMaps).forEach(function(key) {
 			let thisMap = availableBaseMaps[key];
 			if (!thisMap.deprecated) {
@@ -186,8 +189,15 @@ class ExhibitForm extends Component {
 			let opt_key = `layerTypeOption-${key}`;
 			retval.push(<option value={key} key={opt_key}>{layerType.displayName}</option>);
 		});
+		console.log(retval)
 		return retval;
 	};
+
+	// layers = () => {
+	// 	Object.keys(availableBaseMaps).map( (key) => {
+
+	// 	})
+	// }
 
 	componentWillReceiveProps(nextprops){
 		if(typeof nextprops.exhibit !== 'undefined'){
@@ -203,6 +213,12 @@ class ExhibitForm extends Component {
 	createNewExhibit() {
 		// const baseOptions = []
 		console.log(TYPE.BASELAYER_TYPE.WMS);
+		const availableBaseMaps = this.props.mapCache.available.baseMaps;
+		const filteredLayers = Object.values(availableBaseMaps).filter(obj =>
+			!obj.deprecated).map((obj, i) => { return { 'value': i, 'title': obj.displayName } });
+		const defaultLayers = [{ 'value': TYPE.BASELAYER_TYPE.TILE, 'title': 'Custom: Tile Layer' }, { 'value': TYPE.BASELAYER_TYPE.WMS, 'title': 'Custom: WMS Layer'} ]
+		const layers = [...defaultLayers, ...filteredLayers];
+		console.log(layers, this.layerTypeOptions);
 		return (
 			<Card fluid>
 				<Card.Content >
@@ -210,9 +226,9 @@ class ExhibitForm extends Component {
 				</Card.Content>
 				<Card.Content>
 					<Form>
-						<Grid>
+						<Grid relaxed>
 							<Grid.Row>
-								<Grid.Column width={10}>
+								<Grid.Column width={9}>
 									<Form.Input label='Title' placeholder='Enter exhibit title'/>
 								</Grid.Column>
 								<Grid.Column width={6}>
@@ -220,7 +236,7 @@ class ExhibitForm extends Component {
 								</Grid.Column>
 							</Grid.Row>
 							<Grid.Row>
-								<Grid.Column width={10}>
+								<Grid.Column width={9}>
 									<Form.TextArea label='Narrative' placeholder='Enter exhibit narrative'/>
 								</Grid.Column>
 								<Grid.Column width={6}>
