@@ -3,7 +3,7 @@ import {bindActionCreators} from 'redux';
 import history from '../../history';
 import {Field, reduxForm, change, formValueSelector} from 'redux-form'
 import {connect} from 'react-redux';
-import { Button, Card, Form, Grid } from 'semantic-ui-react'
+import { Button, Card, Form, Grid, Dropdown } from 'semantic-ui-react'
 import {
 	preview_baseLayer,
 	set_availableTileLayers,
@@ -218,7 +218,7 @@ class ExhibitForm extends Component {
 			!obj.deprecated).map((obj, i) => { return { 'value': i, 'title': obj.displayName } });
 		const defaultLayers = [{ 'value': TYPE.BASELAYER_TYPE.TILE, 'title': 'Custom: Tile Layer' }, { 'value': TYPE.BASELAYER_TYPE.WMS, 'title': 'Custom: WMS Layer'} ]
 		const layers = [...defaultLayers, ...filteredLayers];
-		console.log(layers, this.layerTypeOptions);
+		
 		return (
 			<Card fluid>
 				<Card.Content >
@@ -256,6 +256,7 @@ class ExhibitForm extends Component {
 											onChange={this.handleChange}
 										/>
 									</Form.Group>
+									<Form.Dropdown placeholder="Select Base Layer" fluid selection options={layers} />
 									
 
 								</Grid.Column>
