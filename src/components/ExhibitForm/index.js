@@ -215,8 +215,8 @@ class ExhibitForm extends Component {
 		console.log(TYPE.BASELAYER_TYPE.WMS);
 		const availableBaseMaps = this.props.mapCache.available.baseMaps;
 		const filteredLayers = Object.values(availableBaseMaps).filter(obj =>
-			!obj.deprecated).map((obj, i) => { return { 'value': i, 'title': obj.displayName } });
-		const defaultLayers = [{ 'value': TYPE.BASELAYER_TYPE.TILE, 'title': 'Custom: Tile Layer' }, { 'value': TYPE.BASELAYER_TYPE.WMS, 'title': 'Custom: WMS Layer'} ]
+			!obj.deprecated).map((obj, i) => { return { 'value': i, 'text': obj.displayName } });
+		const defaultLayers = [{ 'value': TYPE.BASELAYER_TYPE.TILE, 'text': 'Custom: Tile Layer' }, { 'value': TYPE.BASELAYER_TYPE.WMS, 'text': 'Custom: WMS Layer'} ]
 		const layers = [...defaultLayers, ...filteredLayers];
 		
 		return (
@@ -228,7 +228,7 @@ class ExhibitForm extends Component {
 					<Form>
 						<Grid relaxed>
 							<Grid.Row>
-								<Grid.Column width={9}>
+								<Grid.Column width={10}>
 									<Form.Input label='Title' placeholder='Enter exhibit title'/>
 								</Grid.Column>
 								<Grid.Column width={6}>
@@ -236,7 +236,7 @@ class ExhibitForm extends Component {
 								</Grid.Column>
 							</Grid.Row>
 							<Grid.Row>
-								<Grid.Column width={9}>
+								<Grid.Column width={10}>
 									<Form.TextArea label='Narrative' placeholder='Enter exhibit narrative'/>
 								</Grid.Column>
 								<Grid.Column width={6}>
@@ -256,7 +256,7 @@ class ExhibitForm extends Component {
 											onChange={this.handleChange}
 										/>
 									</Form.Group>
-									<Form.Dropdown placeholder="Select Base Layer" fluid selection options={layers} />
+									<Form.Dropdown placeholder="Select Base Layer" compact clearable selection options={layers} />
 									
 
 								</Grid.Column>
