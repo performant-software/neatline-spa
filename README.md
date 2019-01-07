@@ -1,8 +1,6 @@
-## Neatline 3 single page application
+## Neatline Single Page Application (Neatline SPA)
 
-This should be expanded with instructions, in the meantime here's a [diagram](https://drive.google.com/file/d/1tKu8S7ppeVvBOj55q3IfuHQpg7v-hE1T/view?usp=sharing) to get you started.
+This repository contains the front end components of Neatline, a suite of tools for scholars, students, and curators to tell stories with maps and timelines. Neatline SPA is in active development. This application relies on a separate back end adapter, called [Neatline Omeka S](https://github.com/performant-software/neatline-omeka-s) to provide API endpoints for its data storage and retrieval. That adapter can also include a bundled build of this SPA, to make it easy to install Neatline for Omeka S in one step.
 
-This repository contains the front end components of Neatline, a suite of tools for scholars, students, and curators to tell stories with maps and timelines. Neatline 3 is in early development. This application relies on a separate back end adapter to provide API endpoints for its data storage and retrieval. The adapter for [Omeka S](http://omeka.org/s/) is maintained at https://github.com/performant-software/neatline-omeka-s.
-
-### Installing and development setup
-This repository is included as a git submodule in the Neatline adapter for Omeka S. To use an Omeka S instance as the environment for Neatline 3 installation and/or development, please see the instructions at https://github.com/performant-software/neatline-omeka-s.  
+### Development Setup
+For development purposes, this repository is included as a git submodule in the Neatline adapter for Omeka S. To use an Omeka S instance as the environment for Neatline SPA installation and/or development, please see the instructions at https://github.com/performant-software/neatline-omeka-s.
