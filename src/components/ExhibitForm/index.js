@@ -218,7 +218,8 @@ class ExhibitForm extends Component {
 			!obj.deprecated).map((obj, i) => { return { 'value': i, 'text': obj.displayName } });
 		const defaultLayers = [{ 'value': TYPE.BASELAYER_TYPE.TILE, 'text': 'Custom: Tile Layer' }, { 'value': TYPE.BASELAYER_TYPE.WMS, 'text': 'Custom: WMS Layer'} ]
 		const layers = [...defaultLayers, ...filteredLayers];
-		
+		const width1 = this.props.fullscreen ? 10 : 16;
+		const width2 = this.props.fullscreen ? 6 : 16
 		return (
 			<Card fluid>
 				<Card.Content >
@@ -228,18 +229,18 @@ class ExhibitForm extends Component {
 					<Form>
 						<Grid relaxed>
 							<Grid.Row>
-								<Grid.Column width={10}>
+								<Grid.Column width={ width1}>
 									<Form.Input label='Title' placeholder='Enter exhibit title'/>
 								</Grid.Column>
-								<Grid.Column width={6}>
+								<Grid.Column width={width2}>
 									<Form.Input label='URL slug' placeholder='Enter exhibit url slug' />
 								</Grid.Column>
 							</Grid.Row>
 							<Grid.Row>
-								<Grid.Column width={10}>
+								<Grid.Column width={width1}>
 									<Form.TextArea label='Narrative' placeholder='Enter exhibit narrative'/>
 								</Grid.Column>
-								<Grid.Column width={6}>
+								<Grid.Column width={width2}>
 									<Form.Input label='Alternative Accessible URL' placeholder='Enter alternative url' />
 									<Form.Group inline>
 										<label>Select Map Type</label>
