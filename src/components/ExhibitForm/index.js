@@ -218,15 +218,17 @@ class ExhibitForm extends Component {
 			!obj.deprecated).map((obj, i) => { return { 'value': i, 'text': obj.displayName } });
 		const defaultLayers = [{ 'value': TYPE.BASELAYER_TYPE.TILE, 'text': 'Custom: Tile Layer' }, { 'value': TYPE.BASELAYER_TYPE.WMS, 'text': 'Custom: WMS Layer'} ]
 		const layers = [...defaultLayers, ...filteredLayers];
-		const width1 = this.props.fullscreen ? 10 : 16;
+		const width1 = this.props.fullscreen ? 9 : 16;
 		const width2 = this.props.fullscreen ? 6 : 16
 		return (
 			<Card fluid>
-				<Card.Content >
-					<Card.Header>New Exhibit</Card.Header>
+				<Card.Content >{
+						this.props.fullscreen ? 
+						<Card.Header> Exhibit Settings </Card.Header> : <Card.Header> Exhibit Settings </Card.Header>
+					}
 				</Card.Content>
 				<Card.Content>
-					<Form>
+					<Form onSubmit={this.handleSubmit}>
 						<Grid relaxed>
 							<Grid.Row>
 								<Grid.Column width={ width1}>
