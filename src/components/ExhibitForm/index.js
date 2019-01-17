@@ -122,7 +122,7 @@ class ExhibitForm extends Component {
 		);
 	}
 
-	enabledSpatialLayerPreview = (event) => {
+	enabledSpatialLayerPreview = (event, data) => {
 		let arrayOfIDs = [...event.target.options].filter(({selected}) => selected).map(({value}) => value);
 		this.props.dispatch(this.set_availableTileLayers({ids: arrayOfIDs}));
 		this.markUnsaved({target:{name:'o:spatial_layers',value:arrayOfIDs}});
@@ -151,8 +151,8 @@ class ExhibitForm extends Component {
 	}
 
 	// Sets the unsaved changes flag
-	markUnsaved = (event) => {
-
+	markUnsaved = (event, {value, name}) => {
+		console.log(event, value, name)
 		// Update the cache
 		if(typeof event !== 'undefined'){
 			this.props.dispatch(updateExhibitCache({setValues:{[event.target.name]:event.target.value}}));
@@ -222,19 +222,21 @@ class ExhibitForm extends Component {
 						<Grid relaxed>
 							<Grid.Row>
 								<Grid.Column width={width1}>
-									<Form.Input label='Title' placeholder='Enter exhibit title' onChange={this.markUnsaved} />
+									<Form.Input name='o:title' label='Title' placeholder='Enter exhibit title' onChange={this.markUnsaved} />
 								</Grid.Column>
 								<Grid.Column width={width2}>
-									<Form.Input label='URL slug' placeholder='Enter exhibit url slug' onChange={this.markUnsaved}/>
+									<Form.Input name='o:slug' label='URL slug' placeholder='Enter exhibit url slug' onChange={this.markUnsaved}/>
 								</Grid.Column>
 							</Grid.Row>
 							<Grid.Row>
 								<Grid.Column width={width1}>
-									<Form.TextArea label='Narrative' placeholder='Enter exhibit narrative' onChange={this.markUnsaved}/>
+									<Form.TextArea name='o:narrative' label='Narrative' placeholder='Enter exhibit narrative' onChange={this.markUnsaved}/>
 								</Grid.Column>
 								<Grid.Column width={width2}>
-									<Form.Input label='Alternative Accessible URL' placeholder='Enter alternative url' onChange={this.markUnsaved}/>
-									{this.state.isNewExhibit ? <Form.Radio
+									<Form.Input name='o:accessible_url' label='Alternative Accessible URL' placeholder='Enter alternative url' onChange={this.markUnsaved}/>
+									{this.state.isNewExhibit ? 
+									<Form.Radio
+										name='o:public'
 										label='Public'
 										toggle
 										onChange={this.markUnsaved}
