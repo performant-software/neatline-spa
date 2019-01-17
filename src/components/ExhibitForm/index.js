@@ -69,7 +69,6 @@ class ExhibitForm extends Component {
 
 	// Update the live-preview of the spatial layer
 	onSpatialLayerInfoChange = (event) => {
-		console.log('spatial', event.target.name, event.target.value)
 		let payload={
 			spatial_layer:(event.target.name === "o:spatial_layer")?event.target.value:formSelector(this.props.state, 'o:spatial_layer'),
 
@@ -89,7 +88,7 @@ class ExhibitForm extends Component {
 			payload.spatial_layer=TYPE.BASELAYER_TYPE.IMAGE;
 		}
 		this.updateLayerPreview(payload);
-		this.markUnsaved(event);
+		this.markUnsaved(event, { 'name': event.target.name, 'value':event.target.value});
 	}
 
 	updateLayerPreview = (payload) =>{
@@ -123,9 +122,8 @@ class ExhibitForm extends Component {
 	}
 
 	enabledSpatialLayerPreview = (event, data) => {
-		let arrayOfIDs = [...event.target.options].filter(({selected}) => selected).map(({value}) => value);
-		this.props.dispatch(this.set_availableTileLayers({ids: arrayOfIDs}));
-		this.markUnsaved({target:{name:'o:spatial_layers',value:arrayOfIDs}});
+		this.props.dispatch(this.set_availableTileLayers({ids: data}));
+		this.markUnsaved(event,{name:'o:spatial_layers',value:data});
 	}
 
 	// Switches between map and image
@@ -151,11 +149,13 @@ class ExhibitForm extends Component {
 	}
 
 	// Sets the unsaved changes flag
-	markUnsaved = (event, {value, name}) => {
-		console.log(event, value, name)
+	markUnsaved = (event, data) => {
+		console.log('markunsaved', event, data)
+		const value = data.value
+		const name = data.name
 		// Update the cache
 		if(typeof event !== 'undefined'){
-			this.props.dispatch(updateExhibitCache({setValues:{[event.target.name]:event.target.value}}));
+			this.props.dispatch(updateExhibitCache({setValues:{[value]:name}}));
 		}else{
 			console.log("Skipping cache update");
 		}
