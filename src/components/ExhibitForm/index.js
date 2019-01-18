@@ -150,12 +150,13 @@ class ExhibitForm extends Component {
 
 	// Sets the unsaved changes flag
 	markUnsaved = (event, data) => {
-		console.log('markunsaved', event, data)
-		const value = data.value
+		console.log('markunsaved', typeof event, typeof data.value !== 'undefined')
+		const value = typeof data.value !== 'undefined' ? data.value : data.checked 
 		const name = data.name
+		console.log(name, value)
 		// Update the cache
 		if(typeof event !== 'undefined'){
-			this.props.dispatch(updateExhibitCache({setValues:{[value]:name}}));
+			this.props.dispatch(updateExhibitCache({setValues:{[name]:value}}));
 		}else{
 			console.log("Skipping cache update");
 		}
@@ -214,7 +215,7 @@ class ExhibitForm extends Component {
 				
 				
 				<Card.Content>
-					<Form onSubmit={this.formSubmit}>
+					<Form onSubmit={this.handleSubmit}>
 						<fieldset disabled={this.disabled} style={{
 							border: 'none',
 							padding: '0'

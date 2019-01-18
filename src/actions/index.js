@@ -61,6 +61,7 @@ export const deleteExhibit = (exhibit) => {
 }
 
 export const createExhibit = (exhibit) => {
+	console.log(exhibit)
 	return function(dispatch) {
 		dispatch({type: ACTION_TYPE.EXHIBIT_CREATED, exhibit});
 
