@@ -127,36 +127,45 @@ class ExhibitForm extends Component {
 	}
 
 	// Switches between map and image
-	exhibitTypeSwitch = (event, {value}) => {
-		console.log(event, value, TYPE.BASELAYER_TYPE.IMAGE, TYPE.EXHIBIT_TYPE.IMAGE)
-		if(value === 1){
+	exhibitTypeSwitch = (event) => {
+		if (event.target.name === 'image') {
 			this.setState({
-				baseLayerType:TYPE.BASELAYER_TYPE.IMAGE,
-				exhibitType:TYPE.EXHIBIT_TYPE.IMAGE
+				baseLayerType: TYPE.BASELAYER_TYPE.IMAGE,
+				exhibitType: TYPE.EXHIBIT_TYPE.IMAGE
 			});
-			this.onSpatialLayerInfoChange({target:{name:'o:spatial_layer',value:TYPE.BASELAYER_TYPE.IMAGE}});
+			this.onSpatialLayerInfoChange({
+				target: {
+					name: 'o:spatial_layer',
+					value: TYPE.BASELAYER_TYPE.IMAGE
+				}
+			});
 			this.props.change('o:exhibit_type', TYPE.EXHIBIT_TYPE.IMAGE);
 
-		}else{
+		} else {
 			this.setState({
-				baseLayerType:TYPE.BASELAYER_TYPE.MAP,
-				exhibitType:TYPE.EXHIBIT_TYPE.MAP
+				baseLayerType: TYPE.BASELAYER_TYPE.MAP,
+				exhibitType: TYPE.EXHIBIT_TYPE.MAP
 			});
-			this.onSpatialLayerInfoChange({target:{name:'o:spatial_layer',value:0}});
+			this.onSpatialLayerInfoChange({
+				target: {
+					name: 'o:spatial_layer',
+					value: 0
+				}
+			});
 			this.props.change('o:exhibit_type', TYPE.EXHIBIT_TYPE.MAP);
 		}
-
 	}
 
 	// Sets the unsaved changes flag
-	markUnsaved = (event, data) => {
-		console.log('markunsaved', typeof event, typeof data.value !== 'undefined')
-		const value = typeof data.value !== 'undefined' ? data.value : data.checked 
-		const name = data.name
-		console.log(name, value)
+	markUnsaved = (event) => {
 		// Update the cache
 		if(typeof event !== 'undefined'){
-			this.props.dispatch(updateExhibitCache({setValues:{[name]:value}}));
+			this.props.dispatch(updateExhibitCache({
+				setValues: {
+					[event.target.name]: event.target.value
+				}
+			}));
+			// this.props.dispatch(updateExhibitCache({setValues:{[name]:value}}));
 		}else{
 			console.log("Skipping cache update");
 		}
@@ -212,8 +221,6 @@ class ExhibitForm extends Component {
 						<Card.Header> New Exhibit </Card.Header>
 					</Card.Content> : null
 				}
-				
-				
 				<Card.Content>
 					<Form onSubmit={this.handleSubmit}>
 						<fieldset disabled={this.disabled} style={{
@@ -223,49 +230,103 @@ class ExhibitForm extends Component {
 						<Grid relaxed>
 							<Grid.Row>
 								<Grid.Column width={width1}>
-									<Form.Input name='o:title' label='Title' placeholder='Enter exhibit title' onChange={this.markUnsaved} />
+									<div className='field'>
+										<label htmlFor='o:title'>Title</label>
+										<div className='ui input'>
+										<Field name='o:title'
+											component='input'
+											type='text'
+											placeholder='Enter exhibit title'
+											onChange={this.markUnsaved} />
+										</div>
+									</div>
 								</Grid.Column>
 								<Grid.Column width={width2}>
-									<Form.Input name='o:slug' label='URL slug' placeholder='Enter exhibit url slug' onChange={this.markUnsaved}/>
+									<div className='field'>
+										<label htmlFor='o:slug'>URL Slug</label>
+										<div className='ui input'>
+										<Field name='o:slug'
+											component='input'
+											type='text'
+											placeholder='Enter url'
+											onChange={this.markUnsaved}
+											/> 
+										</div>
+									</div>
 								</Grid.Column>
 							</Grid.Row>
 							<Grid.Row>
 								<Grid.Column width={width1}>
-									<Form.TextArea name='o:narrative' label='Narrative' placeholder='Enter exhibit narrative' onChange={this.markUnsaved}/>
+									<div className='field'>
+										<label htmlFor='o:narrative'>Narrative</label> 
+										<div className='ui input'>
+										<Field name='o:narrative'
+											component='textarea'
+											placeholder='Enter exhibit narrative'
+											onChange={this.markUnsaved}
+											/> 
+										</div>
+									</div>
 								</Grid.Column>
 								<Grid.Column width={width2}>
-									<Form.Input name='o:accessible_url' label='Alternative Accessible URL' placeholder='Enter alternative url' onChange={this.markUnsaved}/>
+									<div className='field'>
+										<label htmlFor='o:accessible_url'>Alternative Accessible URL</label> 
+										<div className='ui input'>
+											<Field name='o:accessible_url'
+												component='input'
+												type='text'
+												placeholder='Enter alternative url'
+												onChange={this.markUnsaved}
+											/> 
+										</div>
+									</div>
 									{this.state.isNewExhibit ? 
-									<Form.Radio
-										name='o:public'
-										label='Public'
-										toggle
-										onChange={this.markUnsaved}
-									/>: null }
+									<div>
+										<div className='field'>
+											<div className='ui checkbox toggle'>
+												<Field name="o:public"
+												component='input'
+												type="checkbox"
+												/>
+												<label>Public</label>
+											</div>
+
+										</div>
+										<div className='inline fields'>
+											<label><h3>Select Map Type</h3></label>
+												<div className='field'>
+													<div className='ui radio checkbox'>
+														<Field
+															name='map'
+															type="radio"
+															component='input'
+															checked={this.state.exhibitType === TYPE.EXHIBIT_TYPE.MAP}
+															onChange={this.exhibitTypeSwitch}
+															value={0}
+														/>
+														<label>Map</label>
+													</div>
+												</div>
+												<div className='field'>
+													<div className='ui radio checkbox'>
+														<Field
+															name="image"
+															type="radio"
+															component='input'
+															checked={this.state.exhibitType === TYPE.EXHIBIT_TYPE.IMAGE}
+															onChange={this.exhibitTypeSwitch}
+															value={1}
+														/>
+														<label>Image</label>
+													</div>
+												</div>
+											</div>
+										</div>
+									: null }
 								</Grid.Column>
 							</Grid.Row>
-							<Divider />
-							{this.state.isNewExhibit ?
-							<Grid.Row>
-								<Grid.Column>
-
-									<Form.Group inline>
-										<label><h3>Select Map Type</h3></label>
-										<Form.Radio
-											label='Map'
-											value={0}
-											checked={this.state.exhibitType === TYPE.EXHIBIT_TYPE.MAP}
-											onChange={this.exhibitTypeSwitch}
-										/>
-										<Form.Radio
-											label='Image'
-											value={1}
-											checked={this.state.exhibitType === TYPE.EXHIBIT_TYPE.IMAGE}
-											onChange={this.exhibitTypeSwitch}
-										/>
-									</Form.Group>
-								</Grid.Column>
-							</Grid.Row> : null}
+							
+							<Divider/>
 							<Grid.Row>
 								<Grid.Column width={width1}>
 									{(this.state.exhibitType === TYPE.EXHIBIT_TYPE.MAP) &&
