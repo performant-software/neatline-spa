@@ -215,7 +215,7 @@ class ExhibitForm extends Component {
 		const width1 = this.state.isNewExhibit ? 9 : 16;
 		const width2 = this.state.isNewExhibit ? 6 : 16;
 		return (
-			<Card fluid>
+			<Card fluid style={{ overflow: 'auto', maxHeight: `100vh` }}>
 				{this.state.isNewExhibit ?
 					<Card.Content >
 						<Card.Header> New Exhibit </Card.Header>

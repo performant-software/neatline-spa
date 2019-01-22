@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Menu, Button, Icon, Table, Modal } from 'semantic-ui-react';
+import { Menu, Button, Icon, Table } from 'semantic-ui-react';
 //import { fetchExhibits } from '../../reducers/not_refactored/exhibits';
 import { resetExhibit } from '../../actions';
 import { deleteExhibit } from '../../actions';

@@ -35,19 +35,13 @@ const ExhibitPanelContent = props => {
 	}
 }
 
-const RecordEditor = (recordType) => {
-	if (recordType === 'new') {
-		return <RecordCreate/>;
-	} else {
-		return <RecordUpdate/>;
-	}
-}
 
 class ExhibitShow extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {showRecords:true, recordEditorType: ''}
 	}
+
 	componentDidMount() {
 		this.props.fetchExhibits();
 		this.cacheIntitialized=false;
@@ -59,7 +53,6 @@ class ExhibitShow extends Component {
 	saveAll = (event) => {
 		this.props.dispatch(recordCacheToDatabase());
 	}
-	
 
 	componentWillUpdate = () =>{
 		if(	typeof this.props.records === 'undefined' &&
@@ -68,35 +61,39 @@ class ExhibitShow extends Component {
 				this.props.fetchRecordsBySlug(this.props.match.params.slug);
 			}
 	}
+
 	toggleRecords = (val) => this.setState({ showRecords: val });
-	recordEditorType = (val) => { this.setState({ recordEditorType: val }); console.log(this.state.recordEditorType, val)};
+
+	recordEditorType = (val) => { this.setState({ recordEditorType: val })};
+
 	render() {
-		
 
 		const props = this.props;
 		const {exhibit} = props;
 		let exhibitDisplay = <ExhibitShowHeader userSignedIn={props.userSignedIn}>{strings.loading}</ExhibitShowHeader>;
-
-		let recordTitle = props.editorNewRecord?strings.new_record:props.editorRecord?props.editorRecord['o:title']:'';
-			recordTitle = (recordTitle === null || recordTitle.length === 0)?"???":recordTitle;
 		
 		if (exhibit) {
-			console.log(this.state.recordEditorType === 'new');
 			const panes = [
 				{
 					menuItem: `${strings.exhibit}`,
-					render: () => <Tab.Pane><ExhibitPanelContent exhibit={exhibit}
-						userSignedIn={props.userSignedIn} /></Tab.Pane>
+					render: () => 
+						<Tab.Pane>
+							<ExhibitPanelContent 
+							exhibit={exhibit}
+							userSignedIn={props.userSignedIn} />
+						</Tab.Pane>
 				},
 				{
 					menuItem: `${strings.records}`,
-					render: () => <Tab.Pane> {this.state.showRecords ? <Records exhibitShowURL={props.match.url}
-						userSignedIn={props.userSignedIn}
-						toggleRecords={this.toggleRecords}
-						setRecordEditorType={this.recordEditorType} /> : 
-						(this.state.recordEditorType === 'new' ? <RecordCreate toggleRecords={this.toggleRecords} deselect={props.deselectRecord} /> : <RecordUpdate toggleRecords={this.toggleRecords} deselect={props.deselectRecord}/>)
+					render: () => 
+						<Tab.Pane> {this.state.showRecords ? 
+							<Records exhibitShowURL={props.match.url}
+							userSignedIn={props.userSignedIn}
+							toggleRecords={this.toggleRecords}
+							setRecordEditorType={this.recordEditorType} /> : 
+							(this.state.recordEditorType === 'new' ? <RecordCreate toggleRecords={this.toggleRecords} deselect={props.deselectRecord} /> : <RecordUpdate toggleRecords={this.toggleRecords} deselect={props.deselectRecord}/>)
 						 }
-					</Tab.Pane>
+						</Tab.Pane>
 				},
 			]
 			exhibitDisplay = (
@@ -116,39 +113,6 @@ class ExhibitShow extends Component {
 						{exhibit['o:title']}
 					</ExhibitShowHeader>
 					<Tab panes={panes} />
-					{/* <Tabs selectedIndex={this.props.tabIndex} onSelect={tabIndex => props.setTabIndex(tabIndex)}>
-						<TabList>
-							<Tab>{strings.exhibit}</Tab>
-							<Tab>{strings.records}</Tab>
-							<Tab style={{
-									visibility: props.editorRecord || props.editorNewRecord
-										? 'visible'
-										: 'hidden',
-									maxWidth: '100px'
-								}}>
-								{recordTitle}
-								<span onClick={e => {
-										props.deselectRecord();
-										e.stopPropagation();
-									}} style={{
-										fontWeight: 'bold'
-									}}> [x]</span>
-							</Tab>
-						</TabList>
-						<TabPanel>
-							<ExhibitPanelContent exhibit={exhibit}
-												 userSignedIn={props.userSignedIn}/>
-						</TabPanel>
-						<TabPanel>
-							<Records exhibitShowURL={props.match.url}
-									userSignedIn={props.userSignedIn}
-									toggleRecords={this.toggleRecords}
-									 />
-						</TabPanel>
-						<TabPanel>
-							<RecordEditor editorNewRecord={props.editorNewRecord}/>
-						</TabPanel>
-					</Tabs> */}
 				</div>
 				<div style={{
 						gridRow: '1',

@@ -8,18 +8,17 @@ import { Breadcrumb } from 'semantic-ui-react';
 
 class RecordUpdate extends Component {
 	render() {
-		const {record, submit, loading, deleteRecord, deselect} = this.props;
-		console.log(record);
+		const {record, submit, loading, deleteRecord, deselect, toggleRecords} = this.props;
 		if (record) {
 			return (
 			<div>
 				<Breadcrumb>
-					<Breadcrumb.Section onClick={() => { this.props.toggleRecords(true); this.props.deselect() }}>Records</Breadcrumb.Section>
+					<Breadcrumb.Section onClick={() => { toggleRecords(true); deselect() }}>Records</Breadcrumb.Section>
 					<Breadcrumb.Divider icon='right angle' />
 					<Breadcrumb.Section active>{record['o:title']}</Breadcrumb.Section>
 				</Breadcrumb>
 				<RecordForm onSubmit={submit} submitLabel={strings.save_record} disabled={loading} showDelete={true} handleDelete={() => deleteRecord(record)}/>
-				<p>{this.props.record.error}</p>
+				<p>{record.error}</p>
 			</div>);
 		} else {
 			return null;

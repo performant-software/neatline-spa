@@ -21,7 +21,6 @@ class ExhibitCreate extends Component {
 		const lngButtons = allLanguages.map((lng) =>
 			<Button key={lng} onClick={() => changeLanguage(lng)}>{lng}</Button>
 		);
-		console.log(this.props.location);
 		const props = this.props;
 		return (
 			<div>

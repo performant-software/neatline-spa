@@ -104,6 +104,9 @@ h3 {
   border: 0;
   margin: 1rem 0; }
 
+.ps_n3_exhibit-public {
+  height: 100%; }
+
 .ps_n3_exhibitFormContainer {
   height: calc(100vh - 6rem);
   overflow: scroll;
