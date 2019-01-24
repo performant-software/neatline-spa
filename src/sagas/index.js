@@ -32,6 +32,7 @@ export default function* rootSaga() {
 
 		takeLatest(ACTION_TYPE.RECORDS_FETCH, fetchRecords),
 		takeLatest(ACTION_TYPE.RECORDS_FETCH_RESPONSE_RECEIVED, fetchRecordsResponseReceived),
+		// takeLatest(ACTION_TYPE.RECORDS_FILTER, filterRecords),
 
 
 		takeLatest(ACTION_TYPE.RECORD_FETCH_BY_SLUG, fetchRecordsBySlug),
@@ -343,6 +344,10 @@ function* fetchRecordsResponseReceived(action) {
 		throw Error(action.payload.response.statusText);
 	}
 }
+
+// function* filterRecords(action) {
+// 	yield put({ type: ACTION_TYPE.RECORDS_FILTER, payload: action.payload });
+// }
 
 function* updateRecordCacheAndSave(action) {
 	yield put({type: ACTION_TYPE.RECORD_CACHE_UPDATE, payload:action.payload});

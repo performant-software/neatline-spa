@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {selectRecord} from '../../actions';
+import {selectRecord, filterRecords} from '../../actions';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { strings } from '../../i18nLibrary';
@@ -11,12 +11,11 @@ class Records extends Component {
 	componentWillMount() {
 		this.resetSearch();
 	}
-	resetSearch = () => this.setState({ results: this.props.records, column: null, direction: null });
+	resetSearch = () => this.setState({ results: this.props.records, column: null, direction: null, 'searchTerm': '' });
 	
 	searchChange = (e, d) => {
 		if (d.value.length < 1) return this.resetSearch()
-		let results = this.props.records.filter(record => record['o:title'].includes(d.value) );
-		this.setState({results: results});
+		this.setState({'searchTerm': d.value})
 	}
 	handleSort = clickedColumn => () => {
 		const { column, results, direction } = this.state
@@ -27,7 +26,6 @@ class Records extends Component {
 				results: _.sortBy(results, [clickedColumn]),
 				direction: 'ascending',
 			})
-
 			return
 		}
 
@@ -36,30 +34,46 @@ class Records extends Component {
 			direction: direction === 'ascending' ? 'descending' : 'ascending',
 		})
 	}
+	mouseClick = (e, d) => {
+		if (e.keyCode === 13) {
+			let results = this.props.records.filter(record => (record['o:title'] || '').includes(this.state.searchTerm));
+			this.setState({ results: results });
+			const resultIds = results.map(record => record['o:id'])
+			console.log(resultIds)
+			return this.props.filterRecords(resultIds)
+		}
+		
+	}
 	render () {
 		const props = this.props;
 		const state = this.state;
 		return(
-			<div className = "ps_n3_recordFormContainer">
-				<Grid centered>
+			<div style={{ overflowY: 'auto', height: '90vh', overflowX: 'hidden', 'padding': '1rem' }}>
+				<Grid>
 					<Grid.Row>
+						<Grid.Column width={4}>
 						{
 							props.userSignedIn &&
 							
-							<Button size='tiny'
+							<Button size='small'
 								onClick={() => {props.setRecordEditorType('new'); props.toggleRecords(false)}}>
 								{strings.new_record}
 							</Button>
 
 						}
+						</Grid.Column>
+						<Grid.Column width={9}>
 						<Search
 							onSearchChange={(e, d) => this.searchChange(e, d)}
 							showNoResults={false}
-							size='mini'
+							size='small'
+							onKeyDown={(e,d) => this.mouseClick(e,d)}
+							placeholder='Press enter to submit'
 						/>
+						</Grid.Column>
 					</Grid.Row>
-				</Grid>
-				<Table basic='very' celled collapsing selectable sortable>
+				<Grid.Row>
+				<Table celled selectable sortable>
 					<Table.Header>
 						<Table.Row>
 							<Table.HeaderCell 
@@ -90,6 +104,8 @@ class Records extends Component {
 						}
 					</Table.Body>
 				</Table>
+				</Grid.Row>
+				</Grid>
 			</div>
 		);
 	}
@@ -100,10 +116,12 @@ const mapStateToProps = state => ({
 	record:state.record,
 	records: state.exhibitShow.records,
 	selectedRecord: state.exhibitShow.selectedRecord,
+	filterRecords: state.exhibitShow.records.filter(record => (state.exhibitShow.filterRecordsIds || []).includes(record['o:id'])),
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
 	selectRecord,
+	filterRecords,
 	dispatch
 }, dispatch);
 

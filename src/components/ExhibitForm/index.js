@@ -214,8 +214,9 @@ class ExhibitForm extends Component {
 	render() {
 		const width1 = this.state.isNewExhibit ? 9 : 16;
 		const width2 = this.state.isNewExhibit ? 6 : 16;
+		const maxHeight = this.state.isNewExhibit ? `100vh` : `80vh`
 		return (
-			<Card fluid style={{ overflow: 'auto', maxHeight: `100vh` }}>
+			<Card fluid style={{ overflowY: 'auto', maxHeight: maxHeight, overflowX: 'hidden' }}>
 				{this.state.isNewExhibit ?
 					<Card.Content >
 						<Card.Header> New Exhibit </Card.Header>

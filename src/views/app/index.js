@@ -4,7 +4,6 @@ import ExhibitShow from '../exhibits/show';
 import ExhibitCreate from '../exhibits/create';
 import {Router, Route, Switch} from 'react-router-dom';
 import history from '../../history';
-import 'semantic-ui-css/semantic.min.css';
 
 const App = () => (
 	<main>
