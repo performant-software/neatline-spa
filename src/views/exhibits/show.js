@@ -79,18 +79,18 @@ class ExhibitShow extends Component {
 
 		const props = this.props;
 		const {exhibit} = props;
-		let exhibitDisplay = <ExhibitShowHeader userSignedIn={props.userSignedIn}>{strings.loading}</ExhibitShowHeader>;
-		
+		let exhibitDisplay;
+		console.log(exhibit, this.state.showExhibitSettings, props.recordsLoading);
 		if (exhibit) {
 			exhibitDisplay = (
 				<div>
 				<Menu size='massive'>
 					<Menu.Item header as={Link} to={`${window.baseRoute}/`}><h3>NEATLINE </h3></Menu.Item>
 					<Menu.Item> {exhibit['o:title']}</Menu.Item>
-					<Menu.Item> <Icon name="edit" /></Menu.Item>
+						<Menu.Item> {props.userSignedIn ?<Icon name="edit" />: <Icon name="search"/>}</Menu.Item>
 					
 					<Menu.Item position='right'>
-						{props.userSignedIn &&
+						{props.userSignedIn ?
 								<div>
 							<Button 
 								icon 
@@ -115,6 +115,26 @@ class ExhibitShow extends Component {
 								onClick={this.saveAll}>
 								Save <Icon name="save" />
 							</Button>
+							</div> :
+							<div>
+								<Button
+									icon
+									toggle
+									basic
+									color={this.state.showExhibitSettings ? 'blue' : null}
+									active={this.state.showExhibitSettings}
+									onClick={() => this.setExhibitPane(true)}>
+									Exhibit Information <Icon name="info" />
+								</Button>
+								<Button
+									icon
+									toggle
+									basic
+									color={!this.state.showExhibitSettings ? 'blue' : null}
+									active={!this.state.showExhibitSettings}
+									onClick={() => this.setExhibitPane(false)}>
+									View Exhibit <Icon name="list" />
+								</Button>
 							</div>
 						}
 					</Menu.Item>

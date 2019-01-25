@@ -11,7 +11,7 @@ class Records extends Component {
 	componentWillMount() {
 		this.resetSearch();
 	}
-	resetSearch = () => this.setState({ results: this.props.records, column: null, direction: null, 'searchTerm': '' });
+	resetSearch = () => this.setState({ results: this.props.filteredRecords, column: null, direction: null, 'searchTerm': '' });
 	
 	searchChange = (e, d) => {
 		if (d.value.length < 1) return this.resetSearch()
@@ -37,14 +37,15 @@ class Records extends Component {
 	mouseClick = (e, d) => {
 		if (e.keyCode === 13) {
 			let results = this.props.records.filter(record => (record['o:title'] || '').includes(this.state.searchTerm));
-			this.setState({ results: results });
-			const resultIds = results.map(record => record['o:id'])
-			console.log(resultIds)
-			return this.props.filterRecords(resultIds)
+			// this.setState({ results: results });
+			// const resultIds = results.map(record => record['o:id'])
+			console.log(results)
+			return this.props.filterRecords(results)
 		}
 		
 	}
 	render () {
+		console.log(this.props.filteredRecords, this.props.records)
 		const props = this.props;
 		const state = this.state;
 		return(
@@ -87,7 +88,7 @@ class Records extends Component {
 						</Table.Row>
 					</Table.Header>
 					<Table.Body>
-						{state.results.map(record => (
+						{props.filteredRecords.map(record => (
 							<Table.Row key={'record-' + record['o:id']} >
 								<Table.Cell style={{
 									fontWeight: record === props.selectedRecord ? 'bold' : 'normal'
@@ -116,7 +117,7 @@ const mapStateToProps = state => ({
 	record:state.record,
 	records: state.exhibitShow.records,
 	selectedRecord: state.exhibitShow.selectedRecord,
-	filterRecords: state.exhibitShow.records.filter(record => (state.exhibitShow.filterRecordsIds || []).includes(record['o:id'])),
+	filteredRecords: state.exhibitShow.filteredRecords,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

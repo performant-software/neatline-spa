@@ -32,7 +32,7 @@ export default function(state = initialState, action) {
 		case ACTION_TYPE.RECORDS_FILTER:
 			return {
 				...state,
-				filteredRecordsIds: action.payload
+				filteredRecords: action.payload
 			};
 
 		case ACTION_TYPE.EXHIBIT_RESET:

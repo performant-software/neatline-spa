@@ -338,6 +338,7 @@ function* fetchRecordsResponseReceived(action) {
 		let records = yield parseRecordsJSON(action.payload.response);
 		yield put({type: ACTION_TYPE.RECORD_CACHE_UPDATE, payload:records});
 		yield put({type: ACTION_TYPE.RECORDS_FETCH_SUCCESS, payload:records});
+		yield put({ type: ACTION_TYPE.RECORDS_FILTER, payload: records })
 
 	} else {
 		yield put({type: ACTION_TYPE.RECORD_ERROR});
