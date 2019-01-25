@@ -3,6 +3,7 @@ import {bindActionCreators} from 'redux';
 import history from '../../history';
 import {Field, reduxForm, change, formValueSelector} from 'redux-form'
 import {connect} from 'react-redux';
+import { Button, Card, Form, Grid, Divider } from 'semantic-ui-react'
 import {
 	preview_baseLayer,
 	set_availableTileLayers,
@@ -24,7 +25,7 @@ class ExhibitForm extends Component {
 		this.state={
 			exhibitType:TYPE.EXHIBIT_TYPE.MAP,
 			baseLayerType:TYPE.BASELAYER_TYPE.MAP,
-			isNewExhibit:true
+			isNewExhibit:true,
 		};
 	}
 
@@ -87,7 +88,7 @@ class ExhibitForm extends Component {
 			payload.spatial_layer=TYPE.BASELAYER_TYPE.IMAGE;
 		}
 		this.updateLayerPreview(payload);
-		this.markUnsaved(event);
+		this.markUnsaved(event, { 'name': event.target.name, 'value':event.target.value});
 	}
 
 	updateLayerPreview = (payload) =>{
@@ -120,39 +121,51 @@ class ExhibitForm extends Component {
 		);
 	}
 
-	enabledSpatialLayerPreview = (event) => {
-		let arrayOfIDs = [...event.target.options].filter(({selected}) => selected).map(({value}) => value);
-		this.props.dispatch(this.set_availableTileLayers({ids: arrayOfIDs}));
-		this.markUnsaved({target:{name:'o:spatial_layers',value:arrayOfIDs}});
+	enabledSpatialLayerPreview = (event, data) => {
+		this.props.dispatch(this.set_availableTileLayers({ids: data}));
+		this.markUnsaved(event,{name:'o:spatial_layers',value:data});
 	}
 
 	// Switches between map and image
 	exhibitTypeSwitch = (event) => {
-		if(event.target.dataset.type === 'image'){
+		if (event.target.name === 'image') {
 			this.setState({
-				baseLayerType:TYPE.BASELAYER_TYPE.IMAGE,
-				exhibitType:TYPE.EXHIBIT_TYPE.IMAGE
+				baseLayerType: TYPE.BASELAYER_TYPE.IMAGE,
+				exhibitType: TYPE.EXHIBIT_TYPE.IMAGE
 			});
-			this.onSpatialLayerInfoChange({target:{name:'o:spatial_layer',value:TYPE.BASELAYER_TYPE.IMAGE}});
+			this.onSpatialLayerInfoChange({
+				target: {
+					name: 'o:spatial_layer',
+					value: TYPE.BASELAYER_TYPE.IMAGE
+				}
+			});
 			this.props.change('o:exhibit_type', TYPE.EXHIBIT_TYPE.IMAGE);
 
-		}else{
+		} else {
 			this.setState({
-				baseLayerType:TYPE.BASELAYER_TYPE.MAP,
-				exhibitType:TYPE.EXHIBIT_TYPE.MAP
+				baseLayerType: TYPE.BASELAYER_TYPE.MAP,
+				exhibitType: TYPE.EXHIBIT_TYPE.MAP
 			});
-			this.onSpatialLayerInfoChange({target:{name:'o:spatial_layer',value:0}});
+			this.onSpatialLayerInfoChange({
+				target: {
+					name: 'o:spatial_layer',
+					value: 0
+				}
+			});
 			this.props.change('o:exhibit_type', TYPE.EXHIBIT_TYPE.MAP);
 		}
-
 	}
 
 	// Sets the unsaved changes flag
 	markUnsaved = (event) => {
-
 		// Update the cache
 		if(typeof event !== 'undefined'){
-			this.props.dispatch(updateExhibitCache({setValues:{[event.target.name]:event.target.value}}));
+			this.props.dispatch(updateExhibitCache({
+				setValues: {
+					[event.target.name]: event.target.value
+				}
+			}));
+			// this.props.dispatch(updateExhibitCache({setValues:{[name]:value}}));
 		}else{
 			console.log("Skipping cache update");
 		}
@@ -166,7 +179,7 @@ class ExhibitForm extends Component {
 	layerTYPE = () => {
 		let retval = [];
 		var availableBaseMaps = this.props.mapCache.available.baseMaps;
-		Object.keys(availableBaseMaps).forEach(function(key) {
+		Object.keys(availableBaseMaps).forEach(function (key) {
 			let thisMap = availableBaseMaps[key];
 			if (!thisMap.deprecated) {
 				retval.push(thisMap);
@@ -177,8 +190,7 @@ class ExhibitForm extends Component {
 
 	buildLayerTypeOptions = () => {
 		var retval = [];
-		//this.layerTYPE().map((layerType) => {
-		let layerTYPE = this.layerTYPE();
+ 		let layerTYPE = this.layerTYPE();
 		Object.keys(layerTYPE).forEach(function(key) {
 			let layerType = layerTYPE[key];
 			let opt_key = `layerTypeOption-${key}`;
@@ -186,6 +198,7 @@ class ExhibitForm extends Component {
 		});
 		return retval;
 	};
+
 
 	componentWillReceiveProps(nextprops){
 		if(typeof nextprops.exhibit !== 'undefined'){
@@ -197,196 +210,262 @@ class ExhibitForm extends Component {
 			}
 		}
 	}
-
+	formSubmit=()=> this.handleSubmit()
 	render() {
+		const width1 = this.state.isNewExhibit ? 9 : 16;
+		const width2 = this.state.isNewExhibit ? 6 : 16;
+		const maxHeight = this.state.isNewExhibit ? `100vh` : `80vh`
 		return (
-			<div>
-				<form className='ps_n3_exhibit-form' onSubmit={this.handleSubmit}>
-					<fieldset disabled={this.disabled} style={{
+			<Card fluid style={{ overflowY: 'auto', maxHeight: maxHeight, overflowX: 'hidden' }}>
+				{this.state.isNewExhibit ?
+					<Card.Content >
+						<Card.Header> New Exhibit </Card.Header>
+					</Card.Content> : null
+				}
+				<Card.Content>
+					<Form onSubmit={this.handleSubmit}>
+						<fieldset disabled={this.disabled} style={{
 							border: 'none',
 							padding: '0'
 						}}>
-						<div>
-							<label htmlFor='o:title'>* Title</label>
-							<Field 	name='o:title'
-									component='input'
-									type='text'
-									onChange={this.markUnsaved}/>
-						</div>
-						<div>
-							<label htmlFor='o:slug'>* URL Slug</label>
-							<Field 	name='o:slug'
-									component='input'
-									type='text'
-									onChange={this.markUnsaved}/>
-						</div>
-						<div>
-							<label htmlFor='o:narrative'>Narrative</label>
-							<Field 	name='o:narrative'
-									component='textarea'
-									onChange={this.markUnsaved}/>
-						</div>
-						<div>
-							<label htmlFor='o:accessible_url'>Alternative Accessible URL</label>
-							<Field 	name='o:accessible_url'
-									component='input'
-									type='text'
-									onChange={this.markUnsaved}/>
-						</div>
-
-						{(this.state.isNewExhibit) &&
-							<div className="ps_n3_radioSet">
-								<input 	data-type="map"
-										checked={this.state.exhibitType === TYPE.EXHIBIT_TYPE.MAP}
-										type="radio"
-										onChange={this.exhibitTypeSwitch}/>
-										<label>Map</label>
-
-								<input 	data-type="image"
-										checked={this.state.exhibitType === TYPE.EXHIBIT_TYPE.IMAGE}
-										type="radio"
-										onChange={this.exhibitTypeSwitch}/>
-										<label>Image</label>
-							</div>
-						}
-
-						{(this.state.exhibitType === TYPE.EXHIBIT_TYPE.MAP) &&
-							<div>
-								<label 	htmlFor='o:spatial_layer'>Base Layer</label>
-								<Field 	name='o:spatial_layer'
-										component='select'
-										onChange={this.onSpatialLayerInfoChange}>
-										<optgroup label='Default Layers'>
-											{this.layerTypeOptions}
-											<option value={TYPE.BASELAYER_TYPE.TILE}>Custom: Tile Layer</option>
-											<option value={TYPE.BASELAYER_TYPE.WMS}>Custom: WMS Layer</option>
-										</optgroup>
-								</Field>
-							</div>
-						}
-
-						{(this.state.exhibitType === TYPE.EXHIBIT_TYPE.IMAGE) &&
-							<div>
-								<div>
-									<div>
-										<label 	htmlFor='o:image_layer'>Image URL</label>
-										<Field 	name='o:image_layer'
+						<Grid relaxed>
+							<Grid.Row>
+								<Grid.Column width={width1}>
+									<div className='field'>
+										<label htmlFor='o:title'>Title</label>
+										<div className='ui input'>
+										<Field name='o:title'
+											component='input'
+											type='text'
+											placeholder='Enter exhibit title'
+											onChange={this.markUnsaved} />
+										</div>
+									</div>
+								</Grid.Column>
+								<Grid.Column width={width2}>
+									<div className='field'>
+										<label htmlFor='o:slug'>URL Slug</label>
+										<div className='ui input'>
+										<Field name='o:slug'
+											component='input'
+											type='text'
+											placeholder='Enter url'
+											onChange={this.markUnsaved}
+											/> 
+										</div>
+									</div>
+								</Grid.Column>
+							</Grid.Row>
+							<Grid.Row>
+								<Grid.Column width={width1}>
+									<div className='field'>
+										<label htmlFor='o:narrative'>Narrative</label> 
+										<div className='ui input'>
+										<Field name='o:narrative'
+											component='textarea'
+											placeholder='Enter exhibit narrative'
+											onChange={this.markUnsaved}
+											/> 
+										</div>
+									</div>
+								</Grid.Column>
+								<Grid.Column width={width2}>
+									<div className='field'>
+										<label htmlFor='o:accessible_url'>Alternative Accessible URL</label> 
+										<div className='ui input'>
+											<Field name='o:accessible_url'
 												component='input'
 												type='text'
-												onChange={this.onSpatialLayerInfoChange}/>
+												placeholder='Enter alternative url'
+												onChange={this.markUnsaved}
+											/> 
+										</div>
 									</div>
+									{this.state.isNewExhibit ? 
 									<div>
-										<label 	htmlFor='o:image_attribution'>Attribution</label>
-										<Field 	name='o:image_attribution'
+										<div className='field'>
+											<div className='ui checkbox toggle'>
+												<Field name="o:public"
 												component='input'
-												type='text'
-												onChange={this.onSpatialLayerInfoChange}/>
+												type="checkbox"
+												/>
+												<label>Public</label>
+											</div>
+
+										</div>
+										<div className='inline fields'>
+											<label><h3>Select Map Type</h3></label>
+												<div className='field'>
+													<div className='ui radio checkbox'>
+														<Field
+															name='map'
+															type="radio"
+															component='input'
+															checked={this.state.exhibitType === TYPE.EXHIBIT_TYPE.MAP}
+															onChange={this.exhibitTypeSwitch}
+															value={0}
+														/>
+														<label>Map</label>
+													</div>
+												</div>
+												<div className='field'>
+													<div className='ui radio checkbox'>
+														<Field
+															name="image"
+															type="radio"
+															component='input'
+															checked={this.state.exhibitType === TYPE.EXHIBIT_TYPE.IMAGE}
+															onChange={this.exhibitTypeSwitch}
+															value={1}
+														/>
+														<label>Image</label>
+													</div>
+												</div>
+											</div>
+										</div>
+									: null }
+								</Grid.Column>
+							</Grid.Row>
+							
+							<Divider/>
+							<Grid.Row>
+								<Grid.Column width={width1}>
+									{(this.state.exhibitType === TYPE.EXHIBIT_TYPE.MAP) &&
+										<div>
+											<label htmlFor='o:spatial_layer'>Base Layer</label>
+											<Field name='o:spatial_layer'
+												component='select'
+												onChange={this.onSpatialLayerInfoChange}>
+												<optgroup label='Default Layers'>
+													{this.layerTypeOptions}
+													<option value={TYPE.BASELAYER_TYPE.TILE}>Custom: Tile Layer</option>
+													<option value={TYPE.BASELAYER_TYPE.WMS}>Custom: WMS Layer</option>
+												</optgroup>
+											</Field>
+										</div>
+									}
+									{(this.state.exhibitType === TYPE.EXHIBIT_TYPE.IMAGE) &&
+										<div>
+											<div>
+												<div>
+													<label htmlFor='o:image_layer'>Image URL</label>
+													<Field name='o:image_layer'
+														component='input'
+														type='text'
+														onChange={this.onSpatialLayerInfoChange} />
+												</div>
+												<div>
+													<label htmlFor='o:image_attribution'>Attribution</label>
+													<Field name='o:image_attribution'
+														component='input'
+														type='text'
+														onChange={this.onSpatialLayerInfoChange} />
+												</div>
+											</div>
+										</div>
+									}
+								</Grid.Column>
+								<Grid.Column width={width2}>
+									{(this.state.baseLayerType === TYPE.BASELAYER_TYPE.TILE) &&
+										<div className="ps_n3_sub_options">
+											<div>
+												<label htmlFor='o:tile_address'>Tile URL</label>
+												<Field name='o:tile_address'
+													component='input'
+													type='text'
+													onChange={this.onSpatialLayerInfoChange} />
+
+												<label htmlFor='o:tile_attribution'>Attribution</label>
+												<Field name='o:tile_attribution'
+													component='input'
+													type='text'
+													onChange={this.onSpatialLayerInfoChange} />
+											</div>
+										</div>
+									}
+
+									{(this.state.baseLayerType === TYPE.BASELAYER_TYPE.WMS) &&
+										<div className="ps_n3_sub_options">
+											<div>
+												<label htmlFor='o:wms_address'>WMS URL</label>
+												<Field name='o:wms_address'
+													component='input'
+													type='text'
+													onChange={this.onSpatialLayerInfoChange} />
+											</div>
+											<div>
+												<label htmlFor='o:wms_layers'>WMS Layers</label>
+												<Field name='o:wms_layers'
+													component='input'
+													type='text'
+													onChange={this.onSpatialLayerInfoChange} />
+											</div>
+											<div>
+												<label htmlFor='o:wms_attribution'>Attribution</label>
+												<Field name='o:wms_attribution'
+													component='input'
+													type='text'
+													onChange={this.onSpatialLayerInfoChange} />
+											</div>
+										</div>
+									}
+
+									{(this.state.exhibitType === TYPE.EXHIBIT_TYPE.MAP) &&
+										<div>
+											<div>
+												<label htmlFor='o:spatial_layers'>Additional Layers</label>
+												<Field name='o:spatial_layers'
+													component='select'
+													multiple="multiple"
+													onChange={this.enabledSpatialLayerPreview}>
+													{this.layerTypeOptions}
+												</Field>
+											</div>
+
+											<div>
+												<label htmlFor='o:zoom_levels'>Zoom Levels</label>
+												<Field name='o:zoom_levels'
+													component='input'
+													type='number'
+													onChange={this.markUnsaved} />
+											</div>
+										</div>
+									}
+								</Grid.Column>
+							</Grid.Row>
+							<Grid.Row>
+								<Grid.Column width={width1}>
+									<div className="ps_n3_checkboxPair">
+										{/*
+							Spatial querying disabled for alpha:
+							https://github.com/performant-software/neatline-3/issues/114
+						*/}
+										<Field name='o:spatial_querying'
+											component='input'
+											type='hidden'
+											onChange={this.markUnsaved} />
+										{/*<label 	htmlFor='o:spatial_querying'>Spatial Querying</label>*/}
 									</div>
-								</div>
-							</div>
-						}
-
-						{(this.state.baseLayerType === TYPE.BASELAYER_TYPE.TILE) &&
-							<div className="ps_n3_sub_options">
-								<div>
-									<label 	htmlFor='o:tile_address'>Tile URL</label>
-									<Field 	name='o:tile_address'
+									{this.exhibit && this.exhibit['o:id'] &&
+										<Field name='o:id'
 											component='input'
-											type='text'
-											onChange={this.onSpatialLayerInfoChange}/>
+											type='hidden' />
+									}
 
-									<label 	htmlFor='o:tile_attribution'>Attribution</label>
-									<Field 	name='o:tile_attribution'
-											component='input'
-											type='text'
-											onChange={this.onSpatialLayerInfoChange}/>
-								</div>
-							</div>
-						}
-
-						{(this.state.baseLayerType === TYPE.BASELAYER_TYPE.WMS) &&
-							<div className="ps_n3_sub_options">
-								<div>
-									<label	htmlFor='o:wms_address'>WMS URL</label>
-									<Field 	name='o:wms_address'
-											component='input'
-											type='text'
-											onChange={this.onSpatialLayerInfoChange}/>
-								</div>
-								<div>
-									<label 	htmlFor='o:wms_layers'>WMS Layers</label>
-									<Field 	name='o:wms_layers'
-											component='input'
-											type='text'
-											onChange={this.onSpatialLayerInfoChange}/>
-								</div>
-								<div>
-									<label 	htmlFor='o:wms_attribution'>Attribution</label>
-									<Field 	name='o:wms_attribution'
-											component='input'
-											type='text'
-											onChange={this.onSpatialLayerInfoChange}/>
-								</div>
-							</div>
-						}
-
-						{(this.state.exhibitType === TYPE.EXHIBIT_TYPE.MAP) &&
-							<div>
-								<div>
-									<label 	htmlFor='o:spatial_layers'>Additional Layers</label>
-									<Field 	name='o:spatial_layers'
-											component='select'
-											multiple="multiple"
-											onChange={this.enabledSpatialLayerPreview}>
-										{this.layerTypeOptions}
-									</Field>
-								</div>
-
-								<div>
-									<label 	htmlFor='o:zoom_levels'>Zoom Levels</label>
-									<Field 	name='o:zoom_levels'
-											component='input'
-											type='number'
-											onChange={this.markUnsaved}/>
-								</div>
-							</div>
-						}
-
-						<div className="ps_n3_checkboxPair">
-							{/*
-								Spatial querying disabled for alpha:
-								https://github.com/performant-software/neatline-3/issues/114
-							*/}
-							<Field 	name='o:spatial_querying'
-									component='input'
-									type='hidden'
-									onChange={this.markUnsaved}/>
-							{/*<label 	htmlFor='o:spatial_querying'>Spatial Querying</label>*/}
-						</div>
-						<div className="ps_n3_checkboxPair">
-							<Field 	name='o:public'
-									component='input'
-									type='checkbox'
-									onChange={this.markUnsaved}/>
-							<label 	htmlFor='o:public'>Public</label>
-
-
-						</div>
-						{this.exhibit && this.exhibit['o:id'] &&
-							<Field 	name='o:id'
-									component='input'
-									type='hidden'/>
-						}
-
-						{/* Hidden fields */}
-						<Field 	name='o:exhibit_type'
-								component='input'
-								type='hidden'/>
-
-					</fieldset>
-					{this.state.isNewExhibit && <button type="submit">Create Exhibit</button> }
-				</form>
-		</div>);
+									{/* Hidden fields */}
+									<Field name='o:exhibit_type'
+										component='input'
+										type='hidden' />
+								</Grid.Column>
+							</Grid.Row>
+						</Grid>
+						</fieldset>
+				{this.state.isNewExhibit && 
+				<Button type="submit">Create Exhibit</Button>
+				}
+				</Form>
+				</Card.Content>
+			</Card>);
 	}
 }
 

@@ -11,12 +11,12 @@ import RecordEditorLoader from '../../components/recordEditorLoader';
 import Records from '../records';
 import RecordCreate from '../records/create';
 import RecordUpdate from '../records/update';
-import {Tab, Tabs, TabList, TabPanel} from 'react-tabs';
 import { strings } from '../../i18nLibrary';
 import {recordCacheToDatabase, updateExhibitCache, clearRecordCache} from '../../actions';
 import LockOverlay from '../../components/LockOverlay';
 import SpinnerOverlay from '../../components/SpinnerOverlay';
 import AlertBar from '../../components/AlertBar';
+import { Grid, Menu, Button, Icon } from 'semantic-ui-react';
 
 const ExhibitShowHeader = props => (
 	<div>
@@ -34,21 +34,19 @@ const ExhibitPanelContent = props => {
 	}
 }
 
-const RecordEditor = props => {
-	if (props.editorNewRecord) {
-		return <RecordCreate/>;
-	} else {
-		return <RecordUpdate/>;
-	}
-}
 
 class ExhibitShow extends Component {
+	constructor(props) {
+		super(props)
+		this.state = {showRecords:true, recordEditorType: '', showExhibitSettings:true}
+	}
 
 	componentDidMount() {
 		this.props.fetchExhibits();
 		this.cacheIntitialized=false;
 		this.exhibitCacheInitialized=false;
 		this.props.dispatch(clearRecordCache());
+
 	}
 
 	saveAll = (event) => {
@@ -62,87 +60,116 @@ class ExhibitShow extends Component {
 				this.props.fetchRecordsBySlug(this.props.match.params.slug);
 			}
 	}
+	
+	toggleRecords = (val) => this.setState({ showRecords: val });
 
+	recordEditorType = (val) => this.setState({ recordEditorType: val });
+	setExhibitPane = (val) => this.setState({showExhibitSettings: val});
 
-
+	showRecords = () => {
+		return (this.state.showRecords ?
+					<Records exhibitShowURL={this.props.match.url}
+						userSignedIn={this.props.userSignedIn}
+						toggleRecords={this.toggleRecords}
+						setRecordEditorType={this.recordEditorType} /> :
+					(this.state.recordEditorType === 'new' ? <RecordCreate toggleRecords={this.toggleRecords} deselect={this.props.deselectRecord} /> : <RecordUpdate toggleRecords={this.toggleRecords} deselect={this.props.deselectRecord} />)
+		);
+	}
 	render() {
 
 		const props = this.props;
 		const {exhibit} = props;
-
-		let exhibitDisplay = <ExhibitShowHeader userSignedIn={props.userSignedIn}>{strings.loading}</ExhibitShowHeader>;
-
-		let recordTitle = props.editorNewRecord?strings.new_record:props.editorRecord?props.editorRecord['o:title']:'';
-			recordTitle = (recordTitle === null || recordTitle.length === 0)?"???":recordTitle;
-
+		let exhibitDisplay;
+		console.log(exhibit, this.state.showExhibitSettings, props.recordsLoading);
 		if (exhibit) {
 			exhibitDisplay = (
-				<div className='ps_n3_exhibit-public' style={{
-					display: 'grid',
-					gridTemplateColumns: '320px 1fr',
-					gridGap: 'none'
-				}}>
+				<div>
+				<Menu size='massive'>
+					<Menu.Item header as={Link} to={`${window.baseRoute}/`}><h3>NEATLINE </h3></Menu.Item>
+					<Menu.Item> {exhibit['o:title']}</Menu.Item>
+						<Menu.Item> {props.userSignedIn ?<Icon name="edit" />: <Icon name="search"/>}</Menu.Item>
+					
+					<Menu.Item position='right'>
+						{props.userSignedIn ?
+								<div>
+							<Button 
+								icon 
+								toggle
+								basic
+								color={this.state.showExhibitSettings ? 'blue' : null}
+								active={this.state.showExhibitSettings}
+								onClick={()=>this.setExhibitPane(true)}> 
+								Exhibit Settings <Icon name="settings" />
+							</Button>
+							<Button
+								icon
+								toggle 
+								basic
+								color={!this.state.showExhibitSettings ? 'blue' : null}
+								active={!this.state.showExhibitSettings}
+								onClick={()=>this.setExhibitPane(false)}>
+								Records <Icon name="list" />
+							</Button>
+							<Button
+								icon
+								onClick={this.saveAll}>
+								Save <Icon name="save" />
+							</Button>
+							</div> :
+							<div>
+								<Button
+									icon
+									toggle
+									basic
+									color={this.state.showExhibitSettings ? 'blue' : null}
+									active={this.state.showExhibitSettings}
+									onClick={() => this.setExhibitPane(true)}>
+									Exhibit Information <Icon name="info" />
+								</Button>
+								<Button
+									icon
+									toggle
+									basic
+									color={!this.state.showExhibitSettings ? 'blue' : null}
+									active={!this.state.showExhibitSettings}
+									onClick={() => this.setExhibitPane(false)}>
+									View Exhibit <Icon name="list" />
+								</Button>
+							</div>
+						}
+					</Menu.Item>
+				</Menu>
+				<Grid divided padded>
 				{!props.recordsLoading && <Route path={`${props.match.url}/edit/:recordId`} render={props => {
 								props.key = props.match.params.recordId;
 								return (<RecordEditorLoader {...props}/>)
 							}}/>
 				}
-				<div>
-
-					<ExhibitShowHeader  userSignedIn={props.userSignedIn} onSave={this.saveAll}>
-						{exhibit['o:title']}
-					</ExhibitShowHeader>
-					<Tabs selectedIndex={this.props.tabIndex} onSelect={tabIndex => props.setTabIndex(tabIndex)}>
-						<TabList>
-							<Tab>{strings.exhibit}</Tab>
-							<Tab>{strings.records}</Tab>
-							<Tab style={{
-									visibility: props.editorRecord || props.editorNewRecord
-										? 'visible'
-										: 'hidden',
-									maxWidth: '100px'
-								}}>
-								{recordTitle}
-								<span onClick={e => {
-										props.deselectRecord();
-										e.stopPropagation();
-									}} style={{
-										fontWeight: 'bold'
-									}}> [x]</span>
-							</Tab>
-						</TabList>
-						<TabPanel>
-							<ExhibitPanelContent exhibit={exhibit}
-												 userSignedIn={props.userSignedIn}/>
-						</TabPanel>
-						<TabPanel>
-							<Records exhibitShowURL={props.match.url}
-									 userSignedIn={props.userSignedIn}/>
-						</TabPanel>
-						<TabPanel>
-							<RecordEditor editorNewRecord={props.editorNewRecord}/>
-						</TabPanel>
-					</Tabs>
-				</div>
-				<div style={{
-						gridRow: '1',
-						gridColumn: '2',
-						position: 'relative'
-					}}>
-					<ExhibitPublicMap
-						userSignedIn={this.props.userSignedIn}
-						mapCache = {this.props.mapCache}
-						exhibit = {this.props.exhibit}
-						records = {this.props.records}
-						selectedRecord = {this.props.selectedRecord}
-						previewedRecord = {this.props.previewedRecord}
-						editorRecord = {this.props.editorRecord}
-						editorNewRecord = {this.props.editorNewRecord}
-						leafletState = {this.props.leaflet}
-						exhibitShowURL={props.match.url}
-						hasWarning={this.props.mapCache.hasUnsavedChanges}/>
-					<RecordInfoPanel isVisible={!this.props.leaflet.isEditing}/>
-				</div>
+				<Grid.Row>
+					<Grid.Column width={4}>
+						{this.state.showExhibitSettings ? <ExhibitPanelContent
+							exhibit={exhibit}
+							userSignedIn={props.userSignedIn} /> : 
+								this.showRecords()
+							}
+					</Grid.Column>
+						<Grid.Column floated='right' width={11}>
+						<ExhibitPublicMap
+							userSignedIn={this.props.userSignedIn}
+							mapCache = {this.props.mapCache}
+							exhibit = {this.props.exhibit}
+							records = {this.props.records}
+							selectedRecord = {this.props.selectedRecord}
+							previewedRecord = {this.props.previewedRecord}
+							editorRecord = {this.props.editorRecord}
+							editorNewRecord = {this.props.editorNewRecord}
+							leafletState = {this.props.leaflet}
+							exhibitShowURL={props.match.url}
+							hasWarning={this.props.mapCache.hasUnsavedChanges}/>
+						<RecordInfoPanel isVisible={!this.props.leaflet.isEditing}/>
+					</Grid.Column>
+				</Grid.Row>
+			</Grid>
 			</div>);
 
 		} else if (props.exhibitsLoading) {

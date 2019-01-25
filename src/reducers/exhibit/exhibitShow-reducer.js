@@ -29,6 +29,12 @@ export default function(state = initialState, action) {
 				loading: false
 			};
 
+		case ACTION_TYPE.RECORDS_FILTER:
+			return {
+				...state,
+				filteredRecords: action.payload
+			};
+
 		case ACTION_TYPE.EXHIBIT_RESET:
 			return initialState;
 

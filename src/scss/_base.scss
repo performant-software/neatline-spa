@@ -1,5 +1,5 @@
 #ps_n3_body {
-	overflow: hidden;
+	// overflow: hidden;
 	font-family: "Lato",sans-serif;
 	font-size: 1rem;
 	line-height: 1rem !important;
@@ -35,24 +35,24 @@
 	color: #cccccc;
 }
 
-#ps_n3_body table {
-	margin: 30px 0;
-	border-collapse: collapse;
-}
+// #ps_n3_body table {
+// 	margin: 30px 0;
+// 	border-collapse: collapse;
+// }
 
-#ps_n3_body th,
-td {
-	text-align: left;
-	padding: 7.5px 15px 6.5px 0;
-	border-bottom: 1px solid #ababab;
-}
+// #ps_n3_body th,
+// td {
+// 	text-align: left;
+// 	padding: 7.5px 15px 6.5px 0;
+// 	border-bottom: 1px solid #ababab;
+// }
 
 #ps_n3_main {
 	overflow: hidden;
 	border: 1px solid #0000000f;
 	background-color: white;
 	font-size: 1.2rem;
-	font-family: "Open Sans";
+	// font-family: "Open Sans";
 	margin: 0.5rem;
 	height: calc(100vh - 1rem);
 	line-height: 1rem;

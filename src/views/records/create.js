@@ -4,9 +4,16 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {createRecord} from '../../actions';
 import {strings} from '../../i18nLibrary';
+import { Breadcrumb } from 'semantic-ui-react';
+
 
 const RecordCreate = props => (
 	<div>
+		<Breadcrumb>
+			<Breadcrumb.Section onClick={() => {props.toggleRecords(true); props.deselect()} }>Records</Breadcrumb.Section>
+			<Breadcrumb.Divider icon='right angle' />
+			<Breadcrumb.Section active>New Record</Breadcrumb.Section>
+		</Breadcrumb>
 		<RecordForm onSubmit={props.submit}
 					submitLabel={strings.create}
 					disabled={props.record.loading}/>

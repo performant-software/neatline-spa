@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { Menu, Button, Icon, Table } from 'semantic-ui-react';
 //import { fetchExhibits } from '../../reducers/not_refactored/exhibits';
 import { resetExhibit } from '../../actions';
 import { deleteExhibit } from '../../actions';
@@ -12,7 +13,7 @@ import {fetchExhibits} from '../../actions';
 class Exhibits extends Component {
   componentWillMount() {
 		this.props.dispatch(fetchExhibits());
-		this.props.dispatch(resetExhibit());
+    this.props.dispatch(resetExhibit());
   }
 
   createExhibitView =  () => {
@@ -27,46 +28,64 @@ class Exhibits extends Component {
     }
     const allLanguages = strings.getAvailableLanguages();
     const lngButtons = allLanguages.map((lng) =>
-        <button key={lng} onClick={() => changeLanguage(lng)}>{lng}</button>
+        <Button key={lng} onClick={() => changeLanguage(lng)}>{lng}</Button>
     );
     return (
       <div>
-
-        <h3><Link to={`${window.baseRoute}/`}>Neatline</Link> | {strings.browseExhibit}</h3>
-		<div className="ps_n3_buttonGroup">
-	        {props.userSignedIn &&
-	          <button onClick={this.createExhibitView}>{strings.createExhibit}</button>
-	        }
-			{lngButtons}
-		</div>
-        <table>
-          <thead>
-            <tr>
-              <th>{strings.title}</th>
+        <Menu size='massive'>
+        <Menu.Item header as={Link} to={`${window.baseRoute}/`}><h3>NEATLINE </h3></Menu.Item>
+        <Menu.Item>{strings.browseExhibit}</Menu.Item>
+        <Menu.Item position='right'><div>
               {props.userSignedIn &&
-                <th></th>
+                <Button
+                  icon
+                  onClick={this.createExhibitView}
+                >
+                  {strings.createExhibit}
+                  <Icon name="add" />
+                </Button>
               }
-              <th>{strings.created}</th>
-              <th>{strings.public}</th>
-            </tr>
-          </thead>
-          <tbody>
+          {lngButtons}
+        </div></Menu.Item>
+        </Menu>
+        <Table singleLine padded >
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>{strings.title}</Table.HeaderCell>
+              
+              <Table.HeaderCell>{strings.created}</Table.HeaderCell>
+              <Table.HeaderCell>{strings.public}</Table.HeaderCell>
+              {props.userSignedIn &&
+                <Table.HeaderCell></Table.HeaderCell>
+              }
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
             {props.exhibits.map((exhibit, idx) => (
-              <tr key={idx}>
-                <td>
-                  <Link to={`${window.baseRoute}/show/${exhibit['o:slug']}`} style={{ marginRight: '0.5em' }}>{exhibit['o:title']}</Link>
-                </td>
+              <Table.Row key={idx}>
+                <Table.Cell>
+                  <Link to={`${window.baseRoute}/show/${exhibit['o:slug']}`} >{exhibit['o:title']}</Link>
+                </Table.Cell>
+                
+                <Table.Cell>{exhibit['o:added']}</Table.Cell>
+                <Table.Cell>{exhibit['o:public'] ? strings.yes : strings.no}</Table.Cell>
                 {props.userSignedIn &&
-                  <td>
-                    <button onClick={() => {props.deleteExhibit(exhibit);}} disabled={props.deleteInProgress}>{strings.delete}</button>
-                  </td>
+                  <Table.Cell>
+                    <Button
+                      onClick={() => { props.deleteExhibit(exhibit); }}
+                      disabled={props.deleteInProgress}
+                    >
+                      {strings.delete}
+                    </Button>
+                    <Button disabled>
+                      Duplicate
+                    </Button>
+                  </Table.Cell>
                 }
-                <td>{exhibit['o:added']}</td>
-                <td>{exhibit['o:public'] ? strings.yes : strings.no}</td>
-              </tr>
+              </Table.Row>
             ))}
-          </tbody>
-        </table>
+          </Table.Body>
+        </Table>
         {props.deleteErrored &&
           <p>{strings.delete_exhibit_error}</p>
         }
