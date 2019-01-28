@@ -7,16 +7,15 @@ import {fetchExhibits, setTabIndex, deselectRecord,fetchRecordsBySlug,updateReco
 import ExhibitUpdate from './update';
 import ExhibitPublicMap from '../../components/ExhibitPublicMap';
 import RecordInfoPanel from '../../components/info';
-import RecordEditorLoader from '../../components/recordEditorLoader';
 import Records from '../records';
 import RecordCreate from '../records/create';
 import RecordUpdate from '../records/update';
 import { strings } from '../../i18nLibrary';
-import {recordCacheToDatabase, updateExhibitCache, clearRecordCache} from '../../actions';
+import {recordCacheToDatabase, updateExhibitCache, clearRecordCache, setShowExhibitSettings, setShowRecords, setRecordEditorType} from '../../actions';
 import LockOverlay from '../../components/LockOverlay';
 import SpinnerOverlay from '../../components/SpinnerOverlay';
 import AlertBar from '../../components/AlertBar';
-import { Grid, Menu, Button, Icon } from 'semantic-ui-react';
+import { Grid, Menu, Button, Icon, Card } from 'semantic-ui-react';
 
 const ExhibitShowHeader = props => (
 	<div>
@@ -38,7 +37,11 @@ const ExhibitPanelContent = props => {
 class ExhibitShow extends Component {
 	constructor(props) {
 		super(props)
-		this.state = {showRecords:true, recordEditorType: '', showExhibitSettings:true}
+		const viewMode = this.props.userSignedIn ? 'editing' : 'signedOut'
+		this.state = {
+			records: this.props.filteredRecords, 
+			viewMode: viewMode
+		}
 	}
 
 	componentDidMount() {
@@ -53,62 +56,92 @@ class ExhibitShow extends Component {
 		this.props.dispatch(recordCacheToDatabase());
 	}
 
-	componentWillUpdate = () =>{
-		if(	typeof this.props.records === 'undefined' &&
+	componentDidUpdate = (prevProps) =>{
+		if(	typeof this.props.filteredRecords === 'undefined' &&
 			typeof this.props.match.params.slug !== 'undefined' &&
 			!this.props.recordsLoading){
 				this.props.fetchRecordsBySlug(this.props.match.params.slug);
 			}
+		if (this.props.filteredRecords !== prevProps.filteredRecords){
+			this.setState({records: this.props.filteredRecords});
+			this.props.dispatch(this.props.updateRecordCache(this.props.filteredRecords));
+		}
 	}
 	
-	toggleRecords = (val) => this.setState({ showRecords: val });
-
-	recordEditorType = (val) => this.setState({ recordEditorType: val });
-	setExhibitPane = (val) => this.setState({showExhibitSettings: val});
-
 	showRecords = () => {
-		return (this.state.showRecords ?
+		return (this.props.showRecords ?
 					<Records exhibitShowURL={this.props.match.url}
 						userSignedIn={this.props.userSignedIn}
-						toggleRecords={this.toggleRecords}
-						setRecordEditorType={this.recordEditorType} /> :
-					(this.state.recordEditorType === 'new' ? <RecordCreate toggleRecords={this.toggleRecords} deselect={this.props.deselectRecord} /> : <RecordUpdate toggleRecords={this.toggleRecords} deselect={this.props.deselectRecord} />)
+						setShowRecords={this.props.setShowRecords}
+						setRecordEditorType={this.props.setRecordEditorType}
+						viewMode={this.state.viewMode} /> :
+					(this.props.recordEditorType === 'new' ? <RecordCreate setShowRecords={this.props.setShowRecords} deselect={this.props.deselectRecord} setRecordEditorType={this.props.setRecordEditorType} /> : <RecordUpdate setShowRecords={this.props.setShowRecords} deselect={this.props.deselectRecord} setRecordEditorType={this.props.setRecordEditorType}/>
+				
+				)
 		);
 	}
+
+	showExhibitPanel = () => {
+		// Should only show panel if signed in or out/ not for public viewing of exhibit
+		return (
+				this.props.showExhibitSettings ?
+					<ExhibitPanelContent
+						exhibit={this.props.exhibit}
+						userSignedIn={this.props.userSignedIn} />
+					:
+					this.showRecords()
+		)
+	}
+
+	setViewExhibitEditing = () => {
+		this.setState({viewingExhibitEdit: !this.state.viewingExhibitEdit})
+	}
+
+	setViewMode = (val) => this.setState({viewMode: val}) 
+
+
 	render() {
 
 		const props = this.props;
 		const {exhibit} = props;
 		let exhibitDisplay;
-		console.log(exhibit, this.state.showExhibitSettings, props.recordsLoading);
 		if (exhibit) {
 			exhibitDisplay = (
 				<div>
 				<Menu size='massive'>
 					<Menu.Item header as={Link} to={`${window.baseRoute}/`}><h3>NEATLINE </h3></Menu.Item>
 					<Menu.Item> {exhibit['o:title']}</Menu.Item>
-						<Menu.Item> {props.userSignedIn ?<Icon name="edit" />: <Icon name="search"/>}</Menu.Item>
+						<Menu.Item> {this.props.userSignedIn ?<Icon name="edit" />: <Icon name="search"/>}</Menu.Item>
 					
 					<Menu.Item position='right'>
-						{props.userSignedIn ?
+						{this.props.userSignedIn ?
 								<div>
 							<Button 
 								icon 
 								toggle
 								basic
-								color={this.state.showExhibitSettings ? 'blue' : null}
-								active={this.state.showExhibitSettings}
-								onClick={()=>this.setExhibitPane(true)}> 
+								color={this.props.showExhibitSettings ? 'blue' : null}
+								active={this.props.showExhibitSettings}
+								onClick={()=>{this.props.setShowExhibitSettings(true); this.setViewMode('editing')}}> 
 								Exhibit Settings <Icon name="settings" />
 							</Button>
 							<Button
 								icon
 								toggle 
 								basic
-								color={!this.state.showExhibitSettings ? 'blue' : null}
-								active={!this.state.showExhibitSettings}
-								onClick={()=>this.setExhibitPane(false)}>
+								color={(!this.props.showExhibitSettings && this.state.viewMode === 'editing') ? 'blue' : null}
+								active={!this.props.showExhibitSettings && this.state.viewMode === 'editing'}
+								onClick={() => { this.props.setShowExhibitSettings(false); this.setViewMode('editing')}}>
 								Records <Icon name="list" />
+							</Button>
+							<Button
+								icon
+								toggle
+								basic
+								color={this.state.viewMode === 'publicView' ? 'blue' : null}
+								active={this.state.viewMode === 'publicView'}
+								onClick={() => { this.props.setShowExhibitSettings(false); this.setViewMode('publicView'); this.props.setRecordEditorType(''); this.props.setShowRecords(true); this.props.deselectRecord()}}>
+								View Public Exhibit <Icon name="search" />
 							</Button>
 							<Button
 								icon
@@ -121,18 +154,18 @@ class ExhibitShow extends Component {
 									icon
 									toggle
 									basic
-									color={this.state.showExhibitSettings ? 'blue' : null}
-									active={this.state.showExhibitSettings}
-									onClick={() => this.setExhibitPane(true)}>
+									color={this.props.showExhibitSettings ? 'blue' : null}
+									active={this.props.showExhibitSettings}
+									onClick={() => this.props.setShowExhibitSettings(true)}>
 									Exhibit Information <Icon name="info" />
 								</Button>
 								<Button
 									icon
 									toggle
 									basic
-									color={!this.state.showExhibitSettings ? 'blue' : null}
-									active={!this.state.showExhibitSettings}
-									onClick={() => this.setExhibitPane(false)}>
+									color={!this.props.showExhibitSettings ? 'blue' : null}
+									active={!this.props.showExhibitSettings}
+									onClick={() => this.props.setShowExhibitSettings(false)}>
 									View Exhibit <Icon name="list" />
 								</Button>
 							</div>
@@ -140,36 +173,66 @@ class ExhibitShow extends Component {
 					</Menu.Item>
 				</Menu>
 				<Grid divided padded>
-				{!props.recordsLoading && <Route path={`${props.match.url}/edit/:recordId`} render={props => {
-								props.key = props.match.params.recordId;
-								return (<RecordEditorLoader {...props}/>)
-							}}/>
-				}
-				<Grid.Row>
-					<Grid.Column width={4}>
-						{this.state.showExhibitSettings ? <ExhibitPanelContent
-							exhibit={exhibit}
-							userSignedIn={props.userSignedIn} /> : 
-								this.showRecords()
+					<Grid.Row>
+						{this.props.userSignedIn ?
+							( this.props.showExhibitSettings ? 
+								<Grid.Column width={4}>
+									<ExhibitPanelContent
+										exhibit={this.props.exhibit}
+										userSignedIn={this.props.userSignedIn} />
+								</Grid.Column>
+										:
+								<Grid.Column width={4}>
+									{this.showRecords()}
+								</Grid.Column> 
+								)
+								: 	
+							(this.props.showExhibitSettings? 
+								<Grid.Column width={15}>
+									<Card
+										fluid
+										style={{height: '80vh'}}
+									>
+										<Card.Content>
+											<Card.Header>{exhibit['o:title']}</Card.Header>
+										</Card.Content>
+										<Card.Content>
+											<Card.Description>{exhibit['o:narrative']}</Card.Description>
+										</Card.Content>
+									</Card>
+								</Grid.Column> :
+								<Grid.Column width={4}>
+									<Records exhibitShowURL={this.props.match.url}
+										userSignedIn={this.props.userSignedIn}
+										setShowRecords={this.props.setShowRecords}
+										setRecordEditorType={this.props.setRecordEditorType}
+										viewMode={'signedOut'} />
+								</Grid.Column>
+								) 
 							}
-					</Grid.Column>
-						<Grid.Column floated='right' width={11}>
-						<ExhibitPublicMap
-							userSignedIn={this.props.userSignedIn}
-							mapCache = {this.props.mapCache}
-							exhibit = {this.props.exhibit}
-							records = {this.props.records}
-							selectedRecord = {this.props.selectedRecord}
-							previewedRecord = {this.props.previewedRecord}
-							editorRecord = {this.props.editorRecord}
-							editorNewRecord = {this.props.editorNewRecord}
-							leafletState = {this.props.leaflet}
-							exhibitShowURL={props.match.url}
-							hasWarning={this.props.mapCache.hasUnsavedChanges}/>
-						<RecordInfoPanel isVisible={!this.props.leaflet.isEditing}/>
-					</Grid.Column>
-				</Grid.Row>
-			</Grid>
+							<Grid.Column floated='right' width={11}>
+								<ExhibitPublicMap
+									userSignedIn={this.props.userSignedIn}
+									mapCache={this.props.mapCache}
+									exhibit={this.props.exhibit}
+									records={this.state.records}
+									selectedRecord={this.props.selectedRecord}
+									previewedRecord={this.props.previewedRecord}
+									editorRecord={this.props.editorRecord}
+									editorNewRecord={this.props.editorNewRecord}
+									leafletState={this.props.leaflet}
+									exhibitShowURL={this.props.match.url}
+									hasWarning={this.props.mapCache.hasUnsavedChanges}
+									isEditing={this.props.recordEditorType === 'edit' ? true : false}
+									showExhibitSettings={this.props.showExhibitSettings}
+									viewMode={this.state.viewMode}
+									setRecordEditorType={this.props.setRecordEditorType}
+									setShowRecords={this.props.setShowRecords}
+								/>
+								<RecordInfoPanel isVisible={!this.props.leaflet.isEditing} />
+						</Grid.Column>
+					</Grid.Row>
+				</Grid>
 			</div>);
 
 		} else if (props.exhibitsLoading) {
@@ -194,7 +257,7 @@ const mapStateToProps = state => ({
 	exhibit: state.exhibitShow.exhibit,
 	exhibits: state.exhibits,
 	leaflet: state.leaflet,
-	records: state.exhibitShow.records,
+	filteredRecords: state.exhibitShow.filteredRecords,
 	recordsLoading: state.exhibitShow.loading,
 	recordsErrored: state.exhibitShow.errored,
 	exhibitNotFound: state.exhibitShow.exhibitNotFound,
@@ -203,7 +266,10 @@ const mapStateToProps = state => ({
 	editorNewRecord: state.exhibitShow.editorNewRecord,
 	tabIndex: state.exhibitShow.tabIndex,
 	mapCache: state.mapCache,
-	exhibitCache: state.exhibitCache
+	exhibitCache: state.exhibitCache,
+	recordEditorType: state.exhibitShow.recordEditorType,
+	showExhibitSettings: state.exhibitShow.showExhibitSettings,
+	showRecords: state.exhibitShow.showRecords,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -213,6 +279,9 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 	fetchRecordsBySlug,
 	updateRecordCache,
 	updateExhibitCache,
+	setRecordEditorType,
+	setShowExhibitSettings,
+	setShowRecords,
 	dispatch
 }, dispatch);
 

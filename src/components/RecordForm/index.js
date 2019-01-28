@@ -30,6 +30,7 @@ class RecordForm extends Component {
 
 	constructor(props) {
 		super(props);
+		console.log(props);
 		// Mapping to this
 		this.change = change;
 		this.handleSubmit = props.handleSubmit;
@@ -98,6 +99,7 @@ class RecordForm extends Component {
 
 	// Delete a record
 	deleteRecord = () => {
+		console.log('delete Record', this.props.initialValues['o:id'])
 		this.props.dispatch(removeRecordFromCache({recordID: this.props.initialValues['o:id']}));
 		this.handleDelete();
 	}
@@ -105,7 +107,6 @@ class RecordForm extends Component {
 	scrollEvent = (event) =>{
 		this.hideColorPicker(event);
 	}
-
 	render() {
 
 		let thisRecord = this.props.mapCache.cache[this.props.initialValues['o:id']];
@@ -117,15 +118,6 @@ class RecordForm extends Component {
 
 				<ColorPicker color={this.state.colorPickerCurrentColor} isVisible={this.state.colorPickerVisible} top={this.state.colorPickerTop} handleChange={this.handleColorChange}/>
 				<Tabs>
-					<div className="ps_n3_buttonGroup">
-						{
-							this.showDelete && <div>
-									<div 	className="ps_n3_button"
-											onClick={this.deleteRecord}
-											type='button'>Delete</div>
-								</div>
-						}
-					</div>
 
 					<TabList>
 						<Tab>{strings.text}</Tab>
@@ -615,7 +607,7 @@ class RecordForm extends Component {
 
 }
 
-RecordForm = reduxForm({form: 'record', enableReinitialize: true})(RecordForm);
+RecordForm = reduxForm({ form: 'record', enableReinitialize: true})(RecordForm);
 const mapStateToProps = state => ({
 	record: state.record,
 	userSignedIn: state.user.userSignedIn,

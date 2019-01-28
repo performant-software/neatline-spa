@@ -6,6 +6,6 @@ export default {
 	exhibit: {
 		changedExhibit: null,
 		loading: false,
-		errored: false
+		errored: false,
 	}
 };

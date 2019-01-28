@@ -8,16 +8,16 @@ import { Breadcrumb } from 'semantic-ui-react';
 
 class RecordUpdate extends Component {
 	render() {
-		const {record, submit, loading, deleteRecord, deselect, toggleRecords} = this.props;
+		const {record, submit, loading, deleteRecord, deselect, setShowRecords, setRecordEditorType} = this.props;
 		if (record) {
 			return (
 			<div>
 				<Breadcrumb>
-					<Breadcrumb.Section onClick={() => { toggleRecords(true); deselect() }}>Records</Breadcrumb.Section>
+					<Breadcrumb.Section onClick={() => { setShowRecords(true); setRecordEditorType(''); deselect(); }}>Records</Breadcrumb.Section>
 					<Breadcrumb.Divider icon='right angle' />
 					<Breadcrumb.Section active>{record['o:title']}</Breadcrumb.Section>
 				</Breadcrumb>
-				<RecordForm onSubmit={submit} submitLabel={strings.save_record} disabled={loading} showDelete={true} handleDelete={() => deleteRecord(record)}/>
+					<RecordForm onSubmit={submit} submitLabel={strings.save_record} disabled={loading} showDelete={true} handleDelete={() => {deleteRecord(record); setShowRecords(true); setRecordEditorType('')}}/>
 				<p>{record.error}</p>
 			</div>);
 		} else {
@@ -27,7 +27,8 @@ class RecordUpdate extends Component {
 }
 
 const mapStateToProps = state => ({
-  record: state.exhibitShow.editorRecord
+  record: state.exhibitShow.editorRecord,
+  exhibit: state.exhibitShow.exhibit,
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({

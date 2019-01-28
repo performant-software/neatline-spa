@@ -21,7 +21,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {change} from 'redux-form';
 import {updateRecordCacheAndSave, leafletIsSaving, leafletIsEditing} from '../../actions';
-import {selectRecord, deselectRecord, previewRecord, unpreviewRecord} from '../../actions';
+import { selectRecord, deselectRecord, previewRecord, unpreviewRecord, setShowRecords} from '../../actions';
 import L from 'leaflet';
 import Draw from 'leaflet-draw';
 import leafletSupport from './leafletSupport.js';
@@ -37,7 +37,6 @@ class ExhibitPublicMap extends Component {
 			map_center:[51.505, -0.09],
 			map_zoom:13
 		};
-
 		// Render flags, used because we can't use standard react logic
 		this.cacheInitialized=false;
 		this.mapInitialized=false;
@@ -56,15 +55,17 @@ class ExhibitPublicMap extends Component {
 	shouldComponentUpdate(){return this.allowRender;}
 
 	// Post-DOM
-	componentDidUpdate = () =>{
-
+	componentDidUpdate = (prevProps) =>{
 		// Initialize map
 		if(!this.mapInitialized){
 			this.ls_mapInit();
 		}
-
 		// Update the map
-		if(typeof this.props.records !== 'undefined'){
+		if ((typeof (prevProps.records || this.props.records) !== 'undefined') && (this.props.records !== prevProps.records)){
+			this.ls_mapUpdate();
+		}
+
+		if (prevProps.selectedRecord !== this.props.selectedRecord) {
 			this.ls_mapUpdate();
 		}
 
@@ -212,7 +213,6 @@ class ExhibitPublicMap extends Component {
 		let selectedRecord = this.props.selectedRecord;
 		let saveChanges =  this.syncDrawWithReact;
 		let geometry = this.ls_geometrySetup();
-
 		if(typeof geometry === 'undefined'){
 			return;
 		}
@@ -233,8 +233,8 @@ class ExhibitPublicMap extends Component {
 		});
 
 		// Selectively show the draw control
-		if(this.props.userSignedIn){
-			if( (typeof selectedRecord !== 'undefined' && selectedRecord !== null) || this.props.editorNewRecord){
+		if((this.props.viewMode === 'editing') && (this.props.showExhibitSettings === false)){
+			if( (typeof selectedRecord !== 'undefined' && selectedRecord !== null) || this.props.editorNewRecord ){
 				mapInstance.addControl(this.ls_drawControl);
 			}
 		}
@@ -313,7 +313,6 @@ class ExhibitPublicMap extends Component {
 	}
 
 	ls_geometrySetup = () => {
-
 		if(typeof this.props.records === 'undefined'){return;}
 
 		let onGeometryClick = this.onGeometryClick;
@@ -419,7 +418,6 @@ class ExhibitPublicMap extends Component {
 	// Event handlers
 	//////////////////////////////////////
 	syncDrawWithReact = (selectedRecord,geojsonData) => {
-
 		if(typeof this.props.records === 'undefined'){
 			return;
 		}
@@ -435,7 +433,8 @@ class ExhibitPublicMap extends Component {
 			},
 			selectedRecord:selectedRecord
 		});
-
+		console.log('sync', this.props)
+		// this.props.setShowRecords(true);
 	}
 
 	event_refreshMap = (event) => {
@@ -452,9 +451,16 @@ class ExhibitPublicMap extends Component {
 	}
 
 	onGeometryClick=(event,record)=>{
-		if(typeof this.props.records === 'undefined' || this.isDrawing){return;}
+		if (
+			typeof this.props.records === 'undefined' || 
+			this.isDrawing || 
+			this.props.showExhibitSettings
+		){return;}
 		L.DomEvent.stop(event);
 		this.props.selectRecord({record:record});
+		if (this.props.viewMode === 'editing'){
+			this.props.setShowRecords(false); this.props.setRecordEditorType('edit')
+		}
 		this.forceUpdate();
 	}
 
@@ -476,7 +482,8 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 	change,
 	dispatch,
 	leafletIsSaving,
-	updateRecordCacheAndSave
+	updateRecordCacheAndSave,
+	setShowRecords
 }, dispatch);
 
 export default connect(null,mapDispatchToProps)(ExhibitPublicMap);
