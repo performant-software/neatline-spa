@@ -21,31 +21,33 @@ export default function app(state = initialState, action) {
 			}else{
 				records.push(action.payload.setValues);
 			}
+			let newCache = records;
+			if (records.length > 0) {
+				newCache = state.cache;
+				records.forEach(record => {
 
-			let newCache = state.cache;
-			records.forEach(record =>{
-
-				let recordID = record["o:id"];
-				if(typeof  recordID === 'undefined'){
-					 recordID = TYPE.NEW_UNSAVED_RECORD;
-				}
-
-				if(typeof newCache[recordID] === 'undefined'){
-					newCache[recordID] = {};
-				}
-
-				// Loop over and overwrite any o: values
-				let newValues=record;
-				let keys = Object.keys(newValues);
-				for (let idx=0; idx < keys.length;idx++) {
-					let key = keys[idx];
-					let value = newValues[key];
-					if(key.substring(0, 2) === 'o:' || key.substring(0, 1) === '@'){
-						newCache[recordID][key]=value;
+					let recordID = record["o:id"];
+					if (typeof recordID === 'undefined') {
+						recordID = TYPE.NEW_UNSAVED_RECORD;
 					}
-				}
-			});
 
+					if (typeof newCache[recordID] === 'undefined') {
+						newCache[recordID] = {};
+					}
+
+					// Loop over and overwrite any o: values
+					let newValues = record;
+					let keys = Object.keys(newValues);
+					for (let idx = 0; idx < keys.length; idx++) {
+						let key = keys[idx];
+						let value = newValues[key];
+						if (key.substring(0, 2) === 'o:' || key.substring(0, 1) === '@') {
+							newCache[recordID][key] = value;
+						}
+					}
+				});
+			}
+			
 			return{
 				...state,
 				cache:newCache

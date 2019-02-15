@@ -210,7 +210,6 @@ class ExhibitForm extends Component {
 			}
 		}
 	}
-	formSubmit=()=> this.handleSubmit()
 	render() {
 		const width1 = this.state.isNewExhibit ? 9 : 16;
 		const width2 = this.state.isNewExhibit ? 6 : 16;

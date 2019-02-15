@@ -44,6 +44,12 @@ export const selectRecord = (payload) => action(ACTION_TYPE.RECORD_SELECTED, pay
 export const deselectRecord = (payload) => action(ACTION_TYPE.RECORD_DESELECTED, payload);
 export const fetchRecordsBySlug = (payload) => action(ACTION_TYPE.RECORD_FETCH_BY_SLUG, payload);
 export const filterRecords = (payload) =>  action(ACTION_TYPE.RECORDS_FILTER, payload);
+export const setShowRecords = (payload) => action(ACTION_TYPE.SHOW_RECORDS, payload);
+
+export const setShowExhibitSettings = (payload) => action(ACTION_TYPE.SHOW_EXHIBIT_SETTINGS, payload);
+
+export const setRecordEditorType = (payload) => action(ACTION_TYPE.RECORD_EDITOR_TYPE, payload);
+
 // FIXME:  Here be dragons
 // The code below is old and needs to be refactored so that it behaves like proper action dispatcher + saga (follow pattern above)
 export const deleteExhibit = (exhibit) => {

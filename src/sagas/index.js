@@ -350,6 +350,8 @@ function* fetchRecordsResponseReceived(action) {
 // 	yield put({ type: ACTION_TYPE.RECORDS_FILTER, payload: action.payload });
 // }
 
+
+
 function* updateRecordCacheAndSave(action) {
 	yield put({type: ACTION_TYPE.RECORD_CACHE_UPDATE, payload:action.payload});
 	yield put({type: ACTION_TYPE.EXHIBIT_CACHE_SAVE, payload:action.payload});
@@ -357,7 +359,6 @@ function* updateRecordCacheAndSave(action) {
 }
 
 function* saveCacheToDatabase(action) {
-
 	yield put({type: ACTION_TYPE.LEAFLET_IS_SAVING, payload: true});
 
 	let exhibit = yield select(getExhibitCache);

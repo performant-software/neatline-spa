@@ -51,6 +51,23 @@ export default function(state = initialState, action) {
 				exhibitNotFound: true
 			};
 
+		case ACTION_TYPE.SHOW_RECORDS:
+			return {
+				...state,
+				showRecords: action.payload
+			};
+
+		case ACTION_TYPE.SHOW_EXHIBIT_SETTINGS:
+			return {
+				...state,
+				showExhibitSettings: action.payload,
+			};
+
+		case ACTION_TYPE.RECORD_EDITOR_TYPE:
+			return {
+				...state,
+				recordEditorType: action.payload,
+			}
 		case ACTION_TYPE.RECORD_SELECTED:
 			let record = action.payload.record;
 			if (typeof record !== 'undefined' && record !== null) {
@@ -114,14 +131,16 @@ export default function(state = initialState, action) {
 				...state,
 				records: state.records.concat(action.record),
 				editorRecord: action.record,
-				selectedRecord: action.record
+				selectedRecord: action.record,
+				filteredRecords: state.filteredRecords.concat(action.record),
 			}
 
 		case ACTION_TYPE.RECORD_REPLACED:
 			return {
 				...state,
 				records: state.records.filter(r => r['o:id'].toString() !== action.record['o:id'].toString()).concat(action.record),
-				editorRecord: action.record
+				editorRecord: action.record,
+				filteredRecords: state.filteredRecords.filter(r => r['o:id'].toString() !== action.record['o:id'].toString()).concat(action.record)
 				/* selectedRecord: action.record */
 			}
 
@@ -131,7 +150,8 @@ export default function(state = initialState, action) {
 				records: state.records.filter(r => r['o:id'].toString() !== action.record['o:id'].toString()),
 				editorRecord: null,
 				selectedRecord: null,
-				tabIndex: 1
+				tabIndex: 1,
+				filteredRecords: state.filteredRecords.filter(r => r['o:id'].toString() !== action.record['o:id'].toString())
 			}
 
 		// FIXME: Remove this and have map use hidden form
