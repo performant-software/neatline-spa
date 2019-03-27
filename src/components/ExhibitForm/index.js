@@ -250,7 +250,7 @@ class ExhibitForm extends Component {
 											type='text'
 											placeholder='Enter url'
 											onChange={this.markUnsaved}
-											/> 
+											/>
 										</div>
 									</div>
 								</Grid.Column>
@@ -258,29 +258,29 @@ class ExhibitForm extends Component {
 							<Grid.Row>
 								<Grid.Column width={width1}>
 									<div className='field'>
-										<label htmlFor='o:narrative'>Narrative</label> 
+										<label htmlFor='o:narrative'>Narrative</label>
 										<div className='ui input'>
 										<Field name='o:narrative'
 											component='textarea'
 											placeholder='Enter exhibit narrative'
 											onChange={this.markUnsaved}
-											/> 
+											/>
 										</div>
 									</div>
 								</Grid.Column>
 								<Grid.Column width={width2}>
 									<div className='field'>
-										<label htmlFor='o:accessible_url'>Alternative Accessible URL</label> 
+										<label htmlFor='o:accessible_url'>Alternative Accessible URL</label>
 										<div className='ui input'>
 											<Field name='o:accessible_url'
 												component='input'
 												type='text'
 												placeholder='Enter alternative url'
 												onChange={this.markUnsaved}
-											/> 
+											/>
 										</div>
 									</div>
-									{this.state.isNewExhibit ? 
+									{this.state.isNewExhibit ?
 									<div>
 										<div className='field'>
 											<div className='ui checkbox toggle'>
@@ -325,7 +325,7 @@ class ExhibitForm extends Component {
 									: null }
 								</Grid.Column>
 							</Grid.Row>
-							
+
 							<Divider/>
 							<Grid.Row>
 								<Grid.Column width={width1}>
@@ -459,7 +459,7 @@ class ExhibitForm extends Component {
 							</Grid.Row>
 						</Grid>
 						</fieldset>
-				{this.state.isNewExhibit && 
+				{this.state.isNewExhibit &&
 				<Button type="submit">Create Exhibit</Button>
 				}
 				</Form>

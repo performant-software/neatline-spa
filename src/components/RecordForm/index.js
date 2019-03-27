@@ -30,7 +30,7 @@ class RecordForm extends Component {
 
 	constructor(props) {
 		super(props);
-		console.log(props);
+		// console.log(props);
 		// Mapping to this
 		this.change = change;
 		this.handleSubmit = props.handleSubmit;
@@ -70,7 +70,6 @@ class RecordForm extends Component {
 	}
 
 	componentWillReceiveProps(nextprops) {
-
 		// Update the cache if the record changed or not yet initialized
 		if (!this.cacheInitialized || (nextprops.initialValues['o:id'] !== this.props.initialValues['o:id'])) {
 			this.props.dispatch(updateRecordCache({setValues: nextprops.initialValues}));
