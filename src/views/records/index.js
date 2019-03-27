@@ -15,7 +15,7 @@ class Records extends Component {
 		this.resetSearch();
 	}
 	resetSearch = () => this.setState({ results: this.props.filteredRecords, column: null, direction: null, 'searchTerm': '' });
-	
+
 	searchChange = (e, d) => {
 		if (d.value.length < 1) return this.resetSearch()
 		this.setState({'searchTerm': d.value})
@@ -42,7 +42,7 @@ class Records extends Component {
 			let results = this.props.records.filter(record => (record['o:title'] || '').includes(this.state.searchTerm));
 			return this.props.filterRecords(results)
 		}
-		
+
 	}
 	setActiveCard = (record_id) => {
 		this.setState({activeCard: record_id})
@@ -51,20 +51,20 @@ class Records extends Component {
 		const props = this.props;
 		const state = this.state;
 		return(
-			
+
 			<div style={{ overflowY: 'auto', height: '90vh', overflowX: 'hidden', 'padding': '1rem' }}>
 				<Grid>
 					<Grid.Row>
 						{this.props.viewMode === 'editing' ?
 						<Grid.Column width={4}>
-							
+
 
 								<Button size='small'
 									onClick={() => { props.setRecordEditorType('new'); props.setShowRecords(false) }}>
 									{strings.new_record}
 								</Button>
 
-							
+
 						</Grid.Column>
 							: null}
 						<Grid.Column width={ this.props.viewMode === 'editing' ? 9:15}>
@@ -78,13 +78,13 @@ class Records extends Component {
 							/>
 						</Grid.Column>
 					</Grid.Row>
-					{ this.props.viewMode === 'editing' ? 
+					{ this.props.viewMode === 'editing' ?
 
 					<Grid.Row>
 					<Table celled selectable sortable	>
 						<Table.Header>
 							<Table.Row>
-								<Table.HeaderCell 
+								<Table.HeaderCell
 									sorted={state.column === 'o:title' ? state.direction : null}
 									onClick={this.handleSort('o:title')}
 									>Record Title</Table.HeaderCell>
@@ -101,14 +101,14 @@ class Records extends Component {
 									<Table.Cell style={{
 										fontWeight: record === props.selectedRecord ? 'bold' : 'normal'
 									}}>
-										<div 
+										<div
 											style={{ textOverflow: 'ellipsis', maxWidth: '8vw', whiteSpace: 'nowrap', overflow: 'hidden'}}
 											onClick={() => { props.selectRecord({ record: record }); props.setShowRecords(false); props.setRecordEditorType('edit') }}
 														>
 											{record['o:title'] === null ? "???" : record['o:title']}
 										</div>
 									</Table.Cell>
-									<Table.Cell >
+									<Table.Cell>
 										{record['o:added'] === null ? "???" : record['o:added']}
 									</Table.Cell>
 									<Table.Cell>
@@ -116,7 +116,7 @@ class Records extends Component {
 											edit
 										</Button>
 										<Button
-											size='mini' 
+											size='mini'
 											onClick={() => {
 												this.props.dispatch(this.props.removeRecordFromCache(record['o:id']));
 												this.props.deleteRecord(record);
@@ -130,10 +130,10 @@ class Records extends Component {
 							}
 						</Table.Body>
 					</Table>
-					</Grid.Row> : 
+					</Grid.Row> :
 					<Grid.Row>
 						{props.filteredRecords.map( record => (
-							<Card 
+							<Card
 								style={{marginRight: '1.5em', marginLeft: '1.5em'}}
 								fluid
 								key={record['o:id']}
@@ -153,7 +153,7 @@ class Records extends Component {
 			</div>
 		);
 	}
-} 
+}
 
 
 const mapStateToProps = state => ({

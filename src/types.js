@@ -15,6 +15,7 @@ export const BASELAYER_TYPE = Object.freeze({
 
 // FIXME: Not sure why this is here
 export const EXHIBIT_DEFAULT_VALUES = Object.freeze({
+  'o:spatial_layer': '0',
 	'o:spatial_layers': [],
 	'o:zoom_levels': 20,
 	'o:spatial_querying': true

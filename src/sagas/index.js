@@ -113,7 +113,9 @@ function* createRecordResponseReceived(action) {
 
 
 	// On failure...
-	} else {}
+	} else {
+    console.log('!! failure response received for createRecord');
+  }
 }
 
 function* deleteRecord(action) {
@@ -189,7 +191,8 @@ function* updateRecordResponseReceived(action) {
 		yield put({type: ACTION_TYPE.RECORD_REPLACED, record: action.payload});
 	}
 
-	yield put({type: ACTION_TYPE.RECORD_DESELECTED});
+  // commenting out for now -- what is deselection intended to accomplish here? (akstuhl)
+	// yield put({type: ACTION_TYPE.RECORD_DESELECTED});
 
 	yield put({type: ACTION_TYPE.LEAFLET_IS_EDITING, payload: false});
 }
@@ -379,6 +382,7 @@ function* saveCacheToDatabase(action) {
 	yield put({type: ACTION_TYPE.RECORD_CACHE_CLEAR_UNSAVED});
 
 
+  // FIXME: TO BE RESOLVED - this was causing all kinds of trouble because all records get updated every time anything happens, and then between the saga/takeLatest flow and the reducer's assingment of the response object to exhibitShow.editorRecord, the record selection would change counterintuitively; all that said, I guess we want to be able to do something like this in theory, so maybe the problem should be fixed in the response handler (reducer) stage
 	// Update records
 	for (let x=0; x<records.length; x++) {
 		let thisRecord = records[x];
@@ -392,6 +396,7 @@ function* saveCacheToDatabase(action) {
 		yield put({type: ACTION_TYPE.EXHIBIT_UPDATE, payload: exhibit});
 	}
 
+  // why do we deselect then select here?
 	if(typeof selectedRecord !== 'undefined' && selectedRecord !== null && !isNewRecord){
 		yield put({type: ACTION_TYPE.RECORD_DESELECTED});
 		yield put({type: ACTION_TYPE.RECORD_SELECTED, payload:{record:selectedRecord}});

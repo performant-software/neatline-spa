@@ -210,27 +210,29 @@ class ExhibitShow extends Component {
 								</Grid.Column>
 								) 
 							}
-							<Grid.Column floated='right' width={11}>
-								<ExhibitPublicMap
-									userSignedIn={this.props.userSignedIn}
-									mapCache={this.props.mapCache}
-									exhibit={this.props.exhibit}
-									records={this.state.records}
-									selectedRecord={this.props.selectedRecord}
-									previewedRecord={this.props.previewedRecord}
-									editorRecord={this.props.editorRecord}
-									editorNewRecord={this.props.editorNewRecord}
-									leafletState={this.props.leaflet}
-									exhibitShowURL={this.props.match.url}
-									hasWarning={this.props.mapCache.hasUnsavedChanges}
-									isEditing={this.props.recordEditorType === 'edit' ? true : false}
-									showExhibitSettings={this.props.showExhibitSettings}
-									viewMode={this.state.viewMode}
-									setRecordEditorType={this.props.setRecordEditorType}
-									setShowRecords={this.props.setShowRecords}
-								/>
-								<RecordInfoPanel isVisible={!this.props.leaflet.isEditing} />
-						</Grid.Column>
+              {!(!this.props.userSignedIn && this.props.showExhibitSettings) &&
+  							<Grid.Column floated='right' width={11}>
+  								<ExhibitPublicMap
+  									userSignedIn={this.props.userSignedIn}
+  									mapCache={this.props.mapCache}
+  									exhibit={this.props.exhibit}
+  									records={this.state.records}
+  									selectedRecord={this.props.selectedRecord}
+  									previewedRecord={this.props.previewedRecord}
+  									editorRecord={this.props.editorRecord}
+  									editorNewRecord={this.props.editorNewRecord}
+  									leafletState={this.props.leaflet}
+  									exhibitShowURL={this.props.match.url}
+  									hasWarning={this.props.mapCache.hasUnsavedChanges}
+  									isEditing={this.props.recordEditorType === 'edit' ? true : false}
+  									showExhibitSettings={this.props.showExhibitSettings}
+  									viewMode={this.state.viewMode}
+  									setRecordEditorType={this.props.setRecordEditorType}
+  									setShowRecords={this.props.setShowRecords}
+  								/>
+  								<RecordInfoPanel isVisible={!this.props.showExhibitSettings && !this.props.leaflet.isEditing} />
+  						</Grid.Column>
+            }
 					</Grid.Row>
 				</Grid>
 			</div>);
