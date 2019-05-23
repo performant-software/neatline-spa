@@ -308,7 +308,10 @@ class ExhibitPublicMap extends Component {
 
 		mapInstance.on('draw:drawstop', (e) => {
 			this.props.leafletIsEditing(false);
-			this.isDrawing=false;
+      // crude fix for events firing in non-intuitive sequence -- delay prevents the mouse action from getting treated as a mapClick and deselecting the record
+			window.setTimeout(function() {
+        this.isDrawing=false;
+      }.bind(this), 200);
 			this.allowRender=true;
 		});
 
@@ -472,6 +475,7 @@ class ExhibitPublicMap extends Component {
 		L.DomEvent.stop(event);
 		if(typeof this.props.records === 'undefined' || this.isDrawing){return;}
 		this.map.removeControl(this.ls_drawControl);
+    this.props.setShowRecords(true);
 		this.props.deselectRecord();
 		this.forceUpdate();
 	}

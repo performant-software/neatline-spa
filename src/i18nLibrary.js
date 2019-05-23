@@ -10,6 +10,8 @@ export let strings = new LocalizedStrings({
      refreshExhibits:"Refresh Exhibits",
      exhibit: "Exhibit",
      title: "Title",
+     full: "Full window view",
+     contained: "Contained view",
      created: "Created",
      public: "Public",
      delete: "Delete",
@@ -81,7 +83,6 @@ export let strings = new LocalizedStrings({
      delete_record_error:"Error deleting record",
      create_record_error:"Error creating record",
      record_delete_confirmation:"Are you sure you want to delete the Neatline record?",
-
 
  },
  es:{

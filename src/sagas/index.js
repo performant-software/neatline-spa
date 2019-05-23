@@ -46,9 +46,10 @@ export default function* rootSaga() {
 		takeLatest(ACTION_TYPE.EXHIBIT_CACHE_SAVE, saveCacheToDatabase),
 
 		takeLatest(ACTION_TYPE.EVENT_REFRESH_MAP_GEOMETRY, requestMapRefreshGeometry),
-		takeLatest(ACTION_TYPE.EVENT_REFRESH_MAP, requestMapRefresh),
-		takeLatest(ACTION_TYPE.HAS_UNSAVED_CHANGES, requestMapRefresh)
+		takeLatest(ACTION_TYPE.EVENT_REFRESH_MAP, requestMapRefresh)
 
+    // commenting out for now as HAS_UNSAVED_CHANGES fires frequently during editing and doesn't appear to require a map refresh in most cases (akstuhl)
+		// takeLatest(ACTION_TYPE.HAS_UNSAVED_CHANGES, requestMapRefresh)
 	])
 }
 
@@ -215,8 +216,9 @@ function* fetchExhibits(action) {
 
 	// Failed on the fetch call (timeout, etc)
 	} catch (e) {
+    console.log(e);
 		yield put({type: ACTION_TYPE.EXHIBITS_LOADING,payload: {loading: false}});
-		yield put({type: ACTION_TYPE.RECORD_ERROR, payload: {message: 'error',error: e}});
+		yield put({type: ACTION_TYPE.EXHIBITS_ERRORED, payload: e});
 	}
 }
 
@@ -230,7 +232,7 @@ function* fetchExhibitsResponseReceived(action) {
 
 	// On failure...
 	} else {
-		yield put({type: ACTION_TYPE.RECORD_ERROR, payload: {message: 'error'}});
+		yield put({type: ACTION_TYPE.EXHIBITS_ERRORED, payload: action.payload.response});
 	}
 }
 
