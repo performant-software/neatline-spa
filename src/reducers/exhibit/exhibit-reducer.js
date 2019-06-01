@@ -10,6 +10,7 @@ export default function(state = initialState, action) {
    	 };
 
      case ACTION_TYPE.EXHIBITS_ERRORED:
+     console.log(action);
    	 return {
    	   ...state,
    	   errored: action.errored

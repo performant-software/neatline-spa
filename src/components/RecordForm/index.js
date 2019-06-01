@@ -72,7 +72,7 @@ class RecordForm extends Component {
 	componentWillReceiveProps(nextprops) {
 		// Update the cache if the record changed or not yet initialized
 		if (!this.cacheInitialized || (nextprops.initialValues['o:id'] !== this.props.initialValues['o:id'])) {
-			this.props.dispatch(updateRecordCache({setValues: nextprops.initialValues}));
+			this.props.updateRecordCache({setValues: nextprops.initialValues});
 			this.setState({recordID: nextprops.initialValues['o:id']});
 			this.cacheInitialized = true;
 		}
@@ -86,20 +86,21 @@ class RecordForm extends Component {
 			if (event.target.name.includes("date")) {
 				event.target.value = moment(event.target.value).format('YYYY-MM-DD');
 			}
-			this.props.dispatch(updateRecordCache({
+			this.props.updateRecordCache({
 				setValues: {
 					'o:id': this.props.initialValues['o:id'],
 					[event.target.name]: event.target.value
 				}
-			}));
+			});
 		}
-		this.props.dispatch(setUnsavedChanges({hasUnsavedChanges: true}));
+    if (!this.props.mapCache.hasUnsavedChanges)
+	   this.props.setUnsavedChanges({hasUnsavedChanges: true});
 	}
 
 	// Delete a record
 	deleteRecord = () => {
 		console.log('delete Record', this.props.initialValues['o:id'])
-		this.props.dispatch(removeRecordFromCache({recordID: this.props.initialValues['o:id']}));
+		this.props.removeRecordFromCache({recordID: this.props.initialValues['o:id']});
 		this.handleDelete();
 	}
 
@@ -484,12 +485,12 @@ class RecordForm extends Component {
 			debugger
 			console.error('Cannot update cache with undefined prop!:' + value);
 		} else {
-			this.props.dispatch(updateRecordCache({
+			this.props.updateRecordCache({
 				setValues: {
 					'o:id': this.props.initialValues['o:id'],
 					[property]: value
 				}
-			}));
+			});
 			this.markUnsaved();
 		}
 
@@ -622,6 +623,10 @@ const mapStateToProps = state => ({
 		}
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators({}, dispatch);
+const mapDispatchToProps = dispatch => bindActionCreators({
+  setUnsavedChanges,
+  updateRecordCache,
+  removeRecordFromCache
+}, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(RecordForm);

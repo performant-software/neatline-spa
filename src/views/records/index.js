@@ -109,7 +109,9 @@ class Records extends Component {
 										</div>
 									</Table.Cell>
 									<Table.Cell>
-										{record['o:added'] === null ? "???" : record['o:added']}
+                    <div>
+										  {record['o:added'] === null ? "???" : record['o:added'].toString()}
+                    </div>
 									</Table.Cell>
 									<Table.Cell>
 											<Button size='mini' onClick={() => { props.selectRecord({ record: record }); props.setShowRecords(false); props.setRecordEditorType('edit') }}>

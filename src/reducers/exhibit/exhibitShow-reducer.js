@@ -60,7 +60,7 @@ export default function(state = initialState, action) {
 		case ACTION_TYPE.SHOW_EXHIBIT_SETTINGS:
 			return {
 				...state,
-				showExhibitSettings: action.payload,
+				showExhibitSettings: action.payload
 			};
 
 		case ACTION_TYPE.RECORD_EDITOR_TYPE:

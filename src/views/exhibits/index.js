@@ -30,6 +30,8 @@ class Exhibits extends Component {
     const lngButtons = allLanguages.map((lng) =>
         <Button key={lng} onClick={() => changeLanguage(lng)}>{lng}</Button>
     );
+    const showFullViewLinks = window.containerFullMode === false && window.containerFullModeBaseRoute;
+
     return (
       <div>
         <Menu size='massive'>
@@ -52,7 +54,9 @@ class Exhibits extends Component {
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>{strings.title}</Table.HeaderCell>
-              
+              {showFullViewLinks &&
+                <Table.HeaderCell></Table.HeaderCell>
+              }
               <Table.HeaderCell>{strings.created}</Table.HeaderCell>
               <Table.HeaderCell>{strings.public}</Table.HeaderCell>
               {props.userSignedIn &&
@@ -64,9 +68,13 @@ class Exhibits extends Component {
             {props.exhibits.map((exhibit, idx) => (
               <Table.Row key={idx}>
                 <Table.Cell>
-                  <Link to={`${window.baseRoute}/show/${exhibit['o:slug']}`} >{exhibit['o:title']}</Link>
+                  <Link className='ps_n3_exhibitTitle' to={`${window.baseRoute}/show/${exhibit['o:slug']}`} >{exhibit['o:title']}</Link>
                 </Table.Cell>
-                
+                {showFullViewLinks &&
+                  <Table.Cell>
+                    <a href={`${window.containerFullModeBaseRoute}/show/${exhibit['o:slug']}`}>{strings.full}</a>
+                  </Table.Cell>
+                }
                 <Table.Cell>{exhibit['o:added']}</Table.Cell>
                 <Table.Cell>{exhibit['o:public'] ? strings.yes : strings.no}</Table.Cell>
                 {props.userSignedIn &&

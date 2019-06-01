@@ -95,6 +95,9 @@
   position: relative;
   z-index: 9000; }
 
+.ps_n3_exhibitTitle {
+  font-weight: bold; }
+
 label {
   padding: 0;
   margin: 0; }

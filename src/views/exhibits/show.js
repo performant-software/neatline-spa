@@ -2,7 +2,7 @@ import 'react-tabs/style/react-tabs.css';
 import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {Route, Link} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import {fetchExhibits, setTabIndex, deselectRecord,fetchRecordsBySlug,updateRecordCache} from '../../actions';
 import ExhibitUpdate from './update';
 import ExhibitPublicMap from '../../components/ExhibitPublicMap';
@@ -39,7 +39,7 @@ class ExhibitShow extends Component {
 		super(props)
 		const viewMode = this.props.userSignedIn ? 'editing' : 'signedOut'
 		this.state = {
-			records: this.props.filteredRecords, 
+			records: this.props.filteredRecords,
 			viewMode: viewMode
 		}
 	}
@@ -67,7 +67,7 @@ class ExhibitShow extends Component {
 			this.props.dispatch(this.props.updateRecordCache(this.props.filteredRecords));
 		}
 	}
-	
+
 	showRecords = () => {
 		return (this.props.showRecords ?
 					<Records exhibitShowURL={this.props.match.url}
@@ -76,7 +76,7 @@ class ExhibitShow extends Component {
 						setRecordEditorType={this.props.setRecordEditorType}
 						viewMode={this.state.viewMode} /> :
 					(this.props.recordEditorType === 'new' ? <RecordCreate setShowRecords={this.props.setShowRecords} deselect={this.props.deselectRecord} setRecordEditorType={this.props.setRecordEditorType} /> : <RecordUpdate setShowRecords={this.props.setShowRecords} deselect={this.props.deselectRecord} setRecordEditorType={this.props.setRecordEditorType}/>
-				
+
 				)
 		);
 	}
@@ -97,13 +97,18 @@ class ExhibitShow extends Component {
 		this.setState({viewingExhibitEdit: !this.state.viewingExhibitEdit})
 	}
 
-	setViewMode = (val) => this.setState({viewMode: val}) 
+	setViewMode = (val) => this.setState({viewMode: val})
 
 
 	render() {
 
 		const props = this.props;
 		const {exhibit} = props;
+
+    const showFullViewLink = window.containerFullMode === false && window.containerFullModeBaseRoute;
+
+    const showReturnLink = !showFullViewLink && window.containerFullMode === true && window.containerReturnBaseRoute;
+
 		let exhibitDisplay;
 		if (exhibit) {
 			exhibitDisplay = (
@@ -112,22 +117,27 @@ class ExhibitShow extends Component {
 					<Menu.Item header as={Link} to={`${window.baseRoute}/`}><h3>NEATLINE </h3></Menu.Item>
 					<Menu.Item> {exhibit['o:title']}</Menu.Item>
 						<Menu.Item> {this.props.userSignedIn ?<Icon name="edit" />: <Icon name="search"/>}</Menu.Item>
-					
+
 					<Menu.Item position='right'>
 						{this.props.userSignedIn ?
 								<div>
-							<Button 
-								icon 
+							<Button
+								icon
 								toggle
 								basic
 								color={this.props.showExhibitSettings ? 'blue' : null}
 								active={this.props.showExhibitSettings}
-								onClick={()=>{this.props.setShowExhibitSettings(true); this.setViewMode('editing')}}> 
+								onClick={()=>{
+                  this.props.setShowExhibitSettings(true);
+                  this.setViewMode('editing');
+                  this.props.setShowRecords(true);
+                  this.props.deselectRecord();
+                }}>
 								Exhibit Settings <Icon name="settings" />
 							</Button>
 							<Button
 								icon
-								toggle 
+								toggle
 								basic
 								color={(!this.props.showExhibitSettings && this.state.viewMode === 'editing') ? 'blue' : null}
 								active={!this.props.showExhibitSettings && this.state.viewMode === 'editing'}
@@ -143,6 +153,26 @@ class ExhibitShow extends Component {
 								onClick={() => { this.props.setShowExhibitSettings(false); this.setViewMode('publicView'); this.props.setRecordEditorType(''); this.props.setShowRecords(true); this.props.deselectRecord()}}>
 								View Public Exhibit <Icon name="search" />
 							</Button>
+              {showFullViewLink &&
+                <a href={`${window.containerFullModeBaseRoute}/show/${exhibit['o:slug']}`}>
+                  <Button
+                    icon
+                    toggle
+                    basic>
+                    {strings.full} <Icon name='expand' />
+                  </Button>
+                </a>
+              }
+              {showReturnLink &&
+                <a href={`${window.containerReturnBaseRoute}/show/${exhibit['o:slug']}`}>
+                  <Button
+                    icon
+                    toggle
+                    basic>
+                    {strings.contained} <Icon name='compress' />
+                  </Button>
+                </a>
+              }
 							<Button
 								icon
 								onClick={this.saveAll}>
@@ -156,7 +186,11 @@ class ExhibitShow extends Component {
 									basic
 									color={this.props.showExhibitSettings ? 'blue' : null}
 									active={this.props.showExhibitSettings}
-									onClick={() => this.props.setShowExhibitSettings(true)}>
+									onClick={() => {
+                    this.props.setShowExhibitSettings(true);
+                    this.props.setShowRecords(true);
+                    this.props.deselectRecord();
+                  }}>
 									Exhibit Information <Icon name="info" />
 								</Button>
 								<Button
@@ -175,7 +209,7 @@ class ExhibitShow extends Component {
 				<Grid divided padded>
 					<Grid.Row>
 						{this.props.userSignedIn ?
-							( this.props.showExhibitSettings ? 
+							( this.props.showExhibitSettings ?
 								<Grid.Column width={4}>
 									<ExhibitPanelContent
 										exhibit={this.props.exhibit}
@@ -184,10 +218,10 @@ class ExhibitShow extends Component {
 										:
 								<Grid.Column width={4}>
 									{this.showRecords()}
-								</Grid.Column> 
+								</Grid.Column>
 								)
-								: 	
-							(this.props.showExhibitSettings? 
+								:
+							(this.props.showExhibitSettings?
 								<Grid.Column width={15}>
 									<Card
 										fluid
@@ -208,7 +242,7 @@ class ExhibitShow extends Component {
 										setRecordEditorType={this.props.setRecordEditorType}
 										viewMode={'signedOut'} />
 								</Grid.Column>
-								) 
+								)
 							}
               {!(!this.props.userSignedIn && this.props.showExhibitSettings) &&
   							<Grid.Column floated='right' width={11}>
