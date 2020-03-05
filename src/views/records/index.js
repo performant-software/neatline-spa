@@ -3,7 +3,7 @@ import { selectRecord, filterRecords, removeRecordFromCache, deleteRecord} from 
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { strings } from '../../i18nLibrary';
-import { div, Button, Table, Search, Card } from 'semantic-ui-react';
+// import { div, Button, Table, Search, Card } from 'semantic-ui-react';
 import _ from 'lodash';
 
 class Records extends Component {
@@ -56,10 +56,10 @@ class Records extends Component {
 					<div>
 						{this.props.viewMode === 'editing' ?
 						// <div>
-							<Button size='small'
+							<button size='small'
 								onClick={() => { props.setRecordEditorType('new'); props.setShowRecords(false) }}>
 								{strings.new_record}
-							</Button>
+							</button>
 						// </div>
 						: null}
 						{/* <div width={ this.props.viewMode === 'editing' ? 9:15}>
@@ -96,7 +96,8 @@ class Records extends Component {
 									}}>
 										<b className="tablesaw-cell-label">Record Title</b>
 										<span className="tablesaw-cell-content">
-											<a className='ps_n3_exhibitTitle'
+											<a 
+												// className='ps_n3_exhibitTitle'
 												// style={{ textOverflow: 'ellipsis', maxWidth: '8vw', whiteSpace: 'nowrap', overflow: 'hidden'}}
 												onClick={() => { props.selectRecord({ record: record }); props.setShowRecords(false); props.setRecordEditorType('edit') }}
 															>

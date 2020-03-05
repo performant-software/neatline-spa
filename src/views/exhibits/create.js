@@ -33,13 +33,13 @@ class ExhibitCreate extends Component {
 				<a className="o-icon-external public" title="Fullscreen Editor" href={`${window.containerFullModeBaseRoute}/add`} aria-label="Fullscreen Editor"></a>
 				}
 				{showReturnLink &&
-				<a className="o-icon-compress public" title="Return to Omeka Admins" href={`${window.containerReturnBaseRoute}/add`} aria-label="Return to Omeka Admin"></a>
+				<a className="o-icon-compress public" title="Return to Omeka Admin" href={`${window.containerReturnBaseRoute}/add`} aria-label="Return to Omeka Admin"></a>
 				}
 				</h1>
 				<div id="page-actions">
 				</div>
 				<div className="breadcrumbs">
-					<a class="o-icon-left" href={`${window.baseRoute}/`}>Back to exhibit browse</a>
+					<a className="o-icon-left" href={`${window.baseRoute}/`}>Back to exhibit browse</a>
 				</div>
 				<ExhibitForm onSubmit={props.submit}
 					submitLabel={strings.create_exhibit}

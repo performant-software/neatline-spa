@@ -10,7 +10,7 @@ import RecordInfoPanel from '../../components/info';
 import Records from '../records';
 import RecordCreate from '../records/create';
 import RecordUpdate from '../records/update';
-import { strings } from '../../i18nLibrary';
+// import { strings } from '../../i18nLibrary';
 import {recordCacheToDatabase, updateExhibitCache, clearRecordCache, setShowExhibitSettings, setShowRecords, setRecordEditorType} from '../../actions';
 import LockOverlay from '../../components/LockOverlay';
 import SpinnerOverlay from '../../components/SpinnerOverlay';
@@ -123,7 +123,7 @@ class ExhibitShow extends Component {
 						}
 					
 					{this.props.userSignedIn ?
-					<div id="page-actions">
+					<div id="page-actions" className="neatline-actions">
 						<button
 							// className="o-icon-exhibit-settings button"
 							color={this.props.showExhibitSettings ? 'blue' : null}
@@ -151,14 +151,12 @@ class ExhibitShow extends Component {
 							Public View <i className="fas fa-eye"></i>
 						</button>
 						<button
-							icon
 							onClick={this.saveAll}>
-							Save <Icon name="save" />
+							Save
 						</button>
 					</div> :
 					<div id="page-actions">
 						<button
-							icon
 							toggle
 							basic
 							color={this.props.showExhibitSettings ? 'blue' : null}
@@ -168,16 +166,15 @@ class ExhibitShow extends Component {
 							this.props.setShowRecords(true);
 							this.props.deselectRecord();
 						}}>
-								Exhibit Information <Icon name="info" />
+								Exhibit Information
 						</button>
 						<button
-							icon
 							toggle
 							basic
 							color={!this.props.showExhibitSettings ? 'blue' : null}
 							active={!this.props.showExhibitSettings}
 							onClick={() => this.props.setShowExhibitSettings(false)}>
-							View Exhibit <Icon name="list" />
+							View Exhibit
 						</button>
 					</div>
 					}
@@ -228,9 +225,9 @@ class ExhibitShow extends Component {
 								)
 							}
 					{/* </div> */}
-					<div className="neatline-map">
+					{/* <div className="neatline-map"> */}
 					{!(!this.props.userSignedIn && this.props.showExhibitSettings) &&
-  							<div className="neatline-map" floated='right' width={11}>
+  							<div className="neatline-map">
   								<ExhibitPublicMap
   									userSignedIn={this.props.userSignedIn}
   									mapCache={this.props.mapCache}
@@ -251,8 +248,8 @@ class ExhibitShow extends Component {
   								/>
   								<RecordInfoPanel isVisible={!this.props.showExhibitSettings && !this.props.leaflet.isEditing} />
   						</div>
-            }
-					</div>
+					}
+					{/* </div> */}
 				</div>
 			</div>);
 

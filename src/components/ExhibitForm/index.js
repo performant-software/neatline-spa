@@ -210,9 +210,9 @@ class ExhibitForm extends Component {
 		}
 	}
 	render() {
-		const width1 = this.state.isNewExhibit ? 9 : 16;
-		const width2 = this.state.isNewExhibit ? 6 : 16;
-		const maxHeight = this.state.isNewExhibit ? `100vh` : `80vh`
+		// const width1 = this.state.isNewExhibit ? 9 : 16;
+		// const width2 = this.state.isNewExhibit ? 6 : 16;
+		// const maxHeight = this.state.isNewExhibit ? `100vh` : `80vh`
 		return (
 			<div>
 				{this.state.isNewExhibit ?

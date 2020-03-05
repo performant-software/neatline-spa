@@ -21,14 +21,14 @@ class Exhibits extends Component {
 
   render() {
     const props = this.props;
-    const changeLanguage = lng => {
-      strings.setLanguage(lng);
-      this.setState({});
-    }
-    const allLanguages = strings.getAvailableLanguages();
-    const lngButtons = allLanguages.map((lng) =>
-        <button key={lng} onClick={() => changeLanguage(lng)}>{lng}</button>
-    );
+    // const changeLanguage = lng => {
+    //   strings.setLanguage(lng);
+    //   this.setState({});
+    // }
+    // const allLanguages = strings.getAvailableLanguages();
+    // const lngButtons = allLanguages.map((lng) =>
+    //     <button key={lng} onClick={() => changeLanguage(lng)}>{lng}</button>
+    // );
     const showFullViewLinks = window.containerFullMode === false && window.containerFullModeBaseRoute;
     const showReturnLink = !showFullViewLinks && window.containerFullMode === true && window.containerReturnBaseRoute;
 
@@ -108,7 +108,7 @@ class Exhibits extends Component {
                 <td>
                   <b className="tablesaw-cell-label">Owner</b>
                   <span className="tablesaw-cell-content">
-                    {exhibit['o:name']}
+                    {exhibit['o:owner']}
                   </span>
                 </td>
               </tr>
