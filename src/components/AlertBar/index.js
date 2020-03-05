@@ -3,7 +3,7 @@ import React from 'react';
 class AlertBar extends React.Component {
 	render() {
 		return (
-			<div className={this.props.isVisible?"ps_n3_mapStatus_warning": "ps_n3_mapStatus_warning ps_n3_hidden"}>
+			<div id="neatline-alert" className={this.props.isVisible?"ps_n3_mapStatus_warning": "ps_n3_mapStatus_warning ps_n3_hidden"}>
 				{this.props.message}
 			</div>
 		);

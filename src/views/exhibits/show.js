@@ -106,123 +106,106 @@ class ExhibitShow extends Component {
 		const {exhibit} = props;
 
     const showFullViewLink = window.containerFullMode === false && window.containerFullModeBaseRoute;
-
     const showReturnLink = !showFullViewLink && window.containerFullMode === true && window.containerReturnBaseRoute;
 
 		let exhibitDisplay;
 		if (exhibit) {
 			exhibitDisplay = (
-				<div>
-				<Menu size='massive'>
-					<Menu.Item header as={Link} to={`${window.baseRoute}/`}><h3>NEATLINE </h3></Menu.Item>
-					<Menu.Item> {exhibit['o:title']}</Menu.Item>
-						<Menu.Item> {this.props.userSignedIn ?<Icon name="edit" />: <Icon name="search"/>}</Menu.Item>
-
-					<Menu.Item position='right'>
-						{this.props.userSignedIn ?
-								<div>
-							<Button
-								icon
-								toggle
-								basic
-								color={this.props.showExhibitSettings ? 'blue' : null}
-								active={this.props.showExhibitSettings}
-								onClick={()=>{
-                  this.props.setShowExhibitSettings(true);
-                  this.setViewMode('editing');
-                  this.props.setShowRecords(true);
-                  this.props.deselectRecord();
-                }}>
-								Exhibit Settings <Icon name="settings" />
-							</Button>
-							<Button
-								icon
-								toggle
-								basic
-								color={(!this.props.showExhibitSettings && this.state.viewMode === 'editing') ? 'blue' : null}
-								active={!this.props.showExhibitSettings && this.state.viewMode === 'editing'}
-								onClick={() => { this.props.setShowExhibitSettings(false); this.setViewMode('editing')}}>
-								Records <Icon name="list" />
-							</Button>
-							<Button
-								icon
-								toggle
-								basic
-								color={this.state.viewMode === 'publicView' ? 'blue' : null}
-								active={this.state.viewMode === 'publicView'}
-								onClick={() => { this.props.setShowExhibitSettings(false); this.setViewMode('publicView'); this.props.setRecordEditorType(''); this.props.setShowRecords(true); this.props.deselectRecord()}}>
-								View Public Exhibit <Icon name="search" />
-							</Button>
-              {showFullViewLink &&
-                <a href={`${window.containerFullModeBaseRoute}/show/${exhibit['o:slug']}`}>
-                  <Button
-                    icon
-                    toggle
-                    basic>
-                    {strings.full} <Icon name='expand' />
-                  </Button>
-                </a>
-              }
-              {showReturnLink &&
-                <a href={`${window.containerReturnBaseRoute}/show/${exhibit['o:slug']}`}>
-                  <Button
-                    icon
-                    toggle
-                    basic>
-                    {strings.contained} <Icon name='compress' />
-                  </Button>
-                </a>
-              }
-							<Button
-								icon
-								onClick={this.saveAll}>
-								Save <Icon name="save" />
-							</Button>
-							</div> :
-							<div>
-								<Button
-									icon
-									toggle
-									basic
-									color={this.props.showExhibitSettings ? 'blue' : null}
-									active={this.props.showExhibitSettings}
-									onClick={() => {
-                    this.props.setShowExhibitSettings(true);
-                    this.props.setShowRecords(true);
-                    this.props.deselectRecord();
-                  }}>
-									Exhibit Information <Icon name="info" />
-								</Button>
-								<Button
-									icon
-									toggle
-									basic
-									color={!this.props.showExhibitSettings ? 'blue' : null}
-									active={!this.props.showExhibitSettings}
-									onClick={() => this.props.setShowExhibitSettings(false)}>
-									View Exhibit <Icon name="list" />
-								</Button>
-							</div>
+				<div className="show neatline" role="content">
+					<h1 className="neatline-actions">
+						<span className="subhead">Neatline</span>
+						<span className="title">Exhibit Editor  </span>
+						{showFullViewLink &&
+						<a className="o-icon-external public" title="Fullscreen Exhibit Editor" href={`${window.containerFullModeBaseRoute}/show/${exhibit['o:slug']}`} aria-label="Fullscreen Exhibit Editor"></a>
 						}
-					</Menu.Item>
-				</Menu>
-				<Grid divided padded>
-					<Grid.Row>
-						{this.props.userSignedIn ?
+						{showReturnLink &&
+						<a className="o-icon-compress public" title="Return to Omeka Admin" href={`${window.containerReturnBaseRoute}/show/${exhibit['o:slug']}`} aria-label="Return to Omeka Admin"></a>
+						}
+					
+					{this.props.userSignedIn ?
+					<div id="page-actions">
+						<button
+							// className="o-icon-exhibit-settings button"
+							color={this.props.showExhibitSettings ? 'blue' : null}
+							active={this.props.showExhibitSettings}
+							onClick={()=>{
+						this.props.setShowExhibitSettings(true);
+						this.setViewMode('editing');
+						this.props.setShowRecords(true);
+						this.props.deselectRecord();
+						}}>
+						Exhibit Settings <i className="fas fa-cogs"></i>
+						</button>
+						<button
+							// className="o-icon-record button"
+							color={(!this.props.showExhibitSettings && this.state.viewMode === 'editing') ? 'blue' : null}
+							active={!this.props.showExhibitSettings && this.state.viewMode === 'editing'}
+							onClick={() => { this.props.setShowExhibitSettings(false); this.setViewMode('editing')}}>
+							Records <i className="fas fa-list-ul"></i>
+						</button>
+						<button
+							// className="o-icon-public button"
+							color={this.state.viewMode === 'publicView' ? 'blue' : null}
+							active={this.state.viewMode === 'publicView'}
+							onClick={() => { this.props.setShowExhibitSettings(false); this.setViewMode('publicView'); this.props.setRecordEditorType(''); this.props.setShowRecords(true); this.props.deselectRecord()}}>
+							Public View <i className="fas fa-eye"></i>
+						</button>
+						<button
+							icon
+							onClick={this.saveAll}>
+							Save <Icon name="save" />
+						</button>
+					</div> :
+					<div id="page-actions">
+						<button
+							icon
+							toggle
+							basic
+							color={this.props.showExhibitSettings ? 'blue' : null}
+							active={this.props.showExhibitSettings}
+							onClick={() => {
+							this.props.setShowExhibitSettings(true);
+							this.props.setShowRecords(true);
+							this.props.deselectRecord();
+						}}>
+								Exhibit Information <Icon name="info" />
+						</button>
+						<button
+							icon
+							toggle
+							basic
+							color={!this.props.showExhibitSettings ? 'blue' : null}
+							active={!this.props.showExhibitSettings}
+							onClick={() => this.props.setShowExhibitSettings(false)}>
+							View Exhibit <Icon name="list" />
+						</button>
+					</div>
+					}
+					<AlertBar isVisible={this.props.mapCache.hasUnsavedChanges} message="You have unsaved changes"/>
+					</h1>
+					<div className="breadcrumbs">
+						<a className="o-icon-left" href={`${window.baseRoute}/`}>Back to exhibit browse</a>
+					</div>
+					<div>
+						<h3> {exhibit['o:title']} </h3>
+					</div>
+				<div className="neatline-wrapper">
+					{/* <div className="neatline-content"> */}
+					{this.props.userSignedIn ?
 							( this.props.showExhibitSettings ?
-								<Grid.Column width={4}>
+								<div className="neatline-content">
 									<ExhibitPanelContent
 										exhibit={this.props.exhibit}
 										userSignedIn={this.props.userSignedIn} />
-								</Grid.Column>
+								</div>
 										:
-								<Grid.Column width={4}>
+								<div className="neatline-content">
 									{this.showRecords()}
-								</Grid.Column>
+								</div>
 								)
 								:
 							(this.props.showExhibitSettings?
-								<Grid.Column width={15}>
+								<div>
 									<Card
 										fluid
 										style={{height: '80vh'}}
@@ -234,18 +217,20 @@ class ExhibitShow extends Component {
 											<Card.Description>{exhibit['o:narrative']}</Card.Description>
 										</Card.Content>
 									</Card>
-								</Grid.Column> :
-								<Grid.Column width={4}>
+								</div> :
+								<div>
 									<Records exhibitShowURL={this.props.match.url}
 										userSignedIn={this.props.userSignedIn}
 										setShowRecords={this.props.setShowRecords}
 										setRecordEditorType={this.props.setRecordEditorType}
 										viewMode={'signedOut'} />
-								</Grid.Column>
+								</div>
 								)
 							}
-              {!(!this.props.userSignedIn && this.props.showExhibitSettings) &&
-  							<Grid.Column floated='right' width={11}>
+					{/* </div> */}
+					<div className="neatline-map">
+					{!(!this.props.userSignedIn && this.props.showExhibitSettings) &&
+  							<div className="neatline-map" floated='right' width={11}>
   								<ExhibitPublicMap
   									userSignedIn={this.props.userSignedIn}
   									mapCache={this.props.mapCache}
@@ -265,10 +250,10 @@ class ExhibitShow extends Component {
   									setShowRecords={this.props.setShowRecords}
   								/>
   								<RecordInfoPanel isVisible={!this.props.showExhibitSettings && !this.props.leaflet.isEditing} />
-  						</Grid.Column>
+  						</div>
             }
-					</Grid.Row>
-				</Grid>
+					</div>
+				</div>
 			</div>);
 
 		} else if (props.exhibitsLoading) {
@@ -279,8 +264,9 @@ class ExhibitShow extends Component {
 			exhibitDisplay = <ExhibitShowHeader userSignedIn={props.userSignedIn}>Exhibit with identifier "{props.match.params.slug}" not found</ExhibitShowHeader>;
 		}
 		return (
-			<div className="ps_n3_exhibitShowContainer" style={{width:'100%',position:'relative'}}>
-				<AlertBar isVisible={this.props.mapCache.hasUnsavedChanges} message="You have unsaved changes"/>
+			<div>
+			{/* <div className="ps_n3_exhibitShowContainer" style={{width:'100%',position:'relative'}}> */}
+				{/* <AlertBar isVisible={this.props.mapCache.hasUnsavedChanges} message="You have unsaved changes"/> */}
 				<SpinnerOverlay isVisible={this.props.leaflet.isSaving || this.props.recordsLoading}/>
 				<LockOverlay isVisible={this.props.leaflet.isEditing}/>
 					  {exhibitDisplay}

@@ -19,11 +19,11 @@ class ExhibitUpdate extends Component {
 				}
 			</Tab.Pane>
 			},
-			{
-				menuItem: 'Plugin Settings', render: () => <Tab.Pane attached={false}>
-					plugins
-				</Tab.Pane>
-			},
+			// {
+			// 	menuItem: 'Plugin Settings', render: () => <Tab.Pane attached={false}>
+			// 		plugins
+			// 	</Tab.Pane>
+			// },
 		]
 		return (
 			<div>

@@ -13,12 +13,12 @@
 
 .ps_n3_mapStatus_warning:before {
 	font-family: FontAwesome;
-	content: "\f071";
+	content: "\f05e"; //f071
 }
 
 .ps_n3_mapStatus_warning {
 	box-sizing: content-box;
-	position:relative;
+	position: absolute; //relative
 	z-index: 9000;
 	height: 1.5rem;
 	font-size: 1rem;
@@ -27,9 +27,10 @@
 	-moz-box-shadow: 8px -1px 21px 0 rgba(0,0,0,0.75);
 	box-shadow: 8px -1px 21px 0 rgba(0,0,0,0.75);
     left:0rem;
-    top:0rem !important;
+    top:auto !important; //0
     width:calc(100% - 1rem);
     margin:0rem;
     padding:.8rem 0 .5rem 1.2rem;
 	line-height:1rem;
+	text-align: left;
 }
