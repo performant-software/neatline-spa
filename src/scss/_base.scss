@@ -117,35 +117,72 @@ a, button {
 	cursor: pointer;
 }
 
-#content div[role="content"]>h1:first-of-type {
-    background-color: #fff;
+// #content div[role="content"]>h1:first-of-type {
+//     background-color: #fff;
+//     font-size: 24px;
+//     position: fixed;
+//     padding: 3px 30% 3px 1.04167%;
+//     z-index: 3;
+//     top: 0;
+//     right: 0;
+//     width: 81.25%;
+//     height: 48px;
+//     border-bottom: 1px solid #dfdfdf;
+//     // overflow: hidden;
+// 	line-height: 36px;
+// }
+
+// @media screen and (max-width: 640px) {
+// 	#content div[role="content"]>h1:first-of-type {
+// 		width: auto;
+// 		position: static;
+// 		padding: 12px 1.04167%;
+// 		height: auto;
+// 		margin: 0 -1.04167% 12px;
+// 		white-space: normal;
+// 		line-height: 36px;
+// 	}
+// }
+.neatline-menu {
+	@include flexbox();
+	@include flex-flow(row wrap-reverse);
+	@include justify-content(space-between);
+}
+
+.neatline-menu >h1:first-of-type {
+	background-color: #fff;
     font-size: 24px;
     position: fixed;
     padding: 3px 30% 3px 1.04167%;
     z-index: 3;
-    top: 0;
+	top: 0;
     right: 0;
-    width: 81.25%;
+    // width: 100%;
     height: 48px;
     border-bottom: 1px solid #dfdfdf;
     // overflow: hidden;
 	line-height: 36px;
+
 }
 
 @media screen and (max-width: 640px) {
-	#content div[role="content"]>h1:first-of-type {
-		width: auto;
+	.neatline-menu >h1:first-of-type {
+		width: auto !important;
+		font-size: 20px;
 		position: static;
 		padding: 12px 1.04167%;
 		height: auto;
 		margin: 0 -1.04167% 12px;
 		white-space: normal;
 		line-height: 36px;
+		.subhead {
+			font-size: 12px;
+		}
 	}
-}
-
-.neatline span.title {
-	font-size: 24px;
+	#page-actions.neatline-actions {
+		position: relative;
+		top: auto;
+	}
 }
 
 header nav .neatline:before, .neatline .subhead:before {
@@ -158,10 +195,31 @@ header nav .neatline:before, .neatline .subhead:before {
 
 .neatline-actions {
 	z-index: 9999 !important;
+	
+	button {
+		margin-left: 2px;
+		margin-right: 2px;
+	}
 }
 
 #page-actions.neatline-actions {
 	font-weight: normal;
+}
+
+@media screen and (max-width: 800px) {
+	.menu-full {
+		display: none;
+	}
+
+	.menu-condensed {
+		display: show;
+	}
+}
+
+@media screen and (min-width: 800px) {
+	.menu-condensed {
+		display: none;
+	}	
 }
 
 // #neatline-alert {

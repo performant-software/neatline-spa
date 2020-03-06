@@ -4,6 +4,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 import {fetchExhibits, setTabIndex, deselectRecord,fetchRecordsBySlug,updateRecordCache} from '../../actions';
+import Menu from '../../components/Menu';
 import ExhibitUpdate from './update';
 import ExhibitPublicMap from '../../components/ExhibitPublicMap';
 import RecordInfoPanel from '../../components/info';
@@ -15,7 +16,9 @@ import {recordCacheToDatabase, updateExhibitCache, clearRecordCache, setShowExhi
 import LockOverlay from '../../components/LockOverlay';
 import SpinnerOverlay from '../../components/SpinnerOverlay';
 import AlertBar from '../../components/AlertBar';
-import { Grid, Menu, Button, Icon, Card } from 'semantic-ui-react';
+import { Grid, Button, Icon, Card } from 'semantic-ui-react';
+import Breadcrumbs from '../../components/Breadcrumbs';
+import ExhibitEditorButtons from '../../components/ExhibitEditorButtons';
 
 const ExhibitShowHeader = props => (
 	<div>
@@ -104,15 +107,36 @@ class ExhibitShow extends Component {
 
 		const props = this.props;
 		const {exhibit} = props;
-
-    const showFullViewLink = window.containerFullMode === false && window.containerFullModeBaseRoute;
-    const showReturnLink = !showFullViewLink && window.containerFullMode === true && window.containerReturnBaseRoute;
+		const showFullViewLink = window.containerFullMode === false && window.containerFullModeBaseRoute;
+		const showReturnLink = !showFullViewLink && window.containerFullMode === true && window.containerReturnBaseRoute;
 
 		let exhibitDisplay;
 		if (exhibit) {
 			exhibitDisplay = (
 				<div className="show neatline" role="content">
-					<h1 className="neatline-actions">
+					<Menu
+						pageTitle="Exhibit Editor  "
+						linkTitleFull="Fullscreen Editor"
+						linkTitleReturn="Return to Omeka Admin"
+						linkRefFull={`${window.containerFullModeBaseRoute}/show/${exhibit['o:slug']}`}
+						linkRefReturn={`${window.containerReturnBaseRoute}/show/${exhibit['o:slug']}`}
+						onClick={null}
+						props={props}
+						strings={null} 									
+					/>
+					<ExhibitEditorButtons
+						onClickSettings={()=>{
+							this.props.setShowExhibitSettings(true);
+							this.setViewMode('editing');
+							this.props.setShowRecords(true);
+							this.props.deselectRecord();
+							}}
+						onClickRecords={() => {this.props.setShowExhibitSettings(false); this.setViewMode('editing')}}
+						onClickPublic={() => { this.props.setShowExhibitSettings(false); this.setViewMode('publicView'); this.props.setRecordEditorType(''); this.props.setShowRecords(true); this.props.deselectRecord()}}
+						onClickSave={this.saveAll}
+					/>
+					
+					{/* <h1 className="neatline-actions">
 						<span className="subhead">Neatline</span>
 						<span className="title">Exhibit Editor  </span>
 						{showFullViewLink &&
@@ -121,9 +145,38 @@ class ExhibitShow extends Component {
 						{showReturnLink &&
 						<a className="o-icon-compress public" title="Return to Omeka Admin" href={`${window.containerReturnBaseRoute}/show/${exhibit['o:slug']}`} aria-label="Return to Omeka Admin"></a>
 						}
-					
+						<div id="page-actions" className="neatline-actions menu-condensed">
+							<button
+								// className="o-icon-exhibit-settings button"
+								color={this.props.showExhibitSettings ? 'blue' : null}
+								active={this.props.showExhibitSettings}
+								onClick={()=>{
+							this.props.setShowExhibitSettings(true);
+							this.setViewMode('editing');
+							this.props.setShowRecords(true);
+							this.props.deselectRecord();
+							}}>
+								<i className="fas fa-cogs"></i>
+							</button>
+							<button
+								// className="o-icon-record button"
+								color={(!this.props.showExhibitSettings && this.state.viewMode === 'editing') ? 'blue' : null}
+								active={!this.props.showExhibitSettings && this.state.viewMode === 'editing'}
+								onClick={() => { this.props.setShowExhibitSettings(false); this.setViewMode('editing')}}>
+								<i className="fas fa-list-ul"></i>
+							</button>
+							<button
+								// className="o-icon-public button"
+								color={this.state.viewMode === 'publicView' ? 'blue' : null}
+								active={this.state.viewMode === 'publicView'}
+								onClick={() => { this.props.setShowExhibitSettings(false); this.setViewMode('publicView'); this.props.setRecordEditorType(''); this.props.setShowRecords(true); this.props.deselectRecord()}}>
+								<i className="fas fa-eye"></i>
+							</button>
+							<button onClick={this.saveAll}>Save</button>
+						</div>
+
 					{this.props.userSignedIn ?
-					<div id="page-actions" className="neatline-actions">
+					<div id="page-actions" className="neatline-actions menu-full">
 						<button
 							// className="o-icon-exhibit-settings button"
 							color={this.props.showExhibitSettings ? 'blue' : null}
@@ -179,10 +232,11 @@ class ExhibitShow extends Component {
 					</div>
 					}
 					<AlertBar isVisible={this.props.mapCache.hasUnsavedChanges} message="You have unsaved changes"/>
-					</h1>
-					<div className="breadcrumbs">
-						<a className="o-icon-left" href={`${window.baseRoute}/`}>Back to exhibit browse</a>
-					</div>
+					</h1> */}
+
+					<Breadcrumbs
+						returnLink={`${window.baseRoute}/`}
+					/>
 					<div>
 						<h3> {exhibit['o:title']} </h3>
 					</div>

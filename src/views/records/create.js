@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {createRecord, selectRecord} from '../../actions';
 import {strings} from '../../i18nLibrary';
-import { Breadcrumb } from 'semantic-ui-react';
+// import { Breadcrumb } from 'semantic-ui-react';
 
 
 class RecordCreate extends Component {
@@ -12,11 +12,11 @@ class RecordCreate extends Component {
 	render() {
 		return (
 			<div>
-				<Breadcrumb>
+				{/* <Breadcrumb>
 					<Breadcrumb.Section onClick={() => { this.props.setShowRecords(true); this.props.setRecordEditorType(''); this.props.deselect() }}>Records</Breadcrumb.Section>
 					<Breadcrumb.Divider icon='right angle' />
 					<Breadcrumb.Section active>New Record</Breadcrumb.Section>
-				</Breadcrumb>
+				</Breadcrumb> */}
 				<RecordForm onSubmit={this.props.submit}
 					submitLabel={strings.create}
 					disabled={this.props.record.loading}

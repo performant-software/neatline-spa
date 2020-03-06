@@ -93,7 +93,23 @@ body {
 a, button {
   cursor: pointer; }
 
-#content div[role="content"] > h1:first-of-type {
+.neatline-menu {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-flow: row wrap-reverse;
+  -moz-flex-flow: row wrap-reverse;
+  -ms-flex-flow: row wrap-reverse;
+  flex-flow: row wrap-reverse;
+  -webkit-justify-content: space-between;
+  -moz-justify-content: space-between;
+  -ms-justify-content: space-between;
+  justify-content: space-between;
+  -ms-flex-pack: space-between; }
+
+.neatline-menu > h1:first-of-type {
   background-color: #fff;
   font-size: 24px;
   position: fixed;
@@ -101,23 +117,25 @@ a, button {
   z-index: 3;
   top: 0;
   right: 0;
-  width: 81.25%;
   height: 48px;
   border-bottom: 1px solid #dfdfdf;
   line-height: 36px; }
 
 @media screen and (max-width: 640px) {
-  #content div[role="content"] > h1:first-of-type {
-    width: auto;
+  .neatline-menu > h1:first-of-type {
+    width: auto !important;
+    font-size: 20px;
     position: static;
     padding: 12px 1.04167%;
     height: auto;
     margin: 0 -1.04167% 12px;
     white-space: normal;
-    line-height: 36px; } }
-
-.neatline span.title {
-  font-size: 24px; }
+    line-height: 36px; }
+    .neatline-menu > h1:first-of-type .subhead {
+      font-size: 12px; }
+  #page-actions.neatline-actions {
+    position: relative;
+    top: auto; } }
 
 header nav .neatline:before, .neatline .subhead:before {
   content: "\F0FE"; }
@@ -127,9 +145,22 @@ header nav .neatline:before, .neatline .subhead:before {
 
 .neatline-actions {
   z-index: 9999 !important; }
+  .neatline-actions button {
+    margin-left: 2px;
+    margin-right: 2px; }
 
 #page-actions.neatline-actions {
   font-weight: normal; }
+
+@media screen and (max-width: 800px) {
+  .menu-full {
+    display: none; }
+  .menu-condensed {
+    display: show; } }
+
+@media screen and (min-width: 800px) {
+  .menu-condensed {
+    display: none; } }
 
 .o-icon-record:before {
   content: "\f0ca"; }
@@ -659,6 +690,71 @@ input.styleEditor_input {
 
 .hidden {
   display: none; }
+
+table, table.tablesaw {
+  margin-bottom: 12px;
+  border: 1px solid #dfdfdf;
+  border-radius: 3px;
+  border-collapse: separate; }
+
+table.tablesaw thead tr:first-child th {
+  padding-top: 6px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #dfdfdf; }
+
+.browse td:first-child, .browse th:first-child {
+  width: 50%; }
+
+.tablesaw tr:not(:last-child) td {
+  border-bottom: 1px solid #dfdfdf; }
+
+.browse .tablesaw-cell-content, #properties .tablesaw-cell-content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  word-wrap: break-word; }
+
+table.tablesaw td:first-child a {
+  word-wrap: break-word; }
+
+.tablesaw tr:not(:last-child) td {
+  border-bottom: 1px solid #dfdfdf; }
+
+td, table.tablesaw td {
+  padding: 6px 0.5em 5px;
+  position: relative;
+  vertical-align: middle; }
+
+.browse .tablesaw-cell-content > .actions, #properties .tablesaw-cell-content > .actions {
+  white-space: nowrap; }
+
+.actions {
+  margin: 0 0 0 auto;
+  display: flex;
+  padding: 0; }
+
+.actions a:before, .actions button:before {
+  text-align: right; }
+
+.actions li {
+  list-style-type: none; }
+
+table.tablesaw td:first-child a {
+  word-wrap: break-word; }
+
+.actions a, .actions button {
+  opacity: .5; }
+
+.actions a, .actions a:before, .actions button, .actions button:before {
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  vertical-align: top;
+  border: 0;
+  box-shadow: none; }
+
+a:link, a:visited {
+  color: #A91919; }
 
 /*! Tablesaw - v3.0.9 - 2018-02-14
 * https://github.com/filamentgroup/tablesaw

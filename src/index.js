@@ -3,9 +3,10 @@ import {render} from 'react-dom';
 import {Provider} from 'react-redux';
 import store from './store';
 import App from './views/app';
+import './main.css';
 import './omeka_assets/style.css';
 import './omeka_assets/iconfonts.css';
-import './main.css';
+
 
 const target = document.getElementById('root');
 render(

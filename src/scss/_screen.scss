@@ -1,0 +1,271 @@
+* {
+    box-sizing: border-box;
+}
+
+
+div[role=content]>h1:first-of-type {
+    background-color: #fff;
+    font-size: 24px;
+    position: fixed;
+    padding: 3px 30% 3px 1.04167%;
+    z-index: 3;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 48px;
+    border-bottom: 1px solid #dfdfdf;
+    line-height: 36px;
+}
+
+div[role="content"] {
+    width: 100%;
+    padding: 60px 1.04167% 36px;
+    background-color: #fff;
+    min-height: 100%;
+    overflow: hidden;
+}
+
+h1 {
+    font-size: 32px;
+    line-height: 48px;
+    margin-bottom: 24px;
+}
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+}
+
+h3 {
+    font-size: 24px;
+    margin-bottom: 24px;
+}
+
+h3, h4, h5, h6 {
+    font-weight: bold;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:active, a:hover {
+    color: #e34545;
+}
+
+.browse .browse-controls {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    font-size: 13.08px;
+}
+
+#page-actions {
+    position: fixed;
+    padding: 6px 1.04167%;
+    z-index: 4;
+    top: 0;
+    height: 36px;
+    right: 0;
+    text-align: right;
+    margin-bottom: 0;
+}
+
+#page-actions input[type="submit"], #page-actions button, #page-actions .button {
+    display: inline-block;
+    height: 36px;
+    padding: 6px 1em;
+    min-height: 0;
+    vertical-align: top;
+}
+
+input[type="submit"], button, a.button, .button {
+    min-height: 36px;
+    background-color: rgba(0,0,0,0.08);
+    color: #676767;
+    border-radius: 3px;
+    border: 0;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.15) inset;
+    padding: 6px 10px;
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+    margin: 0 0 12px 0;
+}
+
+.subhead {
+    text-transform: uppercase;
+    font-size: 14px;
+    padding: 0 6px;
+    background-color: #eee;
+    line-height: 36px;
+    vertical-align: middle;
+    margin: 0 12px 0 0;
+    font-weight: normal;
+    display: inline-block;
+}
+
+.breadcrumbs {
+    border-bottom: 1px solid #dfdfdf;
+    padding-bottom: 11px;
+    margin-bottom: 24px;
+}
+
+.breadcrumbs a:before {
+    margin-right: 6px;
+}
+
+//forms
+
+fieldset {
+    margin: 0 0 24px;
+    border: 0;
+    padding: 0;
+    min-width: 100%;
+}
+
+.field:first-child {
+    border-color: transparent;
+}
+
+.field {
+    width: 100%;
+    background-color: rgba(0,0,0,0.04);
+    padding: 6px;
+    position: relative;
+    margin-bottom: 6px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.field-meta {
+    width: 30%;
+    padding-right: 6px;
+    position: relative;
+}
+
+.field-meta legend, .field-meta label, .field-meta .label {
+    max-width: 80%;
+    padding: 6px 0;
+    display: inline-block;
+}
+
+.inputs {
+    line-height: 36px;
+    width: 70%;
+}
+
+.inputs label:only-child, .inputs select:only-child, .inputs textarea:only-child, .inputs input[type="text"]:only-child, .inputs input[type="password"]:only-child, .inputs input[type="email"]:only-child, .inputs input[type="url"]:only-child, .inputs input[type="date"]:only-child, .inputs input[type="datetime-local"]:only-child {
+    margin: 0;
+}
+
+.inputs label, .inputs select, .inputs textarea, .inputs input[type="text"], .inputs input[type="password"], .inputs input[type="email"], .inputs input[type="url"], .inputs input[type="date"], .inputs input[type="datetime-local"] {
+    width: 100%;
+    min-height: 36px;
+    margin: 6px 0;
+}
+input[type="text"], input[type="password"], input[type="email"], input[type="url"], input[type="number"], input[type="date"], input[type="datetime-local"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0;
+    height: 36px;
+    border: 1px solid rgba(0,0,0,0.15);
+    padding: 6px;
+    margin: 0;
+}
+input, [contenteditable="true"], textarea, button, select {
+    font-family: "Lato", sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+    margin: 0;
+    color: #676767;
+}
+
+.inputs textarea {
+    resize: vertical;
+    line-height: 1.5;
+    background-color: #fff;
+    min-width: 0;
+}
+
+[contenteditable="true"], textarea {
+    clear: both;
+    padding: 6px;
+    border: 1px solid rgba(0,0,0,0.15);
+    display: block;
+    background-color: #fff;
+    min-height: 72px;
+    overflow-y: auto;
+}
+
+textarea {
+    overflow: auto;
+}
+
+button, input {
+    overflow: visible;
+}
+button, input, select, textarea {
+    font: inherit;
+    margin: 0;
+}
+
+select {
+    // background: #fff url(../img/select-arrow.svg) no-repeat;
+    background-position: right 6px center;
+    background-size: 8px;
+    border: 1px solid #dfdfdf;
+    // height: 36px;
+    line-height: 36px;
+    font-size: 16px;
+    margin: 0;
+    padding: 0 24px 0 6px;
+    border-radius: 3px;
+    vertical-align: top;
+    // -webkit-appearance: none;
+    // -moz-appearance: none;
+    // appearance: none;
+}
+
+#page-actions input[type="submit"], #page-actions button, #page-actions .button {
+    display: inline-block;
+    height: 36px;
+    padding: 6px 1em;
+    min-height: 0;
+    vertical-align: top;
+}
+
+#page-actions input[type="submit"], #page-actions button, #page-actions .button {
+    display: inline-block;
+    height: 36px;
+    padding: 6px 1em;
+    min-height: 0;
+    vertical-align: top;
+}
+
+.neatline-actions button {
+    margin-left: 2px;
+    margin-right: 2px;
+}
+a, button {
+    cursor: pointer;
+}
+input[type="submit"], button, a.button, .button {
+    min-height: 36px;
+    background-color: rgba(0,0,0,0.08);
+    color: #676767;
+    border-radius: 3px;
+    border: 0;
+    box-shadow: 0 0 0 1px rgba(0,0,0,0.15) inset;
+    padding: 6px 10px;
+    display: inline-block;
+    text-align: center;
+    cursor: pointer;
+    margin: 0 0 12px 0;
+}
+input, [contenteditable="true"], textarea, button, select {
+    font-family: "Lato", sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+    margin: 0;
+    color: #676767;
+}

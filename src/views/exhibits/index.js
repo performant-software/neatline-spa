@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 //import { fetchExhibits } from '../../reducers/not_refactored/exhibits';
+import Menu from '../../components/Menu';
 import { resetExhibit } from '../../actions';
 import { deleteExhibit } from '../../actions';
 import { strings } from '../../i18nLibrary';
@@ -31,28 +32,21 @@ class Exhibits extends Component {
     // );
     const showFullViewLinks = window.containerFullMode === false && window.containerFullModeBaseRoute;
     const showReturnLink = !showFullViewLinks && window.containerFullMode === true && window.containerReturnBaseRoute;
+    const paddingTop = { padding: (window.containerFullMode === false) ? '0px' : '60px 0 0 0' }
 
     return (
       <div className="browse neatline" role="content">
-        <h1><span className="title">Neatline  </span>
-        {showFullViewLinks &&
-          <a className="o-icon-external public" title="Fullscreen Editor" href={`${window.containerFullModeBaseRoute}`} aria-label="Fullscreen Editor"></a>
-        }
-        {showReturnLink &&
-          <a className="o-icon-compress public" title="Return to Omeka Admins" href={`${window.containerReturnBaseRoute}`} aria-label="Return to Omeka Admin"></a>
-        }
-        </h1>
-        <div id="page-actions">
-          {props.userSignedIn &&
-            <a className="button"
-              icon
-              onClick={this.createExhibitView}
-            >
-              {strings.createExhibit}
-            </a>
-          }
-        </div>
-        <div className="browse-controls">
+        <Menu 
+          pageTitle="Browse Exhibits "
+          linkTitleFull="Fullscreen Editor"
+          linkTitleReturn="Return to Omeka Admin"
+          linkRefFull={`${window.containerFullModeBaseRoute}`}
+          linkRefReturn={`${window.containerReturnBaseRoute}`}
+          onClick={this.createExhibitView}
+          props={props}
+          strings={strings.createExhibit} 
+        />
+        <div style={paddingTop} className="browse-controls">
           <nav className="pagination" role="navigation">
             insert pagination here
           </nav>

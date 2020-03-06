@@ -5,6 +5,8 @@ import {createExhibit} from '../../actions';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {strings} from '../../i18nLibrary';
+import Menu from '../../components/Menu';
+import Breadcrumbs from '../../components/Breadcrumbs';
 
 
 class ExhibitCreate extends Component {
@@ -26,27 +28,25 @@ class ExhibitCreate extends Component {
 	
 		return (
 			<div className="show neatline" role="content">
-				<h1>
-				<span className="subhead">Neatline</span>
-				<span className="title">Create New Exhibit  </span>
-				{showFullViewLinks &&
-				<a className="o-icon-external public" title="Fullscreen Editor" href={`${window.containerFullModeBaseRoute}/add`} aria-label="Fullscreen Editor"></a>
-				}
-				{showReturnLink &&
-				<a className="o-icon-compress public" title="Return to Omeka Admin" href={`${window.containerReturnBaseRoute}/add`} aria-label="Return to Omeka Admin"></a>
-				}
-				</h1>
-				<div id="page-actions">
-				</div>
-				<div className="breadcrumbs">
-					<a className="o-icon-left" href={`${window.baseRoute}/`}>Back to exhibit browse</a>
-				</div>
+				<Menu
+					pageTitle="Create New Exhibit  "
+					linkTitleFull="Fullscreen Editor"
+					linkTitleReturn="Return to Omeka Admin"
+					linkRefFull={`${window.containerFullModeBaseRoute}/add`}
+					linkRefReturn={`${window.containerReturnBaseRoute}/add`}
+					onClick={null}
+					props={props}
+					strings={strings} 				
+				/>
+				<Breadcrumbs
+					returnLink={`${window.baseRoute}/`}
+				/>
 				<ExhibitForm onSubmit={props.submit}
 					submitLabel={strings.create_exhibit}
 					disabled={props.loading} 
 					fullscreen={true}
-					/>
-					{props.errored && <p>{strings.create_exhibit_error}</p>}
+				/>
+				{props.errored && <p>{strings.create_exhibit_error}</p>}
 			</div>
 		);
 	}

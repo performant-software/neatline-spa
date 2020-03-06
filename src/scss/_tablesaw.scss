@@ -1,183 +1,82 @@
-// .actions {
-//   margin: 0 0 0 auto;
-//   display: flex;
-//   padding: 0;
-// }
+table, table.tablesaw {
+  margin-bottom: 12px;
+  border: 1px solid #dfdfdf;
+  border-radius: 3px;
+  border-collapse: separate;
+}
 
-// .actions li {
-//   list-style-type: none;
-// }
+table.tablesaw thead tr:first-child th {
+  padding-top: 6px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #dfdfdf;
+}
 
-// .actions a,
-// .actions a:before,
-// .actions button,
-// .actions button:before {
-//   width: 24px;
-//   height: 24px;
-//   line-height: 24px;
-//   vertical-align: top;
-//   border: 0;
-//   box-shadow: none;
-// }
+.browse td:first-child, .browse th:first-child {
+  width: 50%;
+}
 
-// .actions a,
-// .actions button {
-//   opacity: .5;
-// }
+.tablesaw tr:not(:last-child) td {
+  border-bottom: 1px solid #dfdfdf;
+}
 
-// .actions a:before,
-// .actions button:before {
-//   text-align: right;
-// }
+.browse .tablesaw-cell-content, #properties .tablesaw-cell-content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  word-wrap: break-word;
+}
 
-// .actions a:hover,
-// .actions a:active,
-// .actions button:hover {
-//   opacity: 1;
-// }
+table.tablesaw td:first-child a {
+  word-wrap: break-word;
+}
 
-// .actions button {
-//   background-color: transparent;
-//   color: #A91919;
-//   margin: 0;
-//   text-indent: -9999px;
-//   position: relative;
-//   padding: 0;
-//   min-height: 0;
+.tablesaw tr:not(:last-child) td {
+  border-bottom: 1px solid #dfdfdf;
+}
 
-//   &:before {
-//       text-indent: 0;
-//       position: absolute;
-//       top: 0;
-//       left: 0;
-//   }
-// }
+td, table.tablesaw td {
+  padding: 6px 0.5em 5px;
+  position: relative;
+  vertical-align: middle;
+}
 
-// table.tablesaw {
-//   margin-bottom: 12px;
-//   border: 1px solid #dfdfdf;
-//   border-radius: 3px;
-//   border-collapse: separate;
-// }
+.browse .tablesaw-cell-content>.actions, #properties .tablesaw-cell-content>.actions {
+  white-space: nowrap;
+}
 
-// .tablesaw tr {
-//   overflow: hidden;
-//   margin-bottom: 0;
+.actions {
+  margin: 0 0 0 auto;
+  display: flex;
+  padding: 0;
+}
 
-//   &:first-of-type {
-//       border-top: 1px solid #dfdfdf;
-//   }
-// }
+.actions a:before, .actions button:before {
+  text-align: right;
+}
 
-// .browse td:not(:first-of-type) .tablesaw-cell-content,
-// #properties td:not(:first-of-type) .tablesaw-cell-content {
-//   display: inline-block;
-// }
+.actions li {
+  list-style-type: none;
+}
 
+table.tablesaw td:first-child a {
+  word-wrap: break-word;
+}
 
-// .tablesaw td:first-of-type {
-//   background-color: rgba(0,0,0,.04);
+.actions a, .actions button {
+  opacity: .5;
+}
+.actions a, .actions a:before, .actions button, .actions button:before {
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  vertical-align: top;
+  border: 0;
+  box-shadow: none;
+}
 
-//   .tablesaw-cell-label {
-//       width: 0;
-//       height: 0;
-//       overflow: hidden;
-//       padding: 0;
-//       display: block;
-//   }
-
-//   .tablesaw-cell-content {
-//       width: 100%;
-//       max-width: 100%;
-//   }
-// }
-
-// .batch-edit.tablesaw td:first-of-type {
-//   width: 100%;
-//   background: rgba(0,0,0,.04);
-
-//   img {
-//       margin-bottom: 0;
-//   }
-
-//   .tablesaw-cell-label {
-//       width: 0;
-//       overflow: hidden;
-//       padding: 0;
-//   }
-// }
-
-// .batch-edit .tablesaw-cell-content {
-//   display: inline-flex;
-// }
-
-// .tablesaw-cell-content {
-//   width: 70%;
-//   max-width: 70%;
-// }
-
-// .tablesaw-cell-content img {
-//   margin: 0 (.25 * 24px ) 0 0;
-// } 
-
-// .tablesaw tr:last-of-type td,
-// .tablesaw tr:last-of-type th,
-// .tablesaw th,
-// .tablesaw td {
-//   padding-top: (.25 * 24px );
-//   padding-bottom: (.25 * 24px );
-//   vertical-align: top;
-// }
-
-// .tablesaw th:not(:last-of-type),
-// .tablesaw td:not(:last-of-type) {
-//   border-bottom: 1px solid #dfdfdf;
-// }
-
-// .tablesaw tr.delete {
-//   border: 0;
-
-//   td {
-//       border: 0;
-//   }
-
-//   td:not(:first-of-type) {
-//       display: none;
-//   }
-// }
-
-// /* @group ----- Special cases ----- */
-
-// .resource-template th:first-of-type,
-// .resource-template td:first-of-type {
-//   width: 100%;
-// }
-
-// #site-user-permissions tr.user.value {
-//   position: relative;
-// }
-
-// #site-user-permissions td:nth-child(3) {
-//   position: absolute;
-//   top: 0;
-//   right: 0;
-//   padding: 0 (.25 * 24px ) 0 0;
-
-//   .tablesaw-cell-label {
-//       display: none;
-//   }
-
-//   .tablesaw-cell-content {
-//       width: 100%;
-//       max-width: 100%;
-//   }
-// }
-
-// #site-user-permissions.tablesaw-stack tbody tr {
-//   border-bottom: 0;
-// }
-
-// /* @end */
+a:link, a:visited {
+  color: #A91919;
+}
 
 /*! Tablesaw - v3.0.9 - 2018-02-14
 * https://github.com/filamentgroup/tablesaw
