@@ -114,7 +114,7 @@ a, button {
   font-size: 24px;
   position: fixed;
   padding: 3px 30% 3px 1.04167%;
-  z-index: 3;
+  z-index: 997;
   top: 0;
   right: 0;
   height: 48px;
@@ -123,8 +123,7 @@ a, button {
 
 @media screen and (max-width: 640px) {
   .neatline-menu > h1:first-of-type {
-    width: auto !important;
-    font-size: 20px;
+    width: auto;
     position: static;
     padding: 12px 1.04167%;
     height: auto;
@@ -132,10 +131,7 @@ a, button {
     white-space: normal;
     line-height: 36px; }
     .neatline-menu > h1:first-of-type .subhead {
-      font-size: 12px; }
-  #page-actions.neatline-actions {
-    position: relative;
-    top: auto; } }
+      font-size: 12px; } }
 
 header nav .neatline:before, .neatline .subhead:before {
   content: "\F0FE"; }
@@ -143,13 +139,43 @@ header nav .neatline:before, .neatline .subhead:before {
 .browse, .show {
   padding: 0 0.5rem; }
 
+#neatline-actions {
+  position: fixed;
+  padding: 6px 1.04167%;
+  z-index: 9999;
+  top: 0;
+  height: 48px;
+  right: 0;
+  text-align: right;
+  margin-bottom: 0;
+  background-color: white;
+  border-bottom: 1px solid #dfdfdf; }
+
+@media screen and (max-width: 640px) {
+  #neatline-actions {
+    background-color: #fff;
+    width: 100%;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    height: 48px;
+    padding-bottom: 5px; }
+  #content #neatline-actions {
+    top: 36px; }
+  #content h1 {
+    width: 100% !important; } }
+
 .neatline-actions {
-  z-index: 9999 !important; }
+  font-weight: normal; }
   .neatline-actions button {
     margin-left: 2px;
-    margin-right: 2px; }
+    margin-right: 2px;
+    background-color: #eeeeee; }
 
-#page-actions.neatline-actions {
+.save-button {
+  background-color: #2185d0 !important;
+  color: white;
+  font-weight: 700; }
+
+#neatline-actions .neatline-actions {
   font-weight: normal; }
 
 @media screen and (max-width: 800px) {
@@ -161,6 +187,10 @@ header nav .neatline:before, .neatline .subhead:before {
 @media screen and (min-width: 800px) {
   .menu-condensed {
     display: none; } }
+
+#neatline-alert {
+  position: fixed;
+  top: 48px; }
 
 .o-icon-record:before {
   content: "\f0ca"; }
@@ -204,7 +234,8 @@ header nav .neatline:before, .neatline .subhead:before {
   -webkit-flex: 30%;
   -ms-flex: 30%;
   flex: 30%;
-  padding: 0.5rem; }
+  padding: 0.5rem;
+  position: relative; }
 
 .neatline-map {
   -webkit-box-flex: 70%;
@@ -212,7 +243,8 @@ header nav .neatline:before, .neatline .subhead:before {
   -webkit-flex: 70%;
   -ms-flex: 70%;
   flex: 70%;
-  padding: 0.5rem; }
+  padding: 0.5rem;
+  position: relative; }
 
 table.neatline-records {
   table-layout: inherit !important; }
@@ -338,20 +370,18 @@ input.styleEditor_input {
 
 .ps_n3_mapStatus_warning:before {
   font-family: FontAwesome;
-  content: "\f05e"; }
+  content: "\f071"; }
 
 .ps_n3_mapStatus_warning {
   box-sizing: content-box;
-  position: absolute;
   z-index: 9000;
   height: 1.5rem;
   font-size: 1rem;
   background-color: rgba(255, 255, 173, 0.92);
-  -webkit-box-shadow: 8px -1px 21px 0 rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: 8px -1px 21px 0 rgba(0, 0, 0, 0.75);
-  box-shadow: 8px -1px 21px 0 rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 8px 5px 5px 0 rgba(0, 0, 0, 0.45);
+  -moz-box-shadow: 8px 5px 5px 0 rgba(0, 0, 0, 0.45);
+  box-shadow: 8px 5px 5px 0 rgba(0, 0, 0, 0.45);
   left: 0rem;
-  top: auto !important;
   width: calc(100% - 1rem);
   margin: 0rem;
   padding: .8rem 0 .5rem 1.2rem;

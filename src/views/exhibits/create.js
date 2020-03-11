@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
+// import {Link} from 'react-router-dom';
 import ExhibitForm from '../../components/ExhibitForm';
 import {createExhibit} from '../../actions';
 import {bindActionCreators} from 'redux';
@@ -25,18 +25,14 @@ class ExhibitCreate extends Component {
 		const props = this.props;
 		const showFullViewLinks = window.containerFullMode === false && window.containerFullModeBaseRoute;
 		const showReturnLink = !showFullViewLinks && window.containerFullMode === true && window.containerReturnBaseRoute;
-	
+	    const paddingTop = { padding: (window.containerFullMode === false) ? '0px' : '60px 1.04167% 36px' }
+
 		return (
-			<div className="show neatline" role="content">
+			<div className="show neatline" style={paddingTop} role="content">
 				<Menu
 					pageTitle="Create New Exhibit  "
-					linkTitleFull="Fullscreen Editor"
-					linkTitleReturn="Return to Omeka Admin"
 					linkRefFull={`${window.containerFullModeBaseRoute}/add`}
 					linkRefReturn={`${window.containerReturnBaseRoute}/add`}
-					onClick={null}
-					props={props}
-					strings={strings} 				
 				/>
 				<Breadcrumbs
 					returnLink={`${window.baseRoute}/`}

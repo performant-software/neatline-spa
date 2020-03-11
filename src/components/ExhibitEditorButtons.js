@@ -1,10 +1,10 @@
-import React, {useState} from 'react';
+import React from 'react';
 
 const ExhibitEditorButtons = ({onClickSettings, onClickRecords, onClickPublic, onClickSave}) => {
 
     return (
         <div>
-            <div id="page-actions" className="neatline-actions menu-condensed">
+            <div id="neatline-actions" className="neatline-actions menu-condensed">
             <button
                 onClick={onClickSettings}>
                 <i className="fas fa-cogs"></i>
@@ -17,9 +17,9 @@ const ExhibitEditorButtons = ({onClickSettings, onClickRecords, onClickPublic, o
                 onClick={onClickPublic}>
                 <i className="fas fa-eye"></i>
             </button>
-            <button onClick={onClickSave}>Save</button>
+            <button className="save-button" onClick={onClickSave}>Save <i className="fas fa-save"></i></button>
         </div>
-        <div id="page-actions" className="neatline-actions menu-full">
+        <div id="neatline-actions" className="neatline-actions menu-full">
             <button
                 onClick={onClickSettings}>
                 Exhibit Settings <i className="fas fa-cogs"></i>
@@ -33,8 +33,9 @@ const ExhibitEditorButtons = ({onClickSettings, onClickRecords, onClickPublic, o
                 Public View <i className="fas fa-eye"></i>
             </button>
             <button
+                className="save-button"
                 onClick={onClickSave}>
-                Save
+                Save <i className="fas fa-save"></i>
             </button>
         </div>
     </div>

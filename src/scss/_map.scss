@@ -13,21 +13,21 @@
 
 .ps_n3_mapStatus_warning:before {
 	font-family: FontAwesome;
-	content: "\f05e"; //f071
+	content: "\f071"; //f071
 }
 
 .ps_n3_mapStatus_warning {
 	box-sizing: content-box;
-	position: absolute; //relative
+	// position: absolute; //relative
 	z-index: 9000;
 	height: 1.5rem;
 	font-size: 1rem;
 	background-color: rgba(255, 255, 173, 0.92);
-	-webkit-box-shadow: 8px -1px 21px 0 rgba(0,0,0,0.75);
-	-moz-box-shadow: 8px -1px 21px 0 rgba(0,0,0,0.75);
-	box-shadow: 8px -1px 21px 0 rgba(0,0,0,0.75);
+	-webkit-box-shadow: 8px 5px 5px 0 rgba(0,0,0,0.45);
+	-moz-box-shadow: 8px 5px 5px 0 rgba(0,0,0,0.45);
+	box-shadow: 8px 5px 5px 0 rgba(0,0,0,0.45);
     left:0rem;
-    top:auto !important; //0
+    // top:0; //0
     width:calc(100% - 1rem);
     margin:0rem;
     padding:.8rem 0 .5rem 1.2rem;

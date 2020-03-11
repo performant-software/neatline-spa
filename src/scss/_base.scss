@@ -154,7 +154,7 @@ a, button {
     font-size: 24px;
     position: fixed;
     padding: 3px 30% 3px 1.04167%;
-    z-index: 3;
+    z-index: 997; //3
 	top: 0;
     right: 0;
     // width: 100%;
@@ -167,8 +167,17 @@ a, button {
 
 @media screen and (max-width: 640px) {
 	.neatline-menu >h1:first-of-type {
-		width: auto !important;
-		font-size: 20px;
+		// // width: auto !important;
+		// font-size: 20px;
+		// position: static;
+		// padding: 12px 1.04167%; //12px 1.04167%
+		// height: auto;
+		// margin: 0 -1.04167% 12px;
+		// white-space: normal;
+		// line-height: 36px;
+		// border-bottom: 0;
+
+		width: auto;
 		position: static;
 		padding: 12px 1.04167%;
 		height: auto;
@@ -178,10 +187,6 @@ a, button {
 		.subhead {
 			font-size: 12px;
 		}
-	}
-	#page-actions.neatline-actions {
-		position: relative;
-		top: auto;
 	}
 }
 
@@ -193,16 +198,56 @@ header nav .neatline:before, .neatline .subhead:before {
 	padding: 0 0.5rem;
 }
 
+#neatline-actions {
+	position: fixed;
+    padding: 6px 1.04167%;
+    z-index: 9999; //4
+    top: 0;
+    height: 48px; //36px
+    right: 0;
+    text-align: right;
+	margin-bottom: 0;
+	background-color: white;
+    border-bottom: 1px solid #dfdfdf;
+}
+
+@media screen and (max-width: 640px) {
+	#neatline-actions {
+		// top: 36px;
+		background-color: #fff;
+		width: 100%;
+		border-bottom: 1px solid rgba(0,0,0,0.08);
+		height: 48px;
+		padding-bottom: 5px;
+	}
+
+	#content #neatline-actions {
+		top: 36px;
+	}
+	#content h1 {
+		width: 100% !important;
+	}
+	
+}
+
 .neatline-actions {
-	z-index: 9999 !important;
+	font-weight: normal;
+	// z-index: 9999 !important;
 	
 	button {
 		margin-left: 2px;
 		margin-right: 2px;
+		background-color: #eeeeee;
 	}
 }
 
-#page-actions.neatline-actions {
+.save-button {
+	background-color:#2185d0 !important;
+	color: white;
+	font-weight: 700;
+}
+
+#neatline-actions .neatline-actions {
 	font-weight: normal;
 }
 
@@ -222,10 +267,11 @@ header nav .neatline:before, .neatline .subhead:before {
 	}	
 }
 
-// #neatline-alert {
-// 	position: fixed;
-// 	z-index: 9999 !important;
-// }
+#neatline-alert {
+	position: fixed;
+	top:48px;
+	// z-index: 9999 !important;
+}
 
 .o-icon-record:before {
     content: "\f0ca";
@@ -259,11 +305,13 @@ header nav .neatline:before, .neatline .subhead:before {
 .neatline-content {
 	@include flex(30%);
 	padding: 0.5rem;
+	position: relative;
 }
 
 .neatline-map {
 	@include flex(70%);
 	padding: 0.5rem;
+	position: relative;
 	// width: 75%;
 }
 

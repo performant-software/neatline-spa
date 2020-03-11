@@ -109,32 +109,29 @@ class ExhibitShow extends Component {
 		const {exhibit} = props;
 		const showFullViewLink = window.containerFullMode === false && window.containerFullModeBaseRoute;
 		const showReturnLink = !showFullViewLink && window.containerFullMode === true && window.containerReturnBaseRoute;
+		const paddingTop = { padding: (window.containerFullMode === false) ? '0px' : '60px 1.04167% 36px' }
 
 		let exhibitDisplay;
 		if (exhibit) {
 			exhibitDisplay = (
-				<div className="show neatline" role="content">
-					<Menu
+				<div className="show neatline" style={paddingTop} role="content">
+					<Menu 
 						pageTitle="Exhibit Editor  "
-						linkTitleFull="Fullscreen Editor"
-						linkTitleReturn="Return to Omeka Admin"
 						linkRefFull={`${window.containerFullModeBaseRoute}/show/${exhibit['o:slug']}`}
-						linkRefReturn={`${window.containerReturnBaseRoute}/show/${exhibit['o:slug']}`}
-						onClick={null}
-						props={props}
-						strings={null} 									
-					/>
-					<ExhibitEditorButtons
-						onClickSettings={()=>{
-							this.props.setShowExhibitSettings(true);
-							this.setViewMode('editing');
-							this.props.setShowRecords(true);
-							this.props.deselectRecord();
-							}}
-						onClickRecords={() => {this.props.setShowExhibitSettings(false); this.setViewMode('editing')}}
-						onClickPublic={() => { this.props.setShowExhibitSettings(false); this.setViewMode('publicView'); this.props.setRecordEditorType(''); this.props.setShowRecords(true); this.props.deselectRecord()}}
-						onClickSave={this.saveAll}
-					/>
+						linkRefReturn={`${window.containerReturnBaseRoute}/show/${exhibit['o:slug']}`} >
+						<ExhibitEditorButtons
+							onClickSettings={()=>{
+								this.props.setShowExhibitSettings(true);
+								this.setViewMode('editing');
+								this.props.setShowRecords(true);
+								this.props.deselectRecord();
+								}}
+							onClickRecords={() => {this.props.setShowExhibitSettings(false); this.setViewMode('editing')}}
+							onClickPublic={() => { this.props.setShowExhibitSettings(false); this.setViewMode('publicView'); this.props.setRecordEditorType(''); this.props.setShowRecords(true); this.props.deselectRecord()}}
+							onClickSave={this.saveAll}
+						/>
+						<AlertBar isVisible={this.props.mapCache.hasUnsavedChanges} message="You have unsaved changes"/>
+					</Menu>
 					
 					{/* <h1 className="neatline-actions">
 						<span className="subhead">Neatline</span>
@@ -234,9 +231,8 @@ class ExhibitShow extends Component {
 					<AlertBar isVisible={this.props.mapCache.hasUnsavedChanges} message="You have unsaved changes"/>
 					</h1> */}
 
-					<Breadcrumbs
-						returnLink={`${window.baseRoute}/`}
-					/>
+					<Breadcrumbs returnLink={`${window.baseRoute}/`} />
+					
 					<div>
 						<h3> {exhibit['o:title']} </h3>
 					</div>

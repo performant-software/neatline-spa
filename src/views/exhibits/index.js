@@ -32,21 +32,26 @@ class Exhibits extends Component {
     // );
     const showFullViewLinks = window.containerFullMode === false && window.containerFullModeBaseRoute;
     const showReturnLink = !showFullViewLinks && window.containerFullMode === true && window.containerReturnBaseRoute;
-    const paddingTop = { padding: (window.containerFullMode === false) ? '0px' : '60px 0 0 0' }
+    const paddingTop = { padding: (window.containerFullMode === false) ? '0px' : '60px 1.04167% 36px' }
 
     return (
-      <div className="browse neatline" role="content">
+      <div className="browse neatline" style={paddingTop} role="content">
         <Menu 
           pageTitle="Browse Exhibits "
-          linkTitleFull="Fullscreen Editor"
-          linkTitleReturn="Return to Omeka Admin"
           linkRefFull={`${window.containerFullModeBaseRoute}`}
           linkRefReturn={`${window.containerReturnBaseRoute}`}
-          onClick={this.createExhibitView}
-          props={props}
-          strings={strings.createExhibit} 
-        />
-        <div style={paddingTop} className="browse-controls">
+        >
+          {/* <div> */}
+            <div id="neatline-actions">
+            {props.userSignedIn &&
+              <a className="button" onClick={this.createExhibitView}>
+                Create an Exhibit
+              </a>
+            }
+            </div>
+          {/* </div> */}
+        </Menu>
+        <div className="browse-controls">
           <nav className="pagination" role="navigation">
             insert pagination here
           </nav>
