@@ -235,7 +235,7 @@ class ExhibitPublicMap extends Component {
 		});
 
 		// Selectively show the draw control
-		if((this.props.viewMode === 'editing') && (this.props.showExhibitSettings === false)){
+		if((this.props.viewMode === 'signedIn') && (this.props.showExhibitSettings === false)){
 			if( (typeof selectedRecord !== 'undefined' && selectedRecord !== null) || this.props.editorNewRecord ){
 				mapInstance.addControl(this.ls_drawControl);
 			}
@@ -463,7 +463,7 @@ class ExhibitPublicMap extends Component {
 		){return;}
 		L.DomEvent.stop(event);
 		this.props.selectRecord({record:record});
-		if (this.props.viewMode === 'editing'){
+		if (this.props.viewMode === 'signedIn'){
 			this.props.setShowRecords(false);
       this.props.setShowExhibitSettings(false);
       this.props.setRecordEditorType('edit')

@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { selectRecord, filterRecords, removeRecordFromCache, deleteRecord} from '../../actions';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import { strings } from '../../i18nLibrary';
-import { Grid, Button, Table, Search, Card } from 'semantic-ui-react';
+import { Grid, Table, Search, TableRow } from 'semantic-ui-react';
 import _ from 'lodash';
+import { Link } from 'react-router-dom';
 
 class Records extends Component {
 	constructor(props){
@@ -55,19 +55,7 @@ class Records extends Component {
 			<div style={{ overflowY: 'auto', height: '90vh', overflowX: 'hidden', 'padding': '1rem' }}>
 				<Grid>
 					<Grid.Row>
-						{this.props.viewMode === 'editing' ?
-						<Grid.Column width={4}>
-
-
-								<Button size='small'
-									onClick={() => { props.setRecordEditorType('new'); props.setShowRecords(false) }}>
-									{strings.new_record}
-								</Button>
-
-
-						</Grid.Column>
-							: null}
-						<Grid.Column width={ this.props.viewMode === 'editing' ? 9:15}>
+						<Grid.Column width={15}>
 							<Search
 								fluid
 								onSearchChange={(e, d) => this.searchChange(e, d)}
@@ -78,79 +66,75 @@ class Records extends Component {
 							/>
 						</Grid.Column>
 					</Grid.Row>
-					{ this.props.viewMode === 'editing' ?
-
+					{this.props.exhibitNarrative &&
+						<Grid.Row>
+							<Table>
+								<Table.Header>
+									<Table.Row>
+										<Table.HeaderCell>
+											Narrative
+										</Table.HeaderCell>
+									</Table.Row>
+								</Table.Header>
+								<Table.Body>
+									<TableRow>
+										<Table.Cell>
+											{this.props.exhibitNarrative}
+										</Table.Cell>
+									</TableRow>
+								</Table.Body>
+							</Table>
+						</Grid.Row>
+	}
 					<Grid.Row>
-					<Table celled selectable sortable	>
-						<Table.Header>
-							<Table.Row>
-								<Table.HeaderCell
-									sorted={state.column === 'o:title' ? state.direction : null}
-									onClick={this.handleSort('o:title')}
-									>Record Title</Table.HeaderCell>
-								<Table.HeaderCell
-									sorted={state.column === 'o:added' ? state.direction : null}
-									onClick={this.handleSort('o:added')}
-								>Record Created</Table.HeaderCell>
-								<Table.HeaderCell />
-							</Table.Row>
-						</Table.Header>
-						<Table.Body>
-							{props.filteredRecords.map(record => (
-								<Table.Row key={'record-' + record['o:id']} >
-									<Table.Cell style={{
-										fontWeight: record === props.selectedRecord ? 'bold' : 'normal'
-									}}>
-										<div
-											style={{ textOverflow: 'ellipsis', maxWidth: '8vw', whiteSpace: 'nowrap', overflow: 'hidden'}}
-											onClick={() => { props.selectRecord({ record: record }); props.setShowRecords(false); props.setRecordEditorType('edit') }}
-														>
-											{record['o:title'] === null ? "???" : record['o:title']}
-										</div>
-									</Table.Cell>
-									<Table.Cell>
-                    <div>
-										  {record['o:added'] === null ? "???" : record['o:added'].toString()}
-                    </div>
-									</Table.Cell>
-									<Table.Cell>
-											<Button size='mini' onClick={() => { props.selectRecord({ record: record }); props.setShowRecords(false); props.setRecordEditorType('edit') }}>
-											edit
-										</Button>
-										<Button
-											size='mini'
-											onClick={() => {
-												this.props.dispatch(this.props.removeRecordFromCache(record['o:id']));
-												this.props.deleteRecord(record);
-											}}
-										>
-										delete
-										</Button>
-									</Table.Cell>
+						<Table celled selectable sortable	>
+							<Table.Header>
+								<Table.Row>
+									<Table.HeaderCell
+										sorted={state.column === 'o:title' ? state.direction : null}
+										onClick={this.handleSort('o:title')}
+										>Record Title</Table.HeaderCell>
+									<Table.HeaderCell
+										sorted={state.column === 'o:added' ? state.direction : null}
+										onClick={this.handleSort('o:added')}
+									>Record Created</Table.HeaderCell>
 								</Table.Row>
-							))
-							}
-						</Table.Body>
-					</Table>
-					</Grid.Row> :
-					<Grid.Row>
-						{props.filteredRecords.map( record => (
-							<Card
-								style={{marginRight: '1.5em', marginLeft: '1.5em'}}
-								fluid
-								key={record['o:id']}
-								color={((this.props.selectedRecord !== null) && (record['o:id'] === this.props.selectedRecord['o:id']) )? 'blue': null }
-							>
-								<Card.Content
-									style={{ textOverflow: 'ellipsis', maxWidth: '8vw', whiteSpace: 'nowrap', overflow: 'hidden' }}
-									onClick={() => { this.setActiveCard(record['o:id']); props.selectRecord({ record: record }); }}
-									>
-									<Card.Header>{record['o:title']}</Card.Header>
-									<Card.Description>{record['o:body']}</Card.Description>
-								</Card.Content>
-							</Card>
-						))}
-					</Grid.Row> }
+							</Table.Header>
+							<Table.Body>
+								{props.filteredRecords.map(record => (
+									<Table.Row key={'record-' + record['o:id']} >
+										<Table.Cell style={{
+											fontWeight: record === props.selectedRecord ? 'bold' : 'normal'
+										}}>
+											{/* <div
+												style={{ textOverflow: 'ellipsis', maxWidth: '8vw', whiteSpace: 'nowrap', overflow: 'hidden'}}
+												onClick={() => { props.selectRecord({ record: record }); props.setShowRecords(true); props.setRecordEditorType('') }}
+											>
+												{record['o:title'] === null ? "???" : record['o:title']}
+											</div> */}
+											{/* 
+
+												TODO: 	Create a component to show record details and link to it here.
+														May be able to repurpose ../../components/info.js?
+
+											*/}
+											<Link
+												to={`${window.baseRoute}${this.props.exhibitShowURL}/id`} 
+											>
+												{record['o:title'] === null ? "???" : record['o:title']}
+											</Link>
+										</Table.Cell>
+										<Table.Cell>
+											<div>
+												{record['o:added'] === null ? "???" : record['o:added'].toString()}
+											</div>
+										</Table.Cell> 
+									</Table.Row>
+								))
+								}
+							</Table.Body>
+						</Table>
+					</Grid.Row> 
 				</Grid>
 			</div>
 		);
