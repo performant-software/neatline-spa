@@ -4,9 +4,9 @@ export const exhibitsEndpoint = 'neatline_exhibits';
 export const recordsEndpoint = 'neatline_records';
 
 export const urlFormat = (endpoint, params = {}, id = null) => {
-	const apiRoot = '/api/';
-	if (window.jwt && !params.hasOwnProperty('jwt') && (window.jwt !== null && window.jwt !== 'null') )
-		params.jwt = window.jwt;
+	const apiRoot = 'http://neatline-3-staging.herokuapp.com/api/';
+	// if (window.jwt && !params.hasOwnProperty('jwt') && (window.jwt !== null && window.jwt !== 'null') )
+	// 	params.jwt = window.jwt;
 	const urlParams = new URLSearchParams(params);
 	let url = apiRoot + endpoint;
 	if (id)
