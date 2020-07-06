@@ -215,21 +215,24 @@ class ExhibitForm extends Component {
 		const width2 = this.state.isNewExhibit ? 6 : 16;
 		const maxHeight = this.state.isNewExhibit ? `100vh` : `80vh`
 		return (
-			<Card fluid style={{ overflowY: 'auto', maxHeight: maxHeight, overflowX: 'hidden' }}>
+			<div className="nl-exhibit-editor">
+			{/* <Card fluid style={{ overflowY: 'auto', maxHeight: maxHeight, overflowX: 'scroll' }}> */}
 				{this.state.isNewExhibit ?
-					<Card.Content >
-						<Card.Header> New Exhibit </Card.Header>
-					</Card.Content> : null
+					// <Card.Content >
+						// <Card.Header> New Exhibit </Card.Header>
+						<h2>New Exhibit</h2>
+					// </Card.Content> 
+					: null
 				}
-				<Card.Content>
+				{/* <Card.Content> */}
 					<Form onSubmit={this.handleSubmit}>
 						<fieldset disabled={this.disabled} style={{
 							border: 'none',
 							padding: '0'
 						}}>
-						<Grid relaxed>
-							<Grid.Row>
-								<Grid.Column width={width1}>
+						{/* <Grid relaxed> */}
+							{/* <Grid.Row> */}
+								{/* <Grid.Column width={width1}> */}
 									<div className='field'>
 										<label htmlFor='o:title'>Title</label>
 										<div className='ui input'>
@@ -240,8 +243,8 @@ class ExhibitForm extends Component {
 											onChange={this.markUnsaved} />
 										</div>
 									</div>
-								</Grid.Column>
-								<Grid.Column width={width2}>
+								{/* </Grid.Column> */}
+								{/* <Grid.Column width={width2}> */}
 									<div className='field'>
 										<label htmlFor='o:slug'>URL Slug</label>
 										<div className='ui input'>
@@ -253,10 +256,10 @@ class ExhibitForm extends Component {
 											/>
 										</div>
 									</div>
-								</Grid.Column>
-							</Grid.Row>
-							<Grid.Row>
-								<Grid.Column width={width1}>
+								{/* </Grid.Column> */}
+							{/* </Grid.Row> */}
+							{/* <Grid.Row> */}
+								{/* <Grid.Column width={width1}> */}
 									<div className='field'>
 										<label htmlFor='o:narrative'>Narrative</label>
 										<div className='ui input'>
@@ -267,8 +270,8 @@ class ExhibitForm extends Component {
 											/>
 										</div>
 									</div>
-								</Grid.Column>
-								<Grid.Column width={width2}>
+								{/* </Grid.Column> */}
+								{/* <Grid.Column width={width2}> */}
 									<div className='field'>
 										<label htmlFor='o:accessible_url'>Alternative Accessible URL</label>
 										<div className='ui input'>
@@ -323,12 +326,12 @@ class ExhibitForm extends Component {
 											</div>
 										</div>
 									: null }
-								</Grid.Column>
-							</Grid.Row>
+								{/* </Grid.Column> */}
+							{/* </Grid.Row> */}
 
 							<Divider/>
-							<Grid.Row>
-								<Grid.Column width={width1}>
+							{/* <Grid.Row> */}
+								{/* <Grid.Column width={width1}> */}
 									{(this.state.exhibitType === TYPE.EXHIBIT_TYPE.MAP) &&
 										<div>
 											<label htmlFor='o:spatial_layer'>Base Layer</label>
@@ -363,8 +366,8 @@ class ExhibitForm extends Component {
 											</div>
 										</div>
 									}
-								</Grid.Column>
-								<Grid.Column width={width2}>
+								{/* </Grid.Column> */}
+								{/* <Grid.Column width={width2}> */}
 									{(this.state.baseLayerType === TYPE.BASELAYER_TYPE.TILE) &&
 										<div className="ps_n3_sub_options">
 											<div>
@@ -430,10 +433,10 @@ class ExhibitForm extends Component {
 											</div>
 										</div>
 									}
-								</Grid.Column>
-							</Grid.Row>
-							<Grid.Row>
-								<Grid.Column width={width1}>
+								{/* </Grid.Column> */}
+							{/* </Grid.Row> */}
+							{/* <Grid.Row> */}
+								{/* <Grid.Column width={width1}> */}
 									<div className="ps_n3_checkboxPair">
 										{/*
 							Spatial querying disabled for alpha:
@@ -455,16 +458,18 @@ class ExhibitForm extends Component {
 									<Field name='o:exhibit_type'
 										component='input'
 										type='hidden' />
-								</Grid.Column>
-							</Grid.Row>
-						</Grid>
+								{/* </Grid.Column> */}
+							{/* </Grid.Row> */}
+						{/* </Grid> */}
 						</fieldset>
 				{this.state.isNewExhibit &&
 				<Button type="submit">Create Exhibit</Button>
 				}
 				</Form>
-				</Card.Content>
-			</Card>);
+				{/* </Card.Content> */}
+			{/* </Card> */}
+			 </div>
+			);
 	}
 }
 

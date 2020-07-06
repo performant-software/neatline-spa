@@ -24,21 +24,23 @@ class ExhibitCreate extends Component {
 		const props = this.props;
 		return (
 			<div>
-				<Menu size='massive'>
-					<Menu.Item header as={Link} to={`${window.baseRoute}/`}><h3>NEATLINE </h3></Menu.Item>
-					<Menu.Item> {strings.createExhibit}</Menu.Item>
+				<Menu stackable>
+					<Menu.Item header as={Link} to={`${window.baseRoute}/`}>
+						<span className="neatline-subhead">Neatline</span>
+					</Menu.Item>
+					<Menu.Item>
+						<h1 className="neatline-title">{strings.createExhibit}</h1>
+					</Menu.Item>
 					<Menu.Item position='right'><div>
-						
 						{lngButtons}
 					</div></Menu.Item>
 				</Menu>
-				
 				<ExhibitForm onSubmit={props.submit}
 					submitLabel={strings.create_exhibit}
 					disabled={props.loading} 
 					fullscreen={true}
-					/>
-					{props.errored && <p>{strings.create_exhibit_error}</p>}
+				/>
+				{props.errored && <p>{strings.create_exhibit_error}</p>}
 			</div>
 		);
 	}

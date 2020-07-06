@@ -76,7 +76,6 @@ class ExhibitShow extends Component {
 						setRecordEditorType={this.props.setRecordEditorType}
 						viewMode={this.state.viewMode} /> :
 					(this.props.recordEditorType === 'new' ? <RecordCreate setShowRecords={this.props.setShowRecords} deselect={this.props.deselectRecord} setRecordEditorType={this.props.setRecordEditorType} /> : <RecordUpdate setShowRecords={this.props.setShowRecords} deselect={this.props.deselectRecord} setRecordEditorType={this.props.setRecordEditorType}/>
-
 				)
 		);
 	}
@@ -101,84 +100,63 @@ class ExhibitShow extends Component {
 
 
 	render() {
-
 		const props = this.props;
 		const {exhibit} = props;
 
-    const showFullViewLink = window.containerFullMode === false && window.containerFullModeBaseRoute;
-
-    const showReturnLink = !showFullViewLink && window.containerFullMode === true && window.containerReturnBaseRoute;
+		const showFullViewLink = window.containerFullMode === false && window.containerFullModeBaseRoute;
+		const showReturnLink = !showFullViewLink && window.containerFullMode === true && window.containerReturnBaseRoute;
 
 		let exhibitDisplay;
 		if (exhibit) {
 			exhibitDisplay = (
 				<div>
-				<Menu size='massive'>
-					<Menu.Item header as={Link} to={`${window.baseRoute}/`}><h3>NEATLINE </h3></Menu.Item>
-					<Menu.Item> {exhibit['o:title']}</Menu.Item>
-						<Menu.Item> {this.props.userSignedIn ?<Icon name="edit" />: <Icon name="search"/>}</Menu.Item>
-
+				<Menu stackable>
+					<Menu.Item header as={Link} to={`${window.baseRoute}/`}>
+						<span className="neatline-subhead">Neatline</span>
+					</Menu.Item>
+					<Menu.Item>
+						<h1 className="neatline-title">{exhibit['o:title']}</h1>
+					</Menu.Item>
+					<Menu.Item>
+						{showFullViewLink &&
+						<a title="Fullscreen Editor" href={`${window.containerFullModeBaseRoute}/show/${exhibit['o:slug']}`} aria-label="Fullscreen Editor"><Icon name='external alternate' size='large'/></a>
+						}
+						{showReturnLink &&
+						<a title="Return to Omeka Admin" href={`${window.containerReturnBaseRoute}/show/${exhibit['o:slug']}`} aria-label="Return to Omeka Admin"><Icon name='compress' size='large'/></a>
+						}
+					</Menu.Item>
 					<Menu.Item position='right'>
 						{this.props.userSignedIn ?
-								<div>
-							<Button
-								icon
-								toggle
-								basic
+							<div>
+							<Button icon toggle basic
 								color={this.props.showExhibitSettings ? 'blue' : null}
 								active={this.props.showExhibitSettings}
 								onClick={()=>{
-                  this.props.setShowExhibitSettings(true);
-                  this.setViewMode('editing');
-                  this.props.setShowRecords(true);
-                  this.props.deselectRecord();
-                }}>
+									this.props.setShowExhibitSettings(true);
+									this.setViewMode('editing');
+									this.props.setShowRecords(true);
+									this.props.deselectRecord();
+									}}>
 								Exhibit Settings <Icon name="settings" />
 							</Button>
-							<Button
-								icon
-								toggle
-								basic
+							<Button icon toggle basic
 								color={(!this.props.showExhibitSettings && this.state.viewMode === 'editing') ? 'blue' : null}
 								active={!this.props.showExhibitSettings && this.state.viewMode === 'editing'}
 								onClick={() => { this.props.setShowExhibitSettings(false); this.setViewMode('editing')}}>
 								Records <Icon name="list" />
 							</Button>
-							<Button
-								icon
-								toggle
-								basic
+							<Button icon toggle basic
 								color={this.state.viewMode === 'publicView' ? 'blue' : null}
 								active={this.state.viewMode === 'publicView'}
 								onClick={() => { this.props.setShowExhibitSettings(false); this.setViewMode('publicView'); this.props.setRecordEditorType(''); this.props.setShowRecords(true); this.props.deselectRecord()}}>
-								View Public Exhibit <Icon name="search" />
+								Public View <Icon name="eye" />
 							</Button>
-              {showFullViewLink &&
-                <a href={`${window.containerFullModeBaseRoute}/show/${exhibit['o:slug']}`}>
-                  <Button
-                    icon
-                    toggle
-                    basic>
-                    {strings.full} <Icon name='expand' />
-                  </Button>
-                </a>
-              }
-              {showReturnLink &&
-                <a href={`${window.containerReturnBaseRoute}/show/${exhibit['o:slug']}`}>
-                  <Button
-                    icon
-                    toggle
-                    basic>
-                    {strings.contained} <Icon name='compress' />
-                  </Button>
-                </a>
-              }
-							<Button
-								icon
+							<Button icon
 								onClick={this.saveAll}>
 								Save <Icon name="save" />
 							</Button>
-							</div> :
+							</div> 
+							:
 							<div>
 								<Button
 									icon
@@ -187,10 +165,10 @@ class ExhibitShow extends Component {
 									color={this.props.showExhibitSettings ? 'blue' : null}
 									active={this.props.showExhibitSettings}
 									onClick={() => {
-                    this.props.setShowExhibitSettings(true);
-                    this.props.setShowRecords(true);
-                    this.props.deselectRecord();
-                  }}>
+										this.props.setShowExhibitSettings(true);
+										this.props.setShowRecords(true);
+										this.props.deselectRecord();
+									}}>
 									Exhibit Information <Icon name="info" />
 								</Button>
 								<Button
@@ -206,17 +184,17 @@ class ExhibitShow extends Component {
 						}
 					</Menu.Item>
 				</Menu>
-				<Grid divided padded>
-					<Grid.Row>
+				<Grid stackable>
+					<Grid.Row style={{background : 'none'}}>
 						{this.props.userSignedIn ?
-							( this.props.showExhibitSettings ?
-								<Grid.Column width={4}>
+							(this.props.showExhibitSettings ?
+								<Grid.Column width={5}>
 									<ExhibitPanelContent
 										exhibit={this.props.exhibit}
 										userSignedIn={this.props.userSignedIn} />
 								</Grid.Column>
 										:
-								<Grid.Column width={4}>
+								<Grid.Column width={5}>
 									{this.showRecords()}
 								</Grid.Column>
 								)
@@ -235,7 +213,7 @@ class ExhibitShow extends Component {
 										</Card.Content>
 									</Card>
 								</Grid.Column> :
-								<Grid.Column width={4}>
+								<Grid.Column width={5}>
 									<Records exhibitShowURL={this.props.match.url}
 										userSignedIn={this.props.userSignedIn}
 										setShowRecords={this.props.setShowRecords}
@@ -245,7 +223,7 @@ class ExhibitShow extends Component {
 								)
 							}
               {!(!this.props.userSignedIn && this.props.showExhibitSettings) &&
-  							<Grid.Column floated='right' width={11}>
+  							<Grid.Column floated='right' width={10}>
   								<ExhibitPublicMap
   									userSignedIn={this.props.userSignedIn}
   									mapCache={this.props.mapCache}

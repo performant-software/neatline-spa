@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Menu, Button, Icon, Table } from 'semantic-ui-react';
+import { Menu, Button, Icon } from 'semantic-ui-react';
 //import { fetchExhibits } from '../../reducers/not_refactored/exhibits';
 import { resetExhibit } from '../../actions';
 import { deleteExhibit } from '../../actions';
@@ -34,9 +34,11 @@ class Exhibits extends Component {
 
     return (
       <div>
-        <Menu size='massive'>
-        <Menu.Item header as={Link} to={`${window.baseRoute}/`}><h3>NEATLINE </h3></Menu.Item>
-        <Menu.Item>{strings.browseExhibit}</Menu.Item>
+        <Menu stackable>
+        <Menu.Item header as={Link} to={`${window.baseRoute}/`}>
+          <span className="neatline-subhead">Neatline</span>
+        </Menu.Item>
+        <Menu.Item><h1 className="neatline-title">{strings.browseExhibit}</h1></Menu.Item>
         <Menu.Item position='right'><div>
               {props.userSignedIn &&
                 <Button
@@ -44,56 +46,59 @@ class Exhibits extends Component {
                   onClick={this.createExhibitView}
                 >
                   {strings.createExhibit}
-                  <Icon name="add" />
+                   <Icon name="plus" />
                 </Button>
               }
           {lngButtons}
         </div></Menu.Item>
         </Menu>
-        <Table singleLine padded >
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell>{strings.title}</Table.HeaderCell>
-              {showFullViewLinks &&
-                <Table.HeaderCell></Table.HeaderCell>
-              }
-              <Table.HeaderCell>{strings.created}</Table.HeaderCell>
-              <Table.HeaderCell>{strings.public}</Table.HeaderCell>
-              {props.userSignedIn &&
-                <Table.HeaderCell></Table.HeaderCell>
-              }
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
+        <table className="tablesaw neatline tablesaw-stack"> 
+          <thead>
+            <tr>
+              <th>{strings.title}</th>
+              <th>{strings.created}</th>
+              <th>{strings.public}</th>
+              <th>{strings.owner}</th>
+            </tr>
+          </thead>
+          <tbody>
             {props.exhibits.map((exhibit, idx) => (
-              <Table.Row key={idx}>
-                <Table.Cell>
+              <tr key={idx}>
+                <td>
+                  <b className="tablesaw-cell-label">{strings.title}</b>
+                  <span className="tablesaw-cell-content">
                   <Link className='ps_n3_exhibitTitle' to={`${window.baseRoute}/show/${exhibit['o:slug']}`} >{exhibit['o:title']}</Link>
-                </Table.Cell>
-                {showFullViewLinks &&
-                  <Table.Cell>
-                    <a href={`${window.containerFullModeBaseRoute}/show/${exhibit['o:slug']}`}>{strings.full}</a>
-                  </Table.Cell>
-                }
-                <Table.Cell>{exhibit['o:added']}</Table.Cell>
-                <Table.Cell>{exhibit['o:public'] ? strings.yes : strings.no}</Table.Cell>
-                {props.userSignedIn &&
-                  <Table.Cell>
-                    <Button
-                      onClick={() => { props.deleteExhibit(exhibit); }}
-                      disabled={props.deleteInProgress}
-                    >
-                      {strings.delete}
-                    </Button>
-                    <Button disabled>
-                      Duplicate
-                    </Button>
-                  </Table.Cell>
-                }
-              </Table.Row>
+                  <ul className="actions neatline">
+                    {showFullViewLinks &&
+                    <li><a title="Fullscreen Editor" href={`${window.containerFullModeBaseRoute}/show/${exhibit['o:slug']}`} aria-label="Fullscreen Editor"><Icon name="external alternate"/></a></li>
+                    }
+                    <li><a title="Edit" href={`${window.baseRoute}/show/${exhibit['o:slug']}`} aria-label="Edit"><Icon name="pencil alternate" /></a></li>
+                    {props.userSignedIn &&
+                    <li>
+                      <a onClick={() => { props.deleteExhibit(exhibit); }} disabled={props.deleteInProgress} ><Icon name="trash alternate"/></a>
+                    </li>
+                    }
+                  </ul>
+                  </span>
+                </td>
+                <td>
+                  <b className="tablesaw-cell-label">{strings.created}</b>
+                  <span className="tablesaw-cell-content">{exhibit['o:added']}</span>
+                </td>
+                <td>
+                  <b className="tablesaw-cell-label">{strings.public}</b>
+                  <span className="tablesaw-cell-content">{exhibit['o:public'] ? strings.yes : strings.no}</span>
+                </td>
+                <td>
+                  <b className="tablesaw-cell-label">{strings.owner}</b>
+                  <span className="tablesaw-cell-content">
+                    {/* {exhibit['o:owner']} */}
+                    </span>
+                </td>
+              </tr>
             ))}
-          </Table.Body>
-        </Table>
+          </tbody>
+        </table>
         {props.deleteErrored &&
           <p>{strings.delete_exhibit_error}</p>
         }
