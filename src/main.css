@@ -27,13 +27,13 @@
 @import "https://use.fontawesome.com/releases/v5.1.0/css/all.css";
 @import "https://unpkg.com/leaflet@1.3.1/dist/leaflet.css";
 @import "https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.4.2/leaflet.draw.css";
+@import "https://fonts.googleapis.com/css?family=Source+Code+Pro|Lato:400,400italic,700,700italic";
 @import "https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/components/icon.min.css";
 @import "https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/components/card.min.css";
 @import "https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/components/tab.css";
 @import "https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/components/search.css";
 @import "https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/components/form.min.css";
 @import "https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/components/divider.min.css";
-@import "//fonts.googleapis.com/css?family=Source+Code+Pro|Lato:400,400italic,700,700italic";
 #ps_n3_body {
   font-family: "Lato",sans-serif;
   font-size: 1rem;
@@ -73,7 +73,7 @@
 
 label {
   padding: 0;
-  margin: 0; }
+  margin: 0 0 5px 0; }
 
 table.neatline-records {
   table-layout: inherit !important; }
@@ -102,9 +102,23 @@ table.neatline-records {
   height: 100%; }
 
 .ps_n3_exhibitFormContainer {
-  height: calc(100vh - 6rem);
-  overflow: scroll;
-  width: 19.3rem; }
+  height: calc(100vh - 14rem);
+  overflow: scroll; }
+
+.ps_n3_exhibitFormContainer fieldset {
+  margin: 0 0 24px;
+  border: 0;
+  padding: 0;
+  min-width: 100%; }
+
+.ps_n3_exhibitFormContainer .field {
+  width: 100%;
+  background-color: #ffffff;
+  padding: 6px;
+  position: relative;
+  margin-bottom: 6px;
+  display: flex;
+  flex-wrap: wrap; }
 
 .ps_n3_exhibitShowContainer {
   gridRow: 1;
@@ -597,7 +611,7 @@ table.tablesaw.neatline th, table.tablesaw.neatline td {
 .tablesaw tr:not(:last-child) td {
   border-bottom: 1px solid #dfdfdf; }
 
-.neatline .tablesaw-cell-content, #properties .tablesaw-cell-content {
+.neatline .tablesaw-cell-content {
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -617,7 +631,7 @@ td, table.tablesaw td {
   position: relative;
   vertical-align: middle; }
 
-.browse .tablesaw-cell-content > .actions, #properties .tablesaw-cell-content > .actions {
+.neatline .tablesaw-cell-content > .actions {
   white-space: nowrap; }
 
 .actions.neatline {
@@ -2608,10 +2622,10 @@ table.tablesaw td:first-child a {
 
 /* Link */
 .ui.breadcrumb a {
-  color: #4183C4; }
+  color: #4183C4 !important; }
 
 .ui.breadcrumb a:hover {
-  color: #1e70bf; }
+  color: #1e70bf !important; }
 
 /* Icon Divider */
 .ui.breadcrumb .icon.divider {

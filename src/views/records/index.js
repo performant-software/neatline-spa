@@ -57,18 +57,20 @@ class Records extends Component {
 				<table className="tablesaw neatline tablesaw-stack neatline-records" style={{marginBottom:"0", border:"none"}}>
 					<tbody>
 						<tr>
-							<td style={{background:"none", 'padding':'0.5rem'}}><Button size='small'
-								onClick={() => { props.setRecordEditorType('new'); props.setShowRecords(false) }}>
-								{strings.new_record}
-							</Button></td>
-							<td style={{background:"none", 'padding':'0.5rem'}}><Search
+							<td style={{background:"none", 'padding':'0.5rem'}}>
+								<Button size='small'
+									onClick={() => { props.setRecordEditorType('new'); props.setShowRecords(false) }}>
+								{strings.new_record}</Button>
+							</td>
+							<td style={{background:"none", 'padding':'0.5rem'}}>
+								<Search
 								fluid
 								onSearchChange={(e, d) => this.searchChange(e, d)}
 								showNoResults={false}
 								size='small'
 								onKeyDown={(e, d) => this.mouseClick(e, d)}
-								placeholder='Press enter to submit'
-							/></td>
+								placeholder='Press enter to submit'/>
+							</td>
 						</tr>
 					</tbody>
 				</table>

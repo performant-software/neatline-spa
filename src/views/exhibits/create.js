@@ -5,7 +5,7 @@ import {createExhibit} from '../../actions';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {strings} from '../../i18nLibrary';
-import { Menu, Button } from 'semantic-ui-react'
+import { Menu, Icon, Breadcrumb, Button } from 'semantic-ui-react'
 
 
 class ExhibitCreate extends Component {
@@ -21,6 +21,9 @@ class ExhibitCreate extends Component {
 		const lngButtons = allLanguages.map((lng) =>
 			<Button key={lng} onClick={() => changeLanguage(lng)}>{lng}</Button>
 		);
+		const showFullViewLink = window.containerFullMode === false && window.containerFullModeBaseRoute;
+		const showReturnLink = !showFullViewLink && window.containerFullMode === true && window.containerReturnBaseRoute;
+
 		const props = this.props;
 		return (
 			<div>
@@ -31,10 +34,25 @@ class ExhibitCreate extends Component {
 					<Menu.Item>
 						<h1 className="neatline-title">{strings.createExhibit}</h1>
 					</Menu.Item>
+					{showReturnLink &&
+					<Menu.Item>
+						<a title="Return to Omeka Admin" href={`${window.containerReturnBaseRoute}/add`} aria-label="Return to Omeka Admin"><Icon name='compress' size='large'/></a>
+					</Menu.Item>
+					}
+					{/* {showFullViewLink &&
+					<Menu.Item>
+						<a title="Fullscreen Editor" href={`${window.containerFullModeBaseRoute}`} aria-label="Fullscreen Editor"><Icon name='external alternate' size='large'/></a>
+					</Menu.Item>
+					} */}
 					<Menu.Item position='right'><div>
 						{lngButtons}
 					</div></Menu.Item>
 				</Menu>
+				<Breadcrumb>
+					<Breadcrumb.Section href={`${window.baseRoute}/`}>Neatline</Breadcrumb.Section>
+					<Breadcrumb.Divider icon='right angle' />
+					<Breadcrumb.Section active>New Exhibit</Breadcrumb.Section>
+				</Breadcrumb>
 				<ExhibitForm onSubmit={props.submit}
 					submitLabel={strings.create_exhibit}
 					disabled={props.loading} 

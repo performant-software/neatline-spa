@@ -2,9 +2,27 @@
 	height: 100%;
 }
 .ps_n3_exhibitFormContainer {
-	height: calc(100vh - 6rem);
+	height: calc(100vh - 14rem);
 	overflow: scroll;
-	width: 19.3rem;
+	// width: 19.3rem;
+	// padding: 0 1rem 1rem 0.5rem;
+}
+
+.ps_n3_exhibitFormContainer fieldset {
+    margin: 0 0 24px;
+    border: 0;
+    padding: 0;
+    min-width: 100%;
+}
+
+.ps_n3_exhibitFormContainer .field {
+    width: 100%;
+    background-color: #ffffff;
+    padding: 6px;
+    position: relative;
+    margin-bottom: 6px;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .ps_n3_exhibitShowContainer {

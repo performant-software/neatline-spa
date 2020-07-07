@@ -31,6 +31,7 @@ class Exhibits extends Component {
         <Button key={lng} onClick={() => changeLanguage(lng)}>{lng}</Button>
     );
     const showFullViewLinks = window.containerFullMode === false && window.containerFullModeBaseRoute;
+		const showReturnLink = !showFullViewLinks && window.containerFullMode === true && window.containerReturnBaseRoute;
 
     return (
       <div>
@@ -39,6 +40,16 @@ class Exhibits extends Component {
           <span className="neatline-subhead">Neatline</span>
         </Menu.Item>
         <Menu.Item><h1 className="neatline-title">{strings.browseExhibit}</h1></Menu.Item>
+        {showReturnLink &&
+        <Menu.Item>
+						<a title="Return to Omeka Admin" href={`${window.containerReturnBaseRoute}`} aria-label="Return to Omeka Admin"><Icon name='compress' size='large'/></a>
+        </Menu.Item>
+        }
+        {/* {showFullViewLinks &&
+        <Menu.Item>
+						<a title="Fullscreen Editor" href={`${window.containerFullModeBaseRoute}`} aria-label="Fullscreen Editor"><Icon name='external alternate' size='large'/></a>
+        </Menu.Item>
+        } */}
         <Menu.Item position='right'><div>
               {props.userSignedIn &&
                 <Button

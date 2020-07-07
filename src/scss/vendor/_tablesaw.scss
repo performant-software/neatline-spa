@@ -47,7 +47,7 @@ table.tablesaw.neatline th, table.tablesaw.neatline td {
     border-bottom: 1px solid #dfdfdf;
   }
   
-  .neatline .tablesaw-cell-content, #properties .tablesaw-cell-content {
+  .neatline .tablesaw-cell-content {
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -71,7 +71,7 @@ table.tablesaw.neatline th, table.tablesaw.neatline td {
     vertical-align: middle;
   }
   
-  .browse .tablesaw-cell-content>.actions, #properties .tablesaw-cell-content>.actions {
+  .neatline .tablesaw-cell-content>.actions {
     white-space: nowrap;
   }
   
