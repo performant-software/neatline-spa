@@ -10,7 +10,7 @@ import RecordInfoPanel from '../../components/info';
 import Records from '../records';
 import RecordCreate from '../records/create';
 import RecordUpdate from '../records/update';
-import { strings } from '../../i18nLibrary';
+// import { strings } from '../../i18nLibrary';
 import {recordCacheToDatabase, updateExhibitCache, clearRecordCache, setShowExhibitSettings, setShowRecords, setRecordEditorType} from '../../actions';
 import LockOverlay from '../../components/LockOverlay';
 import SpinnerOverlay from '../../components/SpinnerOverlay';

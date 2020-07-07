@@ -3,7 +3,7 @@ import { selectRecord, filterRecords, removeRecordFromCache, deleteRecord} from 
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { strings } from '../../i18nLibrary';
-import { Grid, Icon, Button, Search, Card } from 'semantic-ui-react';
+import { Icon, Button, Search } from 'semantic-ui-react';
 import _ from 'lodash';
 
 class Records extends Component {
@@ -20,6 +20,7 @@ class Records extends Component {
 		if (d.value.length < 1) return this.resetSearch()
 		this.setState({'searchTerm': d.value})
 	}
+
 	handleSort = clickedColumn => () => {
 		const { column, results, direction } = this.state
 
@@ -53,7 +54,7 @@ class Records extends Component {
 		return(
 			<div className="nl-records-editor">
 			{this.props.viewMode === 'editing' ?
-				<table className="tablesaw neatline tablesaw-stack neatline-records" style={{'margin-bottom':"0", border:"none"}}>
+				<table className="tablesaw neatline tablesaw-stack neatline-records" style={{marginBottom:"0", border:"none"}}>
 					<tbody>
 						<tr>
 							<td style={{background:"none", 'padding':'0.5rem'}}><Button size='small'
