@@ -3,7 +3,7 @@ import { selectRecord, filterRecords, removeRecordFromCache, deleteRecord} from 
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { strings } from '../../i18nLibrary';
-import { Icon, Button, Search } from 'semantic-ui-react';
+import { Icon, Button, Search, Card } from 'semantic-ui-react';
 import _ from 'lodash';
 
 class Records extends Component {
@@ -133,25 +133,25 @@ class Records extends Component {
 					}
 				</tbody>
 			</table> 
-			: null
-			// <Grid.Row style={{background : 'none'}}>
-			// 	{props.filteredRecords.map( record => (
-			// 		<Card
-			// 			style={{marginRight: '1.5em', marginLeft: '1.5em'}}
-			// 			fluid
-			// 			key={record['o:id']}
-			// 			color={((this.props.selectedRecord !== null) && (record['o:id'] === this.props.selectedRecord['o:id']) )? 'blue': null }
-			// 		>
-			// 			<Card.Content
-			// 				style={{ textOverflow: 'ellipsis', maxWidth: '8vw', whiteSpace: 'nowrap', overflow: 'hidden' }}
-			// 				onClick={() => { this.setActiveCard(record['o:id']); props.selectRecord({ record: record }); }}
-			// 				>
-			// 				<Card.Header>{record['o:title']}</Card.Header>
-			// 				<Card.Description>{record['o:body']}</Card.Description>
-			// 			</Card.Content>
-			// 		</Card>
-			// 	))}
-			// </Grid.Row> 
+			: <div className="ps_n3_exhibitFormContainer">
+			{props.filteredRecords.map( record => (
+					<Card
+						style={{marginTop:'4px'}}
+						fluid
+						key={record['o:id']}
+						color={((this.props.selectedRecord !== null) && (record['o:id'] === this.props.selectedRecord['o:id']) )? 'blue': null }
+					>
+						<Card.Content
+							onClick={() => { this.setActiveCard(record['o:id']); props.selectRecord({ record: record }); }}
+							>
+							<Card.Header>{record['o:title']}</Card.Header>
+							<Card.Description
+							 style={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}
+							>{record['o:body']}</Card.Description>
+						</Card.Content>
+					</Card>
+				))}
+				</div>
 			}
 			</div>
 		);

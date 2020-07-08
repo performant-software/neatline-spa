@@ -19,3 +19,15 @@
 .ps_n3_buttonGroup_exhibitForm{
 	margin: .5rem 0 .8rem .2rem;
 }
+
+.react-tabs__tab-list {
+	border-bottom: 1px solid rgba(34, 36, 38, 0.15); //1px solid #aaa;
+}
+
+.react-tabs__tab--selected {
+    background: #fff;
+    border-color: rgba(34, 36, 38, 0.15); //#aaa;
+	border-radius: 0.28571429rem 0.28571429rem 0 0; //5px 5px 0 0;
+	-webkit-box-shadow: 1px 0px 0px 0 rgba(34, 36, 38, 0.15);
+    box-shadow: 1px 0px 0px 0 rgba(34, 36, 38, 0.15);
+}

@@ -5,7 +5,7 @@
 	height: calc(100vh - 14rem);
 	overflow: scroll;
 	// width: 19.3rem;
-	// padding: 0 1rem 1rem 0.5rem;
+	padding: 0 1rem 1rem 0.5rem;
 }
 
 .ps_n3_exhibitFormContainer fieldset {
@@ -15,14 +15,29 @@
     min-width: 100%;
 }
 
-.ps_n3_exhibitFormContainer .field {
+.ps_n3_exhibitFormContainer .field,
+.ps_n3_recordFormContainer .field {
     width: 100%;
     background-color: #ffffff;
-    padding: 6px;
+    padding: 0;
     position: relative;
     margin-bottom: 6px;
     display: flex;
-    flex-wrap: wrap;
+	// flex-wrap: wrap;
+	flex-flow: column wrap;
+}
+
+.ps_n3_exhibitFormContainer .inline.fields {
+	width: 45%
+}
+
+.ps_n3_exhibitFormContainer .inline.fields label {
+	flex: 2 0 auto;
+}
+
+.ps_n3_exhibitFormContainer .ui.input input, 
+.ps_n3_exhibitFormContainer .ui.input textarea {
+	width: 95% !important;
 }
 
 .ps_n3_exhibitShowContainer {
@@ -37,7 +52,7 @@
 	overflow: hidden;
 	height: calc(100vh - 12.5rem);
 	width: 100%;
-	padding:0 0 10rem 0;
+	padding:0 0 1rem 0; //0 0 10rem 0
 	margin:0;
 }
 
@@ -87,6 +102,7 @@
 
 .ps_n3_checkboxPair {
 	height: 1rem;
+	padding-left: 10px;
 }
 
 .ps_n3_checkboxPair input {

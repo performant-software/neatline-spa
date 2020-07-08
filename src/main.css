@@ -33,7 +33,6 @@
 @import "https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/components/tab.css";
 @import "https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/components/search.css";
 @import "https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/components/form.min.css";
-@import "https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/components/divider.min.css";
 #ps_n3_body {
   font-family: "Lato",sans-serif;
   font-size: 1rem;
@@ -103,7 +102,8 @@ table.neatline-records {
 
 .ps_n3_exhibitFormContainer {
   height: calc(100vh - 14rem);
-  overflow: scroll; }
+  overflow: scroll;
+  padding: 0 1rem 1rem 0.5rem; }
 
 .ps_n3_exhibitFormContainer fieldset {
   margin: 0 0 24px;
@@ -111,14 +111,25 @@ table.neatline-records {
   padding: 0;
   min-width: 100%; }
 
-.ps_n3_exhibitFormContainer .field {
+.ps_n3_exhibitFormContainer .field,
+.ps_n3_recordFormContainer .field {
   width: 100%;
   background-color: #ffffff;
-  padding: 6px;
+  padding: 0;
   position: relative;
   margin-bottom: 6px;
   display: flex;
-  flex-wrap: wrap; }
+  flex-flow: column wrap; }
+
+.ps_n3_exhibitFormContainer .inline.fields {
+  width: 45%; }
+
+.ps_n3_exhibitFormContainer .inline.fields label {
+  flex: 2 0 auto; }
+
+.ps_n3_exhibitFormContainer .ui.input input,
+.ps_n3_exhibitFormContainer .ui.input textarea {
+  width: 95% !important; }
 
 .ps_n3_exhibitShowContainer {
   gridRow: 1;
@@ -130,7 +141,7 @@ table.neatline-records {
   overflow: hidden;
   height: calc(100vh - 12.5rem);
   width: 100%;
-  padding: 0 0 10rem 0;
+  padding: 0 0 1rem 0;
   margin: 0; }
 
 .ps_n3_exhibit-form fieldset > div {
@@ -171,7 +182,8 @@ table.neatline-records {
   margin: .5rem 0 .5rem 0; }
 
 .ps_n3_checkboxPair {
-  height: 1rem; }
+  height: 1rem;
+  padding-left: 10px; }
 
 .ps_n3_checkboxPair input {
   position: relative;
@@ -199,7 +211,7 @@ table.neatline-records {
   margin: -2rem 0 0;
   padding: 0;
   position: relative;
-  left: 16rem;
+  left: calc(100% - 2rem);
   top: 2.91rem;
   height: 2.2rem;
   width: 2.2rem;
@@ -261,6 +273,16 @@ input.styleEditor_input {
 .ps_n3_buttonGroup_exhibitForm {
   margin: .5rem 0 .8rem .2rem; }
 
+.react-tabs__tab-list {
+  border-bottom: 1px solid rgba(34, 36, 38, 0.15); }
+
+.react-tabs__tab--selected {
+  background: #fff;
+  border-color: rgba(34, 36, 38, 0.15);
+  border-radius: 0.28571429rem 0.28571429rem 0 0;
+  -webkit-box-shadow: 1px 0px 0px 0 rgba(34, 36, 38, 0.15);
+  box-shadow: 1px 0px 0px 0 rgba(34, 36, 38, 0.15); }
+
 .ps_n3_info_component,
 .ps_n3_info_component_withWarning {
   position: absolute;
@@ -294,8 +316,16 @@ input.styleEditor_input {
   overflow: scroll;
   border: 0;
   margin: 0 0 0 0;
-  height: calc(100vh - 16rem);
+  height: calc(100vh - 14rem);
   /*border:1px solid red;*/ }
+
+.ps_n3_recordFormContainer label {
+  display: block;
+  margin: 0 0 .28571429rem 0;
+  color: rgba(0, 0, 0, 0.87);
+  font-size: .92857143em;
+  font-weight: 700;
+  text-transform: none; }
 
 .ps_n3_optionHeader {
   font-weight: bold;
@@ -2622,10 +2652,10 @@ table.tablesaw td:first-child a {
 
 /* Link */
 .ui.breadcrumb a {
-  color: #4183C4 !important; }
+  color: #5a3c6e !important; }
 
 .ui.breadcrumb a:hover {
-  color: #1e70bf !important; }
+  color: #5a3c6e !important; }
 
 /* Icon Divider */
 .ui.breadcrumb .icon.divider {

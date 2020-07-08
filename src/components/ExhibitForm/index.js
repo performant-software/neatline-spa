@@ -214,9 +214,7 @@ class ExhibitForm extends Component {
 		return (
 			<div className="ps_n3_exhibitFormContainer">
 				<Form onSubmit={this.handleSubmit}>
-					<fieldset disabled={this.disabled} 
-					// style={{border: 'none', padding: '0'}}
-					>
+					<fieldset disabled={this.disabled}>
 					<legend>
 						{this.state.isNewExhibit ?
 							<h2>New Exhibit</h2>
@@ -280,6 +278,7 @@ class ExhibitForm extends Component {
 									component='input'
 									type="checkbox"
 									/>
+									<span style={{paddingLeft:'8px'}}>Check here to publish exhibit to the public site.</span>
 								</div>
 							</div>
 							<div className='inline fields'>

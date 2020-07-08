@@ -1314,8 +1314,6 @@
   /*--------------
        Colors
   ---------------*/
-  
-  
   /*--- Standard Colors  ---*/
   
   .ui.menu .red.active.item,
@@ -1498,9 +1496,7 @@
   
   /*--------------
       Inverted
-  ---------------*/
-  
-  
+  ---------------*/  
   /* Red */
   .ui.inverted.menu .red.active.item,
   .ui.inverted.red.menu {
@@ -2098,10 +2094,10 @@
 
 /* Link */
 .ui.breadcrumb a {
-  color: #4183C4 !important;
+  color: rgb(90, 60, 110) !important;
 }
 .ui.breadcrumb a:hover {
-  color: #1e70bf !important;
+  color: rgb(90, 60, 110) !important;
 }
 
 /* Icon Divider */
