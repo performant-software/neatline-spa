@@ -6,6 +6,7 @@ import {Link} from 'react-router-dom';
 import {fetchExhibits, setTabIndex, deselectRecord,fetchRecordsBySlug,updateRecordCache} from '../../actions';
 import ExhibitUpdate from './update';
 import ExhibitPublicMap from '../../components/ExhibitPublicMap';
+import Timeline from '../../components/Timeline';
 import RecordInfoPanel from '../../components/info';
 import Records from '../records';
 import RecordCreate from '../records/create';
@@ -224,6 +225,7 @@ class ExhibitShow extends Component {
 							}
               {!(!this.props.userSignedIn && this.props.showExhibitSettings) &&
   							<Grid.Column floated='right' width={10}>
+								<div className="neatline-exhibit" style={{marginBottom:"1rem"}}>
   								<ExhibitPublicMap
   									userSignedIn={this.props.userSignedIn}
   									mapCache={this.props.mapCache}
@@ -243,6 +245,8 @@ class ExhibitShow extends Component {
   									setShowRecords={this.props.setShowRecords}
   								/>
   								<RecordInfoPanel isVisible={!this.props.showExhibitSettings && !this.props.leaflet.isEditing} />
+								<Timeline />
+								</div>
   						</Grid.Column>
             }
 					</Grid.Row>
