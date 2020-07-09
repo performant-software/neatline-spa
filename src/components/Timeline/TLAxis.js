@@ -157,27 +157,26 @@ const TLAxis = ({ domain, range, timeEntries
     }, [])
   
     return (
-        <div className="neatline-timeline">
-        <div className="tl-controls">
-            <span id="zoomIn" className="tl-controls-button">
-            <Icon name="search plus" />
-            </span>
-            <span id="zoomOut" className="tl-controls-button">
-            <Icon name="search minus" />
-            </span>
-            <span id="reset" className="tl-controls-button">
-            <Icon name="undo alternate" />
-            </span>
-
-        </div>
-        <div
-            className="tl-main"
-            ref={ref}
-        />
-        <div
-            className="tl-axis"
-            ref={ref2}
-        />
+        <div className="nl-timeline-container">
+            <div className="tl-controls">
+                <span id="zoomIn" className="tl-controls-button">
+                <Icon name="search plus" />
+                </span>
+                <span id="zoomOut" className="tl-controls-button">
+                <Icon name="search minus" />
+                </span>
+                <span id="reset" className="tl-controls-button">
+                <Icon name="undo alternate" />
+                </span>
+            </div>
+            <div
+                className="tl-main"
+                ref={ref}
+            />
+            <div
+                className="tl-axis"
+                ref={ref2}
+            />
         </div>
     )
   }

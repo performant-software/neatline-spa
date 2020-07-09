@@ -1,11 +1,13 @@
-.neatline-timeline {
-    /* height: 100%; */
-    /* background-color: rgba(242,242,242,.4); */
-    border-top: 1px solid #e5e5e5;
-    position: relative;
+.nl-timeline-container {
+    position: absolute;
+    bottom: .9rem;
+    left: 10px;
+    right: 10px;
+    z-index: 1000;
+    background: none;
 }
 
-svg {
+.nl-timeline-container svg {
     vertical-align: top;
     width: 100%;
     /* height: 100%; */
@@ -13,30 +15,25 @@ svg {
 
 .tl-main {
     width: 100%;
-    /* background-color: rgba(242,242,242,.6); */
     background: none;
-    /* background-color: #f2f2f2; */
-    /* position: relative; */
     overflow: hidden;
-    /* border-top: 1px solid #e5e5e5; */
     cursor: move;
-    /* margin-left: 48px; */
     position: absolute;
-    top: 0;
-    z-index: 2;
+    bottom: 30px;
+    z-index: 1002;
 }
 
 .tl-axis {
-    margin-bottom: 1rem;
     position: absolute;
     overflow: hidden;
     cursor: move;
-    top: 0;
-    z-index: 1;
+    bottom: 0;
+    z-index: 1001;
     width: 100%;
-    border-bottom: 1px solid #e5e5e5;
-    /* background-color: #f2f2f2; */
-    background-color: rgba(255,255,255,.6);
+    border-radius: 0.3rem;
+    border: 2px solid #c2c0ba;
+    background-color: rgba(255,255,255,.9);
+    min-height: 50px;
 }
 .tl-main .tl-item {
     background: none;
@@ -44,13 +41,14 @@ svg {
 
 .tl-controls {
     position: absolute;
-    z-index: 11;
+    z-index: 1003;
     text-align: center;
     color: #333;
     overflow: hidden;
     border-bottom-right-radius: 10px;
     border-top-right-radius: 10px;
-    left: 0;
+    left: 2px;
+    bottom: 1.7rem;
     margin-top: 8px;
 }
 

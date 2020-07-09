@@ -225,7 +225,7 @@ class ExhibitShow extends Component {
 							}
               {!(!this.props.userSignedIn && this.props.showExhibitSettings) &&
   							<Grid.Column floated='right' width={10}>
-								<div className="neatline-exhibit" style={{marginBottom:"1rem"}}>
+								<div className="neatline-exhibit" style={{marginBottom:"1rem", "position":"relative"}}>
   								<ExhibitPublicMap
   									userSignedIn={this.props.userSignedIn}
   									mapCache={this.props.mapCache}
