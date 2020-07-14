@@ -278,7 +278,7 @@ class ExhibitForm extends Component {
 									component='input'
 									type="checkbox"
 									/>
-									<span style={{paddingLeft:'8px'}}>Check here to publish exhibit to the public site.</span>
+									<span style={{paddingLeft:'22px'}}>Check here to publish exhibit to the public site.</span>
 								</div>
 							</div>
 							<div className='inline fields'>

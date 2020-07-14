@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ExhibitForm from '../../components/ExhibitForm';
+import TimelineForm from '../../components/Timeline/TimelineForm';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {strings} from '../../i18nLibrary';
@@ -21,9 +22,13 @@ class ExhibitUpdate extends Component {
 					}
 				</Tab.Pane>
 			},
-			{menuItem: 'Plugin Settings', render: () => 
+			{menuItem: 'Timeline', render: () => 
 				<Tab.Pane attached={false}>
-						plugins
+						<TimelineForm 
+							exhibit={props.exhibit}
+							submitLabel={strings.save_exhibit}
+							disabled={props.loading}
+						/>
 				</Tab.Pane>
 			},
 		]

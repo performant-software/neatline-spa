@@ -4,15 +4,12 @@ import './Timeline.css';
 import { Icon } from 'semantic-ui-react';
 
 
-const TLAxis = ({ domain, range, timeEntries
-    // height,
-    // width
-}) => {
+const TLAxis = ({ domain, range, timeEntries, spanHeight }) => {
 
     const parser = d3.isoParse;
     const ref = useRef()
     const ref2 = useRef()
-    const spanHeight = 16;
+    // const spanHeight = 16;
     const pointRadius = spanHeight/4;
 
     const items = d3.nest().key(function(d) {
@@ -117,8 +114,6 @@ const TLAxis = ({ domain, range, timeEntries
 
     const axisHeight = (spanHeight * items.length) + 22;
     const xAxis = (g, x) => g
-        // .attr("transform", `translate(0,${height})`)
-        // .attr("transform", `translate(45,0)`)
         .attr("color", "#333") //#737373
         .attr('height', axisHeight + 22)
         .style('font-size', '0.9rem')

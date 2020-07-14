@@ -17,7 +17,7 @@ const Timeline = () => {
       { "tier": "2", "id": "66", "owner_id": "2", "item_id": null, "exhibit_id": "5", "added": "2020-04-29 17:22:08", "modified": "2020-04-29 05:23:23", "is_coverage": "1", "is_wms": "0", "slug": null, "title": "Anna Langford", "item_title": null, "body": null, "coverage": "0x00000000010700000001000000010100000013765b65eacb61c1c3c8dc7c1a845241", "tags": "lawmaker", "widgets": "Simile", "presenter": "StaticBubble", "fill_color": "#ffbb78", "fill_color_select": "#ffbb78", "stroke_color": "white", "stroke_color_select": "black", "fill_opacity": "0.80", "fill_opacity_select": "1.00", "stroke_opacity": "0.80", "stroke_opacity_select": "1.00", "stroke_width": "2", "point_radius": "6", "zindex": null, "weight": null, "start_date": "1917-10-27", "end_date": null, "after_date": null, "before_date": null, "point_image": null, "wms_address": null, "wms_layers": null, "min_zoom": null, "max_zoom": null, "map_zoom": "5", "map_focus": "-10767225.550863,4172850.2475636" },
       { "tier": null, "id": "67", "owner_id": "2", "item_id": null, "exhibit_id": "5", "added": "2020-04-30 17:55:38", "modified": "2020-04-30 05:57:04", "is_coverage": "1", "is_wms": "0", "slug": null, "title": "Ruth Beckford", "item_title": null, "body": null, "coverage": "0x000000000107000000010000000101000000bce7c093a9f669c10b4c02ce835d5141", "tags": "artmaker", "widgets": "Simile", "presenter": "StaticBubble", "fill_color": "#f781bf", "fill_color_select": "#f781bf", "stroke_color": "white", "stroke_color_select": "black", "fill_opacity": "0.80", "fill_opacity_select": "1.00", "stroke_opacity": "0.80", "stroke_opacity_select": "1.00", "stroke_width": "2", "point_radius": "6", "zindex": null, "weight": null, "start_date": "1925-12-7", "end_date": null, "after_date": null, "before_date": null, "point_image": null, "wms_address": null, "wms_layers": null, "min_zoom": null, "max_zoom": null, "map_zoom": "5", "map_focus": "-10767225.550863,4172850.2475636" },
         ]
-          
+     
     const minDate = d3.min(data, function(d) {
         return parser(d.start_date);
       });
@@ -32,21 +32,21 @@ const Timeline = () => {
     const xScale = 
         d3.scaleTime()
         .domain([minDate,maxDate])
+        //range should be container width
         .range([0, 1000]);
     
-    console.log(xScale.range())
+    // console.log(xScale.range())
+
+    const spanHeight = 16;
 
     return (
-        
         <TLAxis 
-            data={data}          
+            // data={data}          
             domain={xScale.domain()}
             range={xScale.range()} 
             timeEntries={timeEntries}
-            // height ="250"
-            // width="900"
+            spanHeight={spanHeight}
       />    
-
     )
 }
 
