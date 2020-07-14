@@ -12,6 +12,7 @@ import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
 import moment from 'moment';
 import {bindActionCreators} from 'redux';
+import CKEditor from 'ckeditor4-react';
 
 const defaultValues = {
 	'o:fill_color': '#00aeff',
@@ -133,10 +134,18 @@ class RecordForm extends Component {
 									<legend><h4>Text Description</h4></legend>
 									<div className='field'>
 										<label 	htmlFor='o:title'>{strings.title}</label>
-										<Field 	id='o:title'
+										<CKEditor
+											id='o:title'
+											name='o:title'
+											data=''
+											config={ {
+												height: [ [ '105px' ] ]
+											} }
+										/>
+										{/* <Field 	id='o:title'
 												name='o:title'
 												component='textarea'
-												onChange={this.markUnsaved}/>
+												onChange={this.markUnsaved}/> */}
 									</div>
 									<div className='field'>
 										<label 	htmlFor='o:slug'>{strings.slug}</label>
@@ -148,10 +157,15 @@ class RecordForm extends Component {
 									</div>
 									<div className='field'>
 										<label 	htmlFor='o:body'>{strings.body}</label>
-										<Field 	id='o:body'
+										<CKEditor 
+											id='o:body'
+											name='o:body'
+											data=''
+										/>
+										{/* <Field 	id='o:body'
 												name='o:body'
 												component='textarea'
-												onChange={this.markUnsaved}/>
+												onChange={this.markUnsaved}/> */}
 									</div>
 								</fieldset>
 							</div>
