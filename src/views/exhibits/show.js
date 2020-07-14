@@ -7,6 +7,7 @@ import {fetchExhibits, setTabIndex, deselectRecord,fetchRecordsBySlug,updateReco
 import ExhibitUpdate from './update';
 import ExhibitPublicMap from '../../components/ExhibitPublicMap';
 import Timeline from '../../components/Timeline';
+import NarrativePanel from '../../components/NeatlineText/NarrativePanel';
 import RecordInfoPanel from '../../components/info';
 import Records from '../records';
 import RecordCreate from '../records/create';
@@ -225,27 +226,32 @@ class ExhibitShow extends Component {
 							}
               {!(!this.props.userSignedIn && this.props.showExhibitSettings) &&
   							<Grid.Column floated='right' width={10}>
-								<div className="neatline-exhibit" style={{marginBottom:"1rem", "position":"relative"}}>
-  								<ExhibitPublicMap
-  									userSignedIn={this.props.userSignedIn}
-  									mapCache={this.props.mapCache}
-  									exhibit={this.props.exhibit}
-  									records={this.state.records}
-  									selectedRecord={this.props.selectedRecord}
-  									previewedRecord={this.props.previewedRecord}
-  									editorRecord={this.props.editorRecord}
-  									editorNewRecord={this.props.editorNewRecord}
-  									leafletState={this.props.leaflet}
-  									exhibitShowURL={this.props.match.url}
-  									hasWarning={this.props.mapCache.hasUnsavedChanges}
-  									isEditing={this.props.recordEditorType === 'edit' ? true : false}
-  									showExhibitSettings={this.props.showExhibitSettings}
-  									viewMode={this.state.viewMode}
-  									setRecordEditorType={this.props.setRecordEditorType}
-  									setShowRecords={this.props.setShowRecords}
-  								/>
-  								<RecordInfoPanel isVisible={!this.props.showExhibitSettings && !this.props.leaflet.isEditing} />
-								<Timeline />
+								<div className="nl-container" >
+									<div className="neatline-exhibit item-map" style={{marginBottom:"1rem", "position":"relative",height: '500px'}} >
+										<ExhibitPublicMap
+										userSignedIn={this.props.userSignedIn}
+										mapCache={this.props.mapCache}
+										exhibit={this.props.exhibit}
+										records={this.state.records}
+										selectedRecord={this.props.selectedRecord}
+										previewedRecord={this.props.previewedRecord}
+										editorRecord={this.props.editorRecord}
+										editorNewRecord={this.props.editorNewRecord}
+										leafletState={this.props.leaflet}
+										exhibitShowURL={this.props.match.url}
+										hasWarning={this.props.mapCache.hasUnsavedChanges}
+										isEditing={this.props.recordEditorType === 'edit' ? true : false}
+										showExhibitSettings={this.props.showExhibitSettings}
+										viewMode={this.state.viewMode}
+										setRecordEditorType={this.props.setRecordEditorType}
+										setShowRecords={this.props.setShowRecords}
+									/>
+									<RecordInfoPanel isVisible={!this.props.showExhibitSettings && !this.props.leaflet.isEditing} />
+									<Timeline />
+									</div>
+									<div className="item-narrative" style={{marginBottom:"1rem", "position":"relative"}}>
+									<NarrativePanel />
+									</div>
 								</div>
   						</Grid.Column>
             }
