@@ -4,8 +4,6 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {strings} from '../../i18nLibrary';
 import { Tab } from 'semantic-ui-react';
-import NeatlineText from '../../components/NeatlineText';
-
 
 class ExhibitUpdate extends Component {
 	
@@ -25,11 +23,6 @@ class ExhibitUpdate extends Component {
 			{menuItem: 'Plugin Settings', render: () => 
 				<Tab.Pane attached={false}>
 						plugins
-				</Tab.Pane>
-			},
-			{menuItem: 'Neatline Text', render: () => 
-				<Tab.Pane attached={false}>
-						<NeatlineText />
 				</Tab.Pane>
 			},
 		]

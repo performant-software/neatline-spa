@@ -10,6 +10,7 @@ import {
 	setUnsavedChanges,
 	updateExhibitCache} from '../../actions';
 import * as TYPE from '../../types';
+import CKEditor from 'ckeditor4-react';
 
 class ExhibitForm extends Component {
 
@@ -249,13 +250,18 @@ class ExhibitForm extends Component {
 						<div className='field'>
 							<label htmlFor='o:narrative'>Narrative</label>
 							<div className='ui input'>
-							<Field 
+							<CKEditor 
+								id='o:narrative'
+								name='o:narrative'
+								onChange={this.markUnsaved}
+							/>
+							{/* <Field 
 								id='o:narrative'
 								name='o:narrative'
 								component='textarea'
 								placeholder='Enter exhibit narrative'
 								onChange={this.markUnsaved}
-								/>
+								/> */}
 							</div>
 						</div>
 						<div className='field'>
