@@ -108,6 +108,20 @@ class RecordForm extends Component {
 	scrollEvent = (event) =>{
 		this.hideColorPicker(event);
 	}
+
+	renderEditor({input}) {
+		return (
+		  <CKEditor
+			data={input.value}
+			onChange={(event) => {
+				return console.log(event.editor.getData());
+				// input.onChange(event.editor.getData())
+			  }
+			}
+		  />
+		)
+	}
+
 	render() {
 
 		let thisRecord = this.props.mapCache.cache[this.props.initialValues['o:id']];
@@ -134,18 +148,19 @@ class RecordForm extends Component {
 									<legend><h4>Text Description</h4></legend>
 									<div className='field'>
 										<label 	htmlFor='o:title'>{strings.title}</label>
-										<CKEditor
+										{/* <CKEditor
 											id='o:title'
 											name='o:title'
 											data=''
 											config={ {
 												height: [ [ '105px' ] ]
 											} }
-										/>
-										{/* <Field 	id='o:title'
+										/> */}
+										<Field 	id='o:title'
 												name='o:title'
-												component='textarea'
-												onChange={this.markUnsaved}/> */}
+												component={this.renderEditor}
+												// onChange={this.markUnsaved}
+											/>
 									</div>
 									<div className='field'>
 										<label 	htmlFor='o:slug'>{strings.slug}</label>
@@ -157,15 +172,11 @@ class RecordForm extends Component {
 									</div>
 									<div className='field'>
 										<label 	htmlFor='o:body'>{strings.body}</label>
-										<CKEditor 
-											id='o:body'
-											name='o:body'
-											data=''
-										/>
-										{/* <Field 	id='o:body'
+										<Field 	id='o:body'
 												name='o:body'
-												component='textarea'
-												onChange={this.markUnsaved}/> */}
+												component={this.renderEditor}
+												// onChange={this.markUnsaved}
+										/>
 									</div>
 								</fieldset>
 							</div>

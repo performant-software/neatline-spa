@@ -211,6 +211,20 @@ class ExhibitForm extends Component {
 			}
 		}
 	}
+
+	renderEditor({input}) {
+		return (
+		  <CKEditor
+			data={input.value}
+			onChange={(event) => {
+				return console.log(event.editor.getData());
+				// input.onChange(event.editor.getData())
+			  }
+			}
+		  />
+		)
+	}
+
 	render() {
 		return (
 			<div className="ps_n3_exhibitFormContainer">
@@ -250,18 +264,12 @@ class ExhibitForm extends Component {
 						<div className='field'>
 							<label htmlFor='o:narrative'>Narrative</label>
 							<div className='ui input'>
-							<CKEditor 
-								id='o:narrative'
-								name='o:narrative'
-								onChange={this.markUnsaved}
-							/>
-							{/* <Field 
-								id='o:narrative'
-								name='o:narrative'
-								component='textarea'
-								placeholder='Enter exhibit narrative'
-								onChange={this.markUnsaved}
-								/> */}
+								<Field 
+									id='o:narrative'
+									name='o:narrative'
+									component={this.renderEditor}
+									// onChange={this.markUnsaved}
+								/>
 							</div>
 						</div>
 						<div className='field'>
