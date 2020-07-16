@@ -4,7 +4,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { strings } from '../../i18nLibrary';
 import { Icon, Button, Search, Card } from 'semantic-ui-react';
-import _ from 'lodash';
+// import _ from 'lodash';
 
 class Records extends Component {
 	constructor(props){
@@ -12,6 +12,7 @@ class Records extends Component {
 		this.state = { activeCard: null };
 	}
 	componentWillMount() {
+		this.setState({ column: null, direction: null});
 		this.resetSearch();
 	}
 	resetSearch = () => this.setState({ results: this.props.filteredRecords, column: null, direction: null, 'searchTerm': '' });
@@ -27,14 +28,27 @@ class Records extends Component {
 		if (column !== clickedColumn) {
 			this.setState({
 				column: clickedColumn,
-				results: _.sortBy(results, [clickedColumn]),
+				results: results.sort(function(a, b) {
+					if (a[clickedColumn] != null && b[clickedColumn] != null) {
+						if (clickedColumn === 'o:title'){
+						 return a[clickedColumn].toUpperCase().localeCompare(b[clickedColumn].toUpperCase());
+						} 
+						if (clickedColumn === 'o:added'){
+						 return new Date(a[clickedColumn]) - new Date(b[clickedColumn]);
+						} else {
+						 return new Date(a['o:added']) - new Date(b['o:added']);
+						}
+					} else {
+						return new Date(a['o:added']) - new Date(b['o:added']);
+					}
+				}),
 				direction: 'ascending',
 			})
 			return
 		}
 
 		this.setState({
-			results: results.reverse(),
+			results: this.props.filteredRecords.reverse(),
 			direction: direction === 'ascending' ? 'descending' : 'ascending',
 		})
 	}
@@ -80,11 +94,11 @@ class Records extends Component {
 				<thead>
 					<tr>
 						<th
-							sorted={state === 'o:title' ? state.direction : null}
+							className={state.column === 'o:title' ? state.direction : null}
 							onClick={this.handleSort('o:title')}
 							>Record Title</th>
 						<th
-							sorted={state === 'o:added' ? state.direction : null}
+							className={state.column === 'o:added' ? state.direction : null}
 							onClick={this.handleSort('o:added')}
 						>Record Created</th>
 					</tr>

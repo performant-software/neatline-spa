@@ -23,7 +23,7 @@ table, table.tablesaw.neatline {
 //   }
 
   table.tablesaw.neatline thead th {
-    cursor: auto;
+    cursor: pointer;
     background: #F9FAFB;
     text-align: inherit;
     color: rgba(0, 0, 0, 0.87);
@@ -35,6 +35,35 @@ table, table.tablesaw.neatline {
     border-bottom: 1px solid rgba(34, 36, 38, 0.1);
     border-left: none;
 }
+
+.tablesaw.neatline thead th.ascending:after {
+  position: relative;
+  top: 1pt; 
+  content: "";
+  display: inline-block;
+  width: 0.4em;
+  height: 0.4em;
+  border-right: 0.2em solid rgba(0, 0, 0, 0.87);
+  border-top: 0.2em solid rgba(0, 0, 0, 0.87);
+  transform: rotate(-45deg);
+  margin-right: 0.5em;
+  margin-left: 0.25em;
+}
+
+.tablesaw.neatline thead th.descending:after {
+  position: relative;
+  top: -2pt; 
+  content: "";
+  display: inline-block;
+  width: 0.4em;
+  height: 0.4em;
+  border-right: 0.2em solid rgba(0, 0, 0, 0.87);
+  border-top: 0.2em solid rgba(0, 0, 0, 0.87);
+  transform: rotate(135deg);
+  margin-right: 0.5em;
+  margin-left: 0.25em;
+}
+
 table.tablesaw.neatline th, table.tablesaw.neatline td {
     padding: 1em 1em;
 }

@@ -340,7 +340,7 @@ class RecordForm extends Component {
 											</div>
 											<div className="ps_n3_optionHeader">{strings.dates}</div>
 											<div className='field'>
-												<DatePicker fieldName='o:end_date'
+												<DatePicker fieldName='o:start_date'
 															value={(typeof thisRecord !== 'undefined')? thisRecord['o:start_date']: ''}
 															label={strings.start_date}
 															formatDate={formatDate}
