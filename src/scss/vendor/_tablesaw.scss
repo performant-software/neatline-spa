@@ -1,9 +1,4 @@
 table, table.tablesaw.neatline {
-    // margin-bottom: 12px;
-    // border: 1px solid #dfdfdf;
-    // border-radius: 3px;
-    // border-collapse: separate;
-
     background: #FFFFFF;
     margin: 1em 0em;
     border: 1px solid rgba(34, 36, 38, 0.15);
@@ -14,7 +9,11 @@ table, table.tablesaw.neatline {
     color: rgba(0, 0, 0, 0.87);
     border-collapse: separate;
     border-spacing: 0px;
-  }
+}
+
+table.neatline-records {
+  table-layout: inherit !important;
+}  
   
 //   table.tablesaw thead tr:first-child th {
 //     padding-top: 6px;

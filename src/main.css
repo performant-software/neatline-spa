@@ -74,9 +74,6 @@ label {
   padding: 0;
   margin: 0 0 5px 0; }
 
-table.neatline-records {
-  table-layout: inherit !important; }
-
 .neatline-subhead {
   color: #676767;
   font-weight: bold;
@@ -119,17 +116,33 @@ table.neatline-records {
   position: relative;
   margin-bottom: 6px;
   display: flex;
-  flex-flow: column wrap; }
+  flex-flow: column wrap;
+  color: rgba(0, 0, 0, 0.87); }
 
-.ps_n3_exhibitFormContainer .inline.fields {
-  width: 45%; }
+.ps_n3_exhibitFormContainer .grouped.fields {
+  margin: 0 0 1em; }
 
-.ps_n3_exhibitFormContainer .inline.fields label {
-  flex: 2 0 auto; }
+.ps_n3_exhibitFormContainer .grouped.fields .field label {
+  margin: 0 0.5em 0; }
+
+.ps_n3_exhibitFormContainer .ui.form .field .ui.input input,
+.ps_n3_exhibitFormContainer .ui.form .fields .field .ui.input input {
+  width: 100% !important;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box; }
 
 .ps_n3_exhibitFormContainer .ui.input input,
-.ps_n3_exhibitFormContainer .ui.input textarea {
-  width: 95% !important; }
+.ps_n3_exhibitFormContainer .ui.form input:not([type]),
+.ps_n3_exhibitFormContainer .ui.form input[type=date],
+.ps_n3_exhibitFormContainer .ui.form input[type=datetime-local],
+.ps_n3_exhibitFormContainer .ui.form input[type=number],
+.ps_n3_exhibitFormContainer .ui.form input[type=text],
+.ps_n3_exhibitFormContainer .ui.form input[type=url],
+.ps_n3_exhibitFormContainer .ui.form textarea {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box; }
 
 .ps_n3_exhibitShowContainer {
   gridRow: 1;
@@ -156,7 +169,10 @@ table.neatline-records {
   display: inline;
   border-radius: 0;
   border: 1px solid #dedede;
-  padding: 0 0 0 0.5rem; }
+  padding: 0 0 0 0.5rem;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box; }
 
 .DayPickerInput {
   width: 100%;
@@ -181,19 +197,8 @@ table.neatline-records {
   padding: 0.5rem 0 0 0.5rem;
   margin: .5rem 0 .5rem 0; }
 
-.ps_n3_checkboxPair {
-  height: 1rem;
-  padding-left: 10px; }
-
-.ps_n3_checkboxPair input {
-  position: relative;
-  margin: 0;
-  top: 0 !important;
-  max-height: 1rem !important;
-  max-width: 1rem !important; }
-
-.ps_n3_checkboxPair label {
-  margin: 0 0 0 0.5rem; }
+.ps_n3_checkbox label {
+  margin: 0 0.5em 0; }
 
 .ps_n3_radioSet label {
   margin: 0 1rem 0 0; }
@@ -618,6 +623,9 @@ table, table.tablesaw.neatline {
   color: rgba(0, 0, 0, 0.87);
   border-collapse: separate;
   border-spacing: 0px; }
+
+table.neatline-records {
+  table-layout: inherit !important; }
 
 table.tablesaw.neatline thead th {
   cursor: pointer;
@@ -1952,8 +1960,6 @@ table.tablesaw td:first-child a {
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
     flex-direction: column; }
-  .ui.stackable.menu .item {
-    width: 100% !important; }
   .ui.stackable.menu .item:before {
     position: absolute;
     content: '';
