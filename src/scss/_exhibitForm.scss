@@ -7,20 +7,28 @@
 	padding: 0 1rem 1rem 0.5rem;
 }
 
-.ps_n3_exhibitFormContainer fieldset {
+.ps_n3_exhibitFormContainer fieldset,
+ps_n3_recordFormContainer fieldset {
     margin: 0 0 24px;
     border: 0;
     padding: 0;
     min-width: 100%;
 }
 
+.ps_n3_exhibitFormContainer fieldset .field {
+    clear: both;
+    margin: 0 0 1em;
+    margin-bottom: 6px;
+}
+
 .ps_n3_exhibitFormContainer .field,
 .ps_n3_recordFormContainer .field {
     width: 100%;
+    margin: 0 0 1rem 0;
     background-color: #ffffff;
+    // background-color: none;
     padding: 0;
     position: relative;
-    margin-bottom: 6px;
     display: flex;
 	flex-flow: column wrap;
 	color: rgba(0,0,0,.87);;
@@ -41,13 +49,18 @@
     margin-bottom: 1em;
 }
 
+.ps_n3_recordFormContainer .ui.input input,
+.ps_n3_recordFormContainer .ui.input textarea,
 .ps_n3_exhibitFormContainer .ui.form .field .ui.input input, 
 .ps_n3_exhibitFormContainer .ui.form .fields .field .ui.input input {
 	width: 100% !important;
 	box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
+    height: 36px;
 }
+
+.ps_n3_recordFormContainer .ui.input input,
 .ps_n3_exhibitFormContainer .ui.input input,
 .ps_n3_exhibitFormContainer .ui.form input:not([type]), 
 .ps_n3_exhibitFormContainer .ui.form input[type=date], 
@@ -86,25 +99,39 @@
 .ps_n3_exhibit-form select,
 .ps_n3_exhibit-form textarea {
 	width: 100%;
-	max-width: 18.5rem !important;
-	display: inline;
-	border-radius: 0;
-	border: 1px solid #dedede;
-	padding: 0 0 0 0.5rem;
+	// max-width: 18.5rem !important;
+    // display: inline;
+    display: inline-flex;
+	// border-radius: 0;
+	// border: 1px solid #dedede;
+	// padding: 0 0 0 0.5rem;
 	box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
+
+    height: 36px;
+    line-height: 1.21428571em;
+    padding: .67857143em 1em;
+    background: #fff;
+    border: 1px solid rgba(34,36,38,.15);
+    border-radius: .28571429rem;
+    -webkit-transition: border-color .1s ease,-webkit-box-shadow .1s ease;
+    transition: border-color .1s ease,-webkit-box-shadow .1s ease;
+    transition: box-shadow .1s ease,border-color .1s ease;
+    transition: box-shadow .1s ease,border-color .1s ease,-webkit-box-shadow .1s ease;
+    -webkit-box-shadow: none;
+    box-shadow: none;
 }
 
 .DayPickerInput {
 	width: 100%;
-	max-width: 17.4rem !important;
+	// max-width: 17.4rem !important;
 }
 
-.ps_n3_exhibit-form input {
-	height: 2.3rem;
-	margin:.5rem 0 .5rem 0;
-}
+// .ps_n3_exhibit-form input {
+// 	height: 2.3rem;
+// 	margin:.5rem 0 .5rem 0;
+// }
 
 .ps_n3_exhibit-form select {
 	height: 3rem;
