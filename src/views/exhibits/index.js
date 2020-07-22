@@ -2,26 +2,61 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Menu, Button, Icon, Table } from 'semantic-ui-react';
+import { Menu, Button, Icon } from 'semantic-ui-react';
 //import { fetchExhibits } from '../../reducers/not_refactored/exhibits';
 import { resetExhibit } from '../../actions';
 import { deleteExhibit } from '../../actions';
 import { strings } from '../../i18nLibrary';
 import history from '../../history';
 import {fetchExhibits} from '../../actions';
+import _ from 'lodash';
 
 class Exhibits extends Component {
+
   componentWillMount() {
 		this.props.dispatch(fetchExhibits());
     this.props.dispatch(resetExhibit());
+    this.setState({ column: null, direction: null});
   }
 
   createExhibitView =  () => {
 	  history.push(`${window.baseRoute}/add`);
   }
 
+  handleSort = (clickedColumn) => () => {
+    const { column, direction } = this.state
+
+    if (column !== clickedColumn) {
+      this.setState({
+        column: clickedColumn,
+        exhibits: this.props.exhibits.sort(function(a, b) {
+          if (clickedColumn === 'o:title' || clickedColumn === 'o:owner'){
+            return a[clickedColumn].toUpperCase().localeCompare(b[clickedColumn].toUpperCase());
+          } 
+          if (clickedColumn === 'o:added'){
+            return new Date(a[clickedColumn]) - new Date(b[clickedColumn]);
+          } 
+          if (clickedColumn === 'o:public'){
+            return (a[clickedColumn] === b[clickedColumn])? 0 : a[clickedColumn] ? -1 : 1;
+          } else {
+            return new Date(a['o:added']) - new Date(b['o:added']);
+          }
+        }),
+        direction: 'ascending',
+      })
+      return
+    }
+
+    this.setState({
+      exhibits: this.props.exhibits.reverse(),
+      direction: direction === 'ascending' ? 'descending' : 'ascending',
+    })
+  }
+
+
   render() {
     const props = this.props;
+    const state = this.state;
     const changeLanguage = lng => {
       strings.setLanguage(lng);
       this.setState({});
@@ -31,12 +66,25 @@ class Exhibits extends Component {
         <Button key={lng} onClick={() => changeLanguage(lng)}>{lng}</Button>
     );
     const showFullViewLinks = window.containerFullMode === false && window.containerFullModeBaseRoute;
+		const showReturnLink = !showFullViewLinks && window.containerFullMode === true && window.containerReturnBaseRoute;
 
     return (
       <div>
-        <Menu size='massive'>
-        <Menu.Item header as={Link} to={`${window.baseRoute}/`}><h3>NEATLINE </h3></Menu.Item>
-        <Menu.Item>{strings.browseExhibit}</Menu.Item>
+        <Menu stackable>
+        <Menu.Item header as={Link} to={`${window.baseRoute}/`}>
+          <span className="neatline-subhead">Neatline</span>
+        </Menu.Item>
+        <Menu.Item><h1 className="neatline-title">{strings.browseExhibit}</h1></Menu.Item>
+        {showReturnLink &&
+        <Menu.Item>
+						<a title="Return to Omeka Admin" href={`${window.containerReturnBaseRoute}`} aria-label="Return to Omeka Admin"><Icon name='compress' size='large'/></a>
+        </Menu.Item>
+        }
+        {/* {showFullViewLinks &&
+        <Menu.Item>
+						<a title="Fullscreen Editor" href={`${window.containerFullModeBaseRoute}`} aria-label="Fullscreen Editor"><Icon name='external alternate' size='large'/></a>
+        </Menu.Item>
+        } */}
         <Menu.Item position='right'><div>
               {props.userSignedIn &&
                 <Button
@@ -44,56 +92,71 @@ class Exhibits extends Component {
                   onClick={this.createExhibitView}
                 >
                   {strings.createExhibit}
-                  <Icon name="add" />
+                   <Icon name="plus" />
                 </Button>
               }
           {lngButtons}
         </div></Menu.Item>
         </Menu>
-        <Table singleLine padded >
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell>{strings.title}</Table.HeaderCell>
-              {showFullViewLinks &&
-                <Table.HeaderCell></Table.HeaderCell>
-              }
-              <Table.HeaderCell>{strings.created}</Table.HeaderCell>
-              <Table.HeaderCell>{strings.public}</Table.HeaderCell>
-              {props.userSignedIn &&
-                <Table.HeaderCell></Table.HeaderCell>
-              }
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {props.exhibits.map((exhibit, idx) => (
-              <Table.Row key={idx}>
-                <Table.Cell>
+        <table className="tablesaw neatline tablesaw-stack" > 
+          <thead>
+            <tr>
+              <th 
+                className={state.column === 'o:title' ? state.direction : null}
+                onClick={this.handleSort('o:title')}
+              >{strings.title} </th>
+              <th 
+                className={state.column === 'o:added' ? state.direction : null}
+                onClick={this.handleSort('o:added')}
+              >{strings.created} </th>
+              <th
+                className={state.column === 'o:public' ? state.direction : null}
+                onClick={this.handleSort('o:public')}              
+              >{strings.public} </th>
+              <th
+                className={state.column === 'o:owner' ? state.direction : null}
+                onClick={this.handleSort('o:owner')}                
+              >{strings.owner} </th>
+            </tr>
+          </thead>
+          <tbody>
+            {_.map(props.exhibits, (exhibit, idx) => (
+              <tr key={idx}>
+                <td>
+                  <b className="tablesaw-cell-label">{strings.title}</b>
+                  <span className="tablesaw-cell-content">
                   <Link className='ps_n3_exhibitTitle' to={`${window.baseRoute}/show/${exhibit['o:slug']}`} >{exhibit['o:title']}</Link>
-                </Table.Cell>
-                {showFullViewLinks &&
-                  <Table.Cell>
-                    <a href={`${window.containerFullModeBaseRoute}/show/${exhibit['o:slug']}`}>{strings.full}</a>
-                  </Table.Cell>
-                }
-                <Table.Cell>{exhibit['o:added']}</Table.Cell>
-                <Table.Cell>{exhibit['o:public'] ? strings.yes : strings.no}</Table.Cell>
-                {props.userSignedIn &&
-                  <Table.Cell>
-                    <Button
-                      onClick={() => { props.deleteExhibit(exhibit); }}
-                      disabled={props.deleteInProgress}
-                    >
-                      {strings.delete}
-                    </Button>
-                    <Button disabled>
-                      Duplicate
-                    </Button>
-                  </Table.Cell>
-                }
-              </Table.Row>
+                  <ul className="actions neatline">
+                    {showFullViewLinks &&
+                    <li><a title="Fullscreen Editor" href={`${window.containerFullModeBaseRoute}/show/${exhibit['o:slug']}`} aria-label="Fullscreen Editor"><Icon name="external alternate"/></a></li>
+                    }
+                    <li><a title="Edit" href={`${window.baseRoute}/show/${exhibit['o:slug']}`} aria-label="Edit"><Icon name="pencil alternate" /></a></li>
+                    {props.userSignedIn &&
+                    <li>
+                      <a onClick={() => { props.deleteExhibit(exhibit); }} disabled={props.deleteInProgress} ><Icon name="trash alternate"/></a>
+                    </li>
+                    }
+                  </ul>
+                  </span>
+                </td>
+                <td>
+                  <b className="tablesaw-cell-label">{strings.created}</b>
+                  <span className="tablesaw-cell-content">{exhibit['o:added']}</span>
+                </td>
+                <td>
+                  <b className="tablesaw-cell-label">{strings.public}</b>
+                  <span className="tablesaw-cell-content">{exhibit['o:public'] ? strings.yes : strings.no}</span>
+                </td>
+                <td>
+                  <b className="tablesaw-cell-label">{strings.owner}</b>
+                  <span className="tablesaw-cell-content">
+                    {exhibit['o:owner']}
+                    </span>
+                </td>
+              </tr>
             ))}
-          </Table.Body>
-        </Table>
+          </tbody>
+        </table>
         {props.deleteErrored &&
           <p>{strings.delete_exhibit_error}</p>
         }

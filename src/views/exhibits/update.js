@@ -5,23 +5,25 @@ import { connect } from 'react-redux';
 import {strings} from '../../i18nLibrary';
 import { Tab } from 'semantic-ui-react';
 
+
 class ExhibitUpdate extends Component {
 	
 	render() {
 		const props = this.props;
 		const panes = [
-			{ menuItem: 'Settings', render: () => <Tab.Pane attached={false}>
-				<ExhibitForm exhibit={props.exhibit}
-					submitLabel={strings.save_exhibit}
-					disabled={props.loading} />
-				{props.errored &&
-					<p>{strings.update_exhibit_error}</p>
-				}
-			</Tab.Pane>
+			{menuItem: 'Settings', render: () => 
+				<Tab.Pane attached={false}>
+					<ExhibitForm exhibit={props.exhibit}
+						submitLabel={strings.save_exhibit}
+						disabled={props.loading} />
+					{props.errored &&
+						<p>{strings.update_exhibit_error}</p>
+					}
+				</Tab.Pane>
 			},
-			{
-				menuItem: 'Plugin Settings', render: () => <Tab.Pane attached={false}>
-					plugins
+			{menuItem: 'Plugin Settings', render: () => 
+				<Tab.Pane attached={false}>
+						plugins
 				</Tab.Pane>
 			},
 		]

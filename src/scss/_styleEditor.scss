@@ -2,8 +2,17 @@
 	overflow: scroll;
 	border: 0;
 	margin:0 0 0 0;
-	height:calc(100vh - 16rem);
+	height:calc(100vh - 14rem);
 	/*border:1px solid red;*/
+}
+
+.ps_n3_recordFormContainer label {
+    display: block;
+    margin: 0 0 .28571429rem 0;
+    color: rgba(0,0,0,.87);
+    font-size: .92857143em;
+    font-weight: 700;
+    text-transform: none;
 }
 
 .ps_n3_optionHeader {

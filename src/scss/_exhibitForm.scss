@@ -2,16 +2,70 @@
 	height: 100%;
 }
 .ps_n3_exhibitFormContainer {
-	height: calc(100vh - 6rem);
+	height: calc(100vh - 14rem);
 	overflow: scroll;
-	width: 19.3rem;
+	padding: 0 1rem 1rem 0.5rem;
+}
+
+.ps_n3_exhibitFormContainer fieldset {
+    margin: 0 0 24px;
+    border: 0;
+    padding: 0;
+    min-width: 100%;
+}
+
+.ps_n3_exhibitFormContainer .field,
+.ps_n3_recordFormContainer .field {
+    width: 100%;
+    background-color: #ffffff;
+    padding: 0;
+    position: relative;
+    margin-bottom: 6px;
+    display: flex;
+	flex-flow: column wrap;
+	color: rgba(0,0,0,.87);;
+}
+
+.ps_n3_exhibitFormContainer .grouped.fields {
+	margin: 0 0 1em;
+}
+
+.ps_n3_exhibitFormContainer .grouped.fields h3{
+	font-size: 1.17em;
+	margin-bottom: 0;
+}
+.ps_n3_exhibitFormContainer .grouped.fields .field label{
+	margin: 0 0.5em 0;
+}
+.ui.form .grouped.fields:last-child {
+    margin-bottom: 1em;
+}
+
+.ps_n3_exhibitFormContainer .ui.form .field .ui.input input, 
+.ps_n3_exhibitFormContainer .ui.form .fields .field .ui.input input {
+	width: 100% !important;
+	box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+.ps_n3_exhibitFormContainer .ui.input input,
+.ps_n3_exhibitFormContainer .ui.form input:not([type]), 
+.ps_n3_exhibitFormContainer .ui.form input[type=date], 
+.ps_n3_exhibitFormContainer .ui.form input[type=datetime-local], 
+.ps_n3_exhibitFormContainer .ui.form input[type=number], 
+.ps_n3_exhibitFormContainer .ui.form input[type=text], 
+.ps_n3_exhibitFormContainer .ui.form input[type=url], 
+.ps_n3_exhibitFormContainer .ui.form textarea {
+	// width: auto;
+	box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
 }
 
 .ps_n3_exhibitShowContainer {
 	gridRow: 1;
 	gridColumn: 1;
 	margin: 0;
-	height: 80vh;
 }
 
 .ps_n3_exhibit-form {
@@ -19,7 +73,7 @@
 	overflow: hidden;
 	height: calc(100vh - 12.5rem);
 	width: 100%;
-	padding:0 0 10rem 0;
+	padding:0 0 1rem 0; //0 0 10rem 0
 	margin:0;
 }
 
@@ -37,6 +91,9 @@
 	border-radius: 0;
 	border: 1px solid #dedede;
 	padding: 0 0 0 0.5rem;
+	box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
 }
 
 .DayPickerInput {
@@ -67,21 +124,25 @@
 	margin:.5rem 0 .5rem 0;
 }
 
-.ps_n3_checkboxPair {
-	height: 1rem;
+.ps_n3_checkbox label{
+	margin: 0 0.5em 0;
 }
+// .ps_n3_checkboxPair {
+// 	height: 1rem;
+// 	padding-left: 10px;
+// }
 
-.ps_n3_checkboxPair input {
-	position: relative;
-	margin: 0;
-	top: 0 !important;
-	max-height: 1rem !important;
-	max-width: 1rem !important;
-}
+// .ps_n3_checkboxPair input {
+// 	position: relative;
+// 	margin: 0;
+// 	top: 0 !important;
+// 	max-height: 1rem !important;
+// 	max-width: 1rem !important;
+// }
 
-.ps_n3_checkboxPair label {
-	margin: 0 0 0 0.5rem;
-}
+// .ps_n3_checkboxPair label {
+// 	margin: 0 0 0 0.5rem;
+// }
 
 .ps_n3_radioSet label {
 	margin: 0 1rem 0 0;
@@ -93,4 +154,102 @@
 	top: 0 !important;
 	max-height: 1rem !important;
 	max-width: 1rem !important;
+}
+
+//Record Search // Inputs
+.ui.fluid.input {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+.ui.search {
+	display: -webkit-box;
+    display: -ms-flexbox;
+	display: flex;
+	margin: 1rem 0;
+}
+.ui.input{
+	flex: auto;
+}
+.ui.input {
+	position: relative;
+    font-weight: 400;
+    font-style: normal;
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    color: rgba(0,0,0,.87);
+}
+
+.ui.icon.input>input {
+    padding-right: 2.67142857em!important;
+}
+
+.ui.input>input {
+    margin: 0;
+    max-width: 100%;
+    -webkit-box-flex: 1;
+    -ms-flex: 1 0 auto;
+    flex: 1 0 auto;
+    outline: 0;
+    -webkit-tap-highlight-color: rgba(255,255,255,0);
+    text-align: left;
+    line-height: 1.21428571em;
+    padding: .67857143em 1em;
+    background: #fff;
+    border: 1px solid rgba(34,36,38,.15);
+    color: rgba(0,0,0,.87);
+    border-radius: .28571429rem;
+    -webkit-transition: border-color .1s ease,-webkit-box-shadow .1s ease;
+    transition: border-color .1s ease,-webkit-box-shadow .1s ease;
+    transition: box-shadow .1s ease,border-color .1s ease;
+    transition: box-shadow .1s ease,border-color .1s ease,-webkit-box-shadow .1s ease;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.ui.icon.input>i.icon {
+    cursor: default;
+    position: absolute;
+    line-height: 1;
+    text-align: center;
+    top: 0;
+    right: 0;
+    margin: 0;
+    height: 100%;
+    width: 2.67142857em;
+    opacity: .5;
+    border-radius: 0 .28571429rem .28571429rem 0;
+    -webkit-transition: opacity .3s ease;
+    transition: opacity .3s ease;
+}
+i.icon {
+    display: inline-block;
+    opacity: 1;
+    margin: 0 .25rem 0 0;
+    width: 1.18em;
+    height: 1em;
+    font-style: normal;
+    font-weight: 400;
+    text-decoration: inherit;
+    text-align: center;
+    font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+.ui.icon.input>i.icon:not(.link) {
+    pointer-events: none;
+}
+.ui.icon.input>i.icon:after, .ui.icon.input>i.icon:before {
+    left: 0;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    width: 100%;
+    margin-top: -.5em;
+}
+i.icon:before {
+    background: 0 0!important;
 }

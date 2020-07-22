@@ -48,7 +48,7 @@ class ExhibitPublicMap extends Component {
 
 	// Stub for leaflet to attach to
 	render() {
-		return (<div id='leafletMap' style={{minHeight: '400px'}}/>)
+		return (<div id='leafletMap' style={{height: '500px'}}/>)
 	}
 
 	// enables/disables render
