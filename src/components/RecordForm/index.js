@@ -12,6 +12,7 @@ import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css';
 import moment from 'moment';
 import {bindActionCreators} from 'redux';
+import CKEditor from 'ckeditor4-react';
 
 const defaultValues = {
 	'o:fill_color': '#00aeff',
@@ -107,6 +108,20 @@ class RecordForm extends Component {
 	scrollEvent = (event) =>{
 		this.hideColorPicker(event);
 	}
+
+	renderEditor({input}) {
+		return (
+		  <CKEditor
+			data={input.value}
+			onChange={(event) => {
+				return console.log(event.editor.getData());
+				// input.onChange(event.editor.getData())
+			  }
+			}
+		  />
+		)
+	}
+
 	render() {
 
 		let thisRecord = this.props.mapCache.cache[this.props.initialValues['o:id']];
@@ -133,10 +148,19 @@ class RecordForm extends Component {
 									<legend><h4>Text Description</h4></legend>
 									<div className='field'>
 										<label 	htmlFor='o:title'>{strings.title}</label>
+										{/* <CKEditor
+											id='o:title'
+											name='o:title'
+											data=''
+											config={ {
+												height: [ [ '105px' ] ]
+											} }
+										/> */}
 										<Field 	id='o:title'
 												name='o:title'
-												component='textarea'
-												onChange={this.markUnsaved}/>
+												component={this.renderEditor}
+												// onChange={this.markUnsaved}
+											/>
 									</div>
 									<div className='field'>
 										<label 	htmlFor='o:slug'>{strings.slug}</label>
@@ -150,8 +174,9 @@ class RecordForm extends Component {
 										<label 	htmlFor='o:body'>{strings.body}</label>
 										<Field 	id='o:body'
 												name='o:body'
-												component='textarea'
-												onChange={this.markUnsaved}/>
+												component={this.renderEditor}
+												// onChange={this.markUnsaved}
+										/>
 									</div>
 								</fieldset>
 							</div>

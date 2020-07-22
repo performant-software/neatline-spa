@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import {strings} from '../../i18nLibrary';
 import { Tab } from 'semantic-ui-react';
 
-
 class ExhibitUpdate extends Component {
 	
 	render() {
