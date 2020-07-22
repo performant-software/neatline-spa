@@ -68,26 +68,19 @@ class Records extends Component {
 		return(
 			<div className="nl-records-editor">
 			{this.props.viewMode === 'editing' ?
-				<table className="tablesaw neatline tablesaw-stack neatline-records" style={{marginBottom:"0", border:"none"}}>
-					<tbody>
-						<tr>
-							<td style={{background:"none", 'padding':'0.5rem'}}>
-								<Button size='small'
-									onClick={() => { props.setRecordEditorType('new'); props.setShowRecords(false) }}>
-								{strings.new_record}</Button>
-							</td>
-							<td style={{background:"none", 'padding':'0.5rem'}}>
-								<Search
-								fluid
-								onSearchChange={(e, d) => this.searchChange(e, d)}
-								showNoResults={false}
-								size='small'
-								onKeyDown={(e, d) => this.mouseClick(e, d)}
-								placeholder='Press enter to submit'/>
-							</td>
-						</tr>
-					</tbody>
-				</table>
+			<div>
+				<Search
+					fluid
+					onSearchChange={(e, d) => this.searchChange(e, d)}
+					showNoResults={false}
+					size='small'
+					onKeyDown={(e, d) => this.mouseClick(e, d)}
+					placeholder='Press enter to submit'
+				/>
+				<Button size='medium' fluid icon color='blue'
+					onClick={() => { props.setRecordEditorType('new'); props.setShowRecords(false) }}>
+					{strings.new_record} <Icon name="sticky note outline" /></Button>
+				</div>
 			: null }
 			{ this.props.viewMode === 'editing' ?
 				<table className="tablesaw neatline tablesaw-stack neatline-records">
