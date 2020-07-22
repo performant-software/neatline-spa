@@ -6,7 +6,7 @@ import {Router, Route, Switch} from 'react-router-dom';
 import history from '../../history';
 
 const App = () => (
-	<main>
+	<main className="neatline">
 	<Router history={history}>
 		<Switch>
 			<Route exact path={`${window.baseRoute}/`} component={Exhibits}/>

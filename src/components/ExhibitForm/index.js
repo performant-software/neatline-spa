@@ -256,7 +256,7 @@ class ExhibitForm extends Component {
 								name='o:slug'
 								component='input'
 								type='text'
-								placeholder='Enter url'
+								placeholder='Enter url slug'
 								onChange={this.markUnsaved}
 								/>
 							</div>
@@ -287,15 +287,15 @@ class ExhibitForm extends Component {
 						<div>
 							<div className='field'>
 								<label htmlFor='o:public'>Public</label>
-								<div className='ui checkbox toggle ps_n3_checkboxPair'>
+								<div className='ui checkbox toggle ps_n3_checkbox'>
 									<Field id="o:public" name="o:public"
 									component='input'
 									type="checkbox"
 									/>
-									<span style={{paddingLeft:'8px'}}>Check here to publish exhibit to the public site.</span>
+									<label>Check here to publish exhibit to the public site.</label>
 								</div>
 							</div>
-							<div className='inline fields'>
+							<div className='grouped fields'>
 								<label><h3>Select Map Type</h3></label>
 									<div className='field'>
 										<div className='ui radio checkbox'>
