@@ -32,9 +32,14 @@ class ExhibitUpdate extends Component {
 						/>
 				</Tab.Pane>
 			},
-			{menuItem: 'Neatline Text', render: () => 
+			{menuItem: 'NeatlineText', render: () => 
 				<Tab.Pane attached={false}>
-						<NeatlineTextForm />
+						<NeatlineTextForm exhibit={props.exhibit}
+						submitLabel={strings.save_exhibit}
+						disabled={props.loading}/>
+					{props.errored &&
+						<p>{strings.update_exhibit_error}</p>
+					}
 				</Tab.Pane>
 			},
 		]

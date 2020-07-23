@@ -24,10 +24,10 @@ const Timeline = () => {
     const maxDate = d3.max(data, function(d) {
         return parser(d.end_date);
       });
-    console.log(minDate, maxDate)
+    // console.log(minDate, maxDate)
 
     const timeEntries = data.filter(d => d.start_date != null)
-    console.log(timeEntries)
+    // console.log(timeEntries)
 
     const xScale = 
         d3.scaleTime()

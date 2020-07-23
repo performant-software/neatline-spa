@@ -4,16 +4,6 @@ import './NeatlineText.css';
 
 class NarrativePanel extends Component {
 
-    // constructor( props ) {
-    //     super( props );
-
-    //     this.state = {
-    //         data: '<p>React is really <em>nice</em>!</p>'
-    //     };
-
-    //     this.handleChange = this.handleChange.bind( this );
-    //     this.onEditorChange = this.onEditorChange.bind( this );
-    // }
 
     render() {
         return (
@@ -24,13 +14,5 @@ class NarrativePanel extends Component {
         );
     }
 }
-
-// NarrativePanel.defaultProps = {
-//     data: ''
-// };
-
-// NarrativePanel.propTypes = {
-//     data: PropTypes.string
-// };
 
 export default NarrativePanel;
