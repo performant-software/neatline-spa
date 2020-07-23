@@ -161,6 +161,29 @@ ps_n3_recordFormContainer fieldset {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box; }
 
+.ps_n3_exhibitFormContainer .ui.checkbox {
+  position: relative;
+  display: inline-block;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  outline: 0;
+  vertical-align: baseline;
+  font-style: normal;
+  min-height: 17px;
+  font-size: 1rem;
+  line-height: 17px;
+  min-width: 17px; }
+
+.ps_n3_exhibitFormContainer .ui.checkbox input[type=checkbox] {
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  outline: 0;
+  z-index: 3;
+  width: 17px;
+  height: 17px; }
+
 .ps_n3_exhibitShowContainer {
   gridRow: 1;
   gridColumn: 1;

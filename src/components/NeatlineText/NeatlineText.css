@@ -1,0 +1,19 @@
+.nl-narrative {
+    height: 500px;
+    position: relative;
+    float: right;
+    padding: 2em 3em;
+    overflow-y: scroll;
+}
+
+.nl-container {
+    display: flex; /* or inline-flex */
+    flex-flow: row nowrap;
+  }
+
+  .item-map {
+    flex: 3 0 65%;
+  }
+  .item-narrative{
+      flex: 1 0 35%
+  }
