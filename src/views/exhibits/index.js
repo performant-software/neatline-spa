@@ -9,19 +9,54 @@ import { deleteExhibit } from '../../actions';
 import { strings } from '../../i18nLibrary';
 import history from '../../history';
 import {fetchExhibits} from '../../actions';
+import _ from 'lodash';
 
 class Exhibits extends Component {
+
   componentWillMount() {
 		this.props.dispatch(fetchExhibits());
     this.props.dispatch(resetExhibit());
+    this.setState({ column: null, direction: null});
   }
 
   createExhibitView =  () => {
 	  history.push(`${window.baseRoute}/add`);
   }
 
+  handleSort = (clickedColumn) => () => {
+    const { column, direction } = this.state
+
+    if (column !== clickedColumn) {
+      this.setState({
+        column: clickedColumn,
+        exhibits: this.props.exhibits.sort(function(a, b) {
+          if (clickedColumn === 'o:title' || clickedColumn === 'o:owner'){
+            return a[clickedColumn].toUpperCase().localeCompare(b[clickedColumn].toUpperCase());
+          } 
+          if (clickedColumn === 'o:added'){
+            return new Date(a[clickedColumn]) - new Date(b[clickedColumn]);
+          } 
+          if (clickedColumn === 'o:public'){
+            return (a[clickedColumn] === b[clickedColumn])? 0 : a[clickedColumn] ? -1 : 1;
+          } else {
+            return new Date(a['o:added']) - new Date(b['o:added']);
+          }
+        }),
+        direction: 'ascending',
+      })
+      return
+    }
+
+    this.setState({
+      exhibits: this.props.exhibits.reverse(),
+      direction: direction === 'ascending' ? 'descending' : 'ascending',
+    })
+  }
+
+
   render() {
     const props = this.props;
+    const state = this.state;
     const changeLanguage = lng => {
       strings.setLanguage(lng);
       this.setState({});
@@ -63,17 +98,29 @@ class Exhibits extends Component {
           {lngButtons}
         </div></Menu.Item>
         </Menu>
-        <table className="tablesaw neatline tablesaw-stack"> 
+        <table className="tablesaw neatline tablesaw-stack" > 
           <thead>
             <tr>
-              <th>{strings.title}</th>
-              <th>{strings.created}</th>
-              <th>{strings.public}</th>
-              <th>{strings.owner}</th>
+              <th 
+                className={state.column === 'o:title' ? state.direction : null}
+                onClick={this.handleSort('o:title')}
+              >{strings.title} </th>
+              <th 
+                className={state.column === 'o:added' ? state.direction : null}
+                onClick={this.handleSort('o:added')}
+              >{strings.created} </th>
+              <th
+                className={state.column === 'o:public' ? state.direction : null}
+                onClick={this.handleSort('o:public')}              
+              >{strings.public} </th>
+              <th
+                className={state.column === 'o:owner' ? state.direction : null}
+                onClick={this.handleSort('o:owner')}                
+              >{strings.owner} </th>
             </tr>
           </thead>
           <tbody>
-            {props.exhibits.map((exhibit, idx) => (
+            {_.map(props.exhibits, (exhibit, idx) => (
               <tr key={idx}>
                 <td>
                   <b className="tablesaw-cell-label">{strings.title}</b>
@@ -103,7 +150,7 @@ class Exhibits extends Component {
                 <td>
                   <b className="tablesaw-cell-label">{strings.owner}</b>
                   <span className="tablesaw-cell-content">
-                    {/* {exhibit['o:owner']} */}
+                    {exhibit['o:owner']}
                     </span>
                 </td>
               </tr>

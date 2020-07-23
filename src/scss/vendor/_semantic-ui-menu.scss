@@ -24,8 +24,7 @@
     display: -ms-flexbox;
     display: flex;
     margin: 1rem 0em;
-    // font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
-    font-family: 'Lato', sans-serif;
+    font-family: 'Lato', sans-serif; // font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
     background: #FFFFFF;
     font-weight: normal;
     border: 1px solid rgba(34, 36, 38, 0.15);
@@ -1281,9 +1280,9 @@
           -ms-flex-direction: column;
               flex-direction: column;
     }
-    .ui.stackable.menu .item {
-      width: 100% !important;
-    }
+    // .ui.stackable.menu .item {
+    //   width: 100% !important;
+    // }
     .ui.stackable.menu .item:before {
       position: absolute;
       content: '';

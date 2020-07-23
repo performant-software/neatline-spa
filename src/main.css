@@ -74,9 +74,6 @@ label {
   padding: 0;
   margin: 0 0 5px 0; }
 
-table.neatline-records {
-  table-layout: inherit !important; }
-
 .neatline-subhead {
   color: #676767;
   font-weight: bold;
@@ -105,31 +102,64 @@ table.neatline-records {
   overflow: scroll;
   padding: 0 1rem 1rem 0.5rem; }
 
-.ps_n3_exhibitFormContainer fieldset {
+.ps_n3_exhibitFormContainer fieldset,
+ps_n3_recordFormContainer fieldset {
   margin: 0 0 24px;
   border: 0;
   padding: 0;
   min-width: 100%; }
 
+.ps_n3_exhibitFormContainer fieldset .field {
+  clear: both;
+  margin: 0 0 1em;
+  margin-bottom: 6px; }
+
 .ps_n3_exhibitFormContainer .field,
 .ps_n3_recordFormContainer .field {
   width: 100%;
+  margin: 0 0 1rem 0;
   background-color: #ffffff;
   padding: 0;
   position: relative;
-  margin-bottom: 6px;
   display: flex;
-  flex-flow: column wrap; }
+  flex-flow: column wrap;
+  color: rgba(0, 0, 0, 0.87); }
 
-.ps_n3_exhibitFormContainer .inline.fields {
-  width: 45%; }
+.ps_n3_exhibitFormContainer .grouped.fields {
+  margin: 0 0 1em; }
 
-.ps_n3_exhibitFormContainer .inline.fields label {
-  flex: 2 0 auto; }
+.ps_n3_exhibitFormContainer .grouped.fields h3 {
+  font-size: 1.17em;
+  margin-bottom: 0; }
 
+.ps_n3_exhibitFormContainer .grouped.fields .field label {
+  margin: 0 0.5em 0; }
+
+.ui.form .grouped.fields:last-child {
+  margin-bottom: 1em; }
+
+.ps_n3_recordFormContainer .ui.input input,
+.ps_n3_recordFormContainer .ui.input textarea,
+.ps_n3_exhibitFormContainer .ui.form .field .ui.input input,
+.ps_n3_exhibitFormContainer .ui.form .fields .field .ui.input input {
+  width: 100% !important;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  height: 36px; }
+
+.ps_n3_recordFormContainer .ui.input input,
 .ps_n3_exhibitFormContainer .ui.input input,
-.ps_n3_exhibitFormContainer .ui.input textarea {
-  width: 95% !important; }
+.ps_n3_exhibitFormContainer .ui.form input:not([type]),
+.ps_n3_exhibitFormContainer .ui.form input[type=date],
+.ps_n3_exhibitFormContainer .ui.form input[type=datetime-local],
+.ps_n3_exhibitFormContainer .ui.form input[type=number],
+.ps_n3_exhibitFormContainer .ui.form input[type=text],
+.ps_n3_exhibitFormContainer .ui.form input[type=url],
+.ps_n3_exhibitFormContainer .ui.form textarea {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box; }
 
 .ps_n3_exhibitFormContainer .ui.checkbox {
   position: relative;
@@ -175,19 +205,25 @@ table.neatline-records {
 .ps_n3_exhibit-form select,
 .ps_n3_exhibit-form textarea {
   width: 100%;
-  max-width: 18.5rem !important;
-  display: inline;
-  border-radius: 0;
-  border: 1px solid #dedede;
-  padding: 0 0 0 0.5rem; }
+  display: inline-flex;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  height: 36px;
+  line-height: 1.21428571em;
+  padding: .67857143em 1em;
+  background: #fff;
+  border: 1px solid rgba(34, 36, 38, 0.15);
+  border-radius: .28571429rem;
+  -webkit-transition: border-color .1s ease,-webkit-box-shadow .1s ease;
+  transition: border-color .1s ease,-webkit-box-shadow .1s ease;
+  transition: box-shadow .1s ease,border-color .1s ease;
+  transition: box-shadow .1s ease,border-color .1s ease,-webkit-box-shadow .1s ease;
+  -webkit-box-shadow: none;
+  box-shadow: none; }
 
 .DayPickerInput {
-  width: 100%;
-  max-width: 17.4rem !important; }
-
-.ps_n3_exhibit-form input {
-  height: 2.3rem;
-  margin: .5rem 0 .5rem 0; }
+  width: 100%; }
 
 .ps_n3_exhibit-form select {
   height: 3rem;
@@ -204,19 +240,8 @@ table.neatline-records {
   padding: 0.5rem 0 0 0.5rem;
   margin: .5rem 0 .5rem 0; }
 
-.ps_n3_checkboxPair {
-  height: 1rem;
-  padding-left: 10px; }
-
-.ps_n3_checkboxPair input {
-  position: relative;
-  margin: 0;
-  top: 0 !important;
-  max-height: 1rem !important;
-  max-width: 1rem !important; }
-
-.ps_n3_checkboxPair label {
-  margin: 0 0 0 0.5rem; }
+.ps_n3_checkbox label {
+  margin: 0 0.5em 0; }
 
 .ps_n3_radioSet label {
   margin: 0 1rem 0 0; }
@@ -228,23 +253,112 @@ table.neatline-records {
   max-height: 1rem !important;
   max-width: 1rem !important; }
 
+.ui.fluid.input {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex; }
+
+.ui.search {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin: 1rem 0; }
+
+.ui.input {
+  flex: auto; }
+
+.ui.input {
+  position: relative;
+  font-weight: 400;
+  font-style: normal;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  color: rgba(0, 0, 0, 0.87); }
+
+.ui.icon.input > input {
+  padding-right: 2.67143em !important; }
+
+.ui.input > input {
+  margin: 0;
+  max-width: 100%;
+  -webkit-box-flex: 1;
+  -ms-flex: 1 0 auto;
+  flex: 1 0 auto;
+  outline: 0;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+  text-align: left;
+  line-height: 1.21428571em;
+  padding: .67857143em 1em;
+  background: #fff;
+  border: 1px solid rgba(34, 36, 38, 0.15);
+  color: rgba(0, 0, 0, 0.87);
+  border-radius: .28571429rem;
+  -webkit-transition: border-color .1s ease,-webkit-box-shadow .1s ease;
+  transition: border-color .1s ease,-webkit-box-shadow .1s ease;
+  transition: box-shadow .1s ease,border-color .1s ease;
+  transition: box-shadow .1s ease,border-color .1s ease,-webkit-box-shadow .1s ease;
+  -webkit-box-shadow: none;
+  box-shadow: none; }
+
+.ui.icon.input > i.icon {
+  cursor: default;
+  position: absolute;
+  line-height: 1;
+  text-align: center;
+  top: 0;
+  right: 0;
+  margin: 0;
+  height: 100%;
+  width: 2.67142857em;
+  opacity: .5;
+  border-radius: 0 .28571429rem .28571429rem 0;
+  -webkit-transition: opacity .3s ease;
+  transition: opacity .3s ease; }
+
+i.icon {
+  display: inline-block;
+  opacity: 1;
+  margin: 0 .25rem 0 0;
+  width: 1.18em;
+  height: 1em;
+  font-style: normal;
+  font-weight: 400;
+  text-decoration: inherit;
+  text-align: center;
+  font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden; }
+
+.ui.icon.input > i.icon:not(.link) {
+  pointer-events: none; }
+
+.ui.icon.input > i.icon:after, .ui.icon.input > i.icon:before {
+  left: 0;
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  width: 100%;
+  margin-top: -.5em; }
+
+i.icon:before {
+  background: 0 0 !important; }
+
 .ps_n3_inputColorSwatch {
   box-sizing: content-box;
   top: 0;
-  margin: -2rem 0 0;
+  margin: -36px 0 0;
   padding: 0;
   position: relative;
-  left: calc(100% - 2rem);
-  top: 2.91rem;
-  height: 2.2rem;
-  width: 2.2rem;
-  border: 1px solid grey;
+  left: calc(100% - 36px);
+  height: 36px;
+  width: 36px;
+  border: 1px solid rgba(34, 36, 38, 0.15);
   cursor: pointer; }
 
 /* FIXME: this is a patch until we sort out the parent CSS, don't use !important, kids */
-input.styleEditor_input {
-  width: 98% !important; }
-
 #ps_n3_colorPickerComponent {
   left: 3rem;
   z-index: 100; }
@@ -281,10 +395,6 @@ input.styleEditor_input {
 
 .react-tabs {
   padding: 0 0.1rem 0 0.1rem; }
-
-.react-tabs input,
-.react-tabs textarea {
-  max-width: 19rem; }
 
 .ps_n3_buttonGroup {
   margin: .5rem 0 .8rem .2rem; }
@@ -338,9 +448,9 @@ input.styleEditor_input {
 .ps_n3_recordFormContainer {
   overflow: scroll;
   border: 0;
-  margin: 0 0 0 0;
+  margin: 0 0 2rem 0;
   height: calc(100vh - 14rem);
-  /*border:1px solid red;*/ }
+  padding: 0 1rem 1rem 0.5rem; }
 
 .ps_n3_recordFormContainer label {
   display: block;
@@ -366,7 +476,7 @@ input.styleEditor_input {
   font-size: .9rem; }
 
 .rangeslider {
-  margin: 20px 0;
+  margin: 1.2em 0;
   position: relative;
   background: #e6e6e6;
   -ms-touch-action: none;
@@ -642,8 +752,11 @@ table, table.tablesaw.neatline {
   border-collapse: separate;
   border-spacing: 0px; }
 
+table.neatline-records {
+  table-layout: inherit !important; }
+
 table.tablesaw.neatline thead th {
-  cursor: auto;
+  cursor: pointer;
   background: #F9FAFB;
   text-align: inherit;
   color: rgba(0, 0, 0, 0.87);
@@ -654,6 +767,32 @@ table.tablesaw.neatline thead th {
   text-transform: none;
   border-bottom: 1px solid rgba(34, 36, 38, 0.1);
   border-left: none; }
+
+.tablesaw.neatline thead th.ascending:after {
+  position: relative;
+  top: 1pt;
+  content: "";
+  display: inline-block;
+  width: 0.4em;
+  height: 0.4em;
+  border-right: 0.2em solid rgba(0, 0, 0, 0.87);
+  border-top: 0.2em solid rgba(0, 0, 0, 0.87);
+  transform: rotate(-45deg);
+  margin-right: 0.5em;
+  margin-left: 0.25em; }
+
+.tablesaw.neatline thead th.descending:after {
+  position: relative;
+  top: -2pt;
+  content: "";
+  display: inline-block;
+  width: 0.4em;
+  height: 0.4em;
+  border-right: 0.2em solid rgba(0, 0, 0, 0.87);
+  border-top: 0.2em solid rgba(0, 0, 0, 0.87);
+  transform: rotate(135deg);
+  margin-right: 0.5em;
+  margin-left: 0.25em; }
 
 table.tablesaw.neatline th, table.tablesaw.neatline td {
   padding: 1em 1em; }
@@ -1949,8 +2088,6 @@ table.tablesaw td:first-child a {
     -webkit-box-direction: normal;
     -ms-flex-direction: column;
     flex-direction: column; }
-  .ui.stackable.menu .item {
-    width: 100% !important; }
   .ui.stackable.menu .item:before {
     position: absolute;
     content: '';
@@ -2751,9 +2888,8 @@ table.tablesaw td:first-child a {
             Button
 *******************************/
 .ui.button {
-  height: 36px;
+  min-height: 36px;
   padding: 6px 1em;
-  min-height: 0;
   vertical-align: top;
   background-color: rgba(0, 0, 0, 0.08);
   color: #676767;
@@ -2763,7 +2899,7 @@ table.tablesaw td:first-child a {
   display: inline-block;
   text-align: center;
   cursor: pointer;
-  margin: 0 4px 12px 0; }
+  margin: 0 0.25em 0.25em 0; }
 
 /*******************************
               States
