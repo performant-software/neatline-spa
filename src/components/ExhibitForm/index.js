@@ -211,6 +211,7 @@ class ExhibitForm extends Component {
 		}
 	}
 	render() {
+		// console.log(this.props.state.exhibitShow.exhibit)
 		return (
 			<div className="ps_n3_exhibitFormContainer">
 				<Form onSubmit={this.handleSubmit}>

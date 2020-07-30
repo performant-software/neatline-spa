@@ -18,7 +18,12 @@ export const EXHIBIT_DEFAULT_VALUES = Object.freeze({
   'o:spatial_layer': '0',
 	'o:spatial_layers': [],
 	'o:zoom_levels': 20,
-	'o:spatial_querying': true
+	'o:spatial_querying': true,
+	'o:map_focus': '51.505, -0.09',
+    'o:map_max_zoom': null,
+    'o:map_min_zoom': null,
+    'o:map_restricted_extent': null,
+    'o:map_zoom': 12
 });
 
 // Marks record temporary (new record, pre-save)
