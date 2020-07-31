@@ -414,7 +414,8 @@ class ExhibitForm extends Component {
 									<Field id='o:spatial_layers'
 										name='o:spatial_layers'
 										component='select'
-										multiple="multiple"
+										multiple={true} value={[]}
+										type="select-multiple"
 										onChange={this.enabledSpatialLayerPreview}>
 										{this.layerTypeOptions}
 									</Field>

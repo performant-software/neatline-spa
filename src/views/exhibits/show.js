@@ -16,6 +16,7 @@ import LockOverlay from '../../components/LockOverlay';
 import SpinnerOverlay from '../../components/SpinnerOverlay';
 import AlertBar from '../../components/AlertBar';
 import { Grid, Menu, Button, Icon, Card } from 'semantic-ui-react';
+import ReactLeafletMap from '../../components/ReactLeaflet/ReactLeaftletMap';
 
 const ExhibitShowHeader = props => (
 	<div>
@@ -224,6 +225,7 @@ class ExhibitShow extends Component {
 							}
               {!(!this.props.userSignedIn && this.props.showExhibitSettings) &&
   							<Grid.Column floated='right' width={10}>
+								  {/* <ReactLeafletMap /> */}
   								<ExhibitPublicMap
   									userSignedIn={this.props.userSignedIn}
   									mapCache={this.props.mapCache}

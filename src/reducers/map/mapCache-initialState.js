@@ -65,12 +65,19 @@ export default {
 				url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 			}, {
 				type: TYPE.BASELAYER_TYPE.MAP,
+				slug: "OpenStreetMapBW",
+				displayName: "OpenStreetMap: Black and White",
+				deprecated: false,
+				attribution: '&amp;copy <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+                url: "https://tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png"
+			}, {
+				type: TYPE.BASELAYER_TYPE.MAP,
 				slug: "StamenToner",
 				displayName: "Stamen: Toner",
 				deprecated: false,
 				attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.',
 				url: 'http://tile.stamen.com/toner/{z}/{x}/{y}.png'
-			}, {
+			},{
 				type: TYPE.BASELAYER_TYPE.MAP,
 				slug: "StamenWatercolor",
 				displayName: "Stamen: Watercolor",

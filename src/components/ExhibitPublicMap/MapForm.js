@@ -51,7 +51,7 @@ class MapForm extends Component {
 
 
     render() {
-        // console.log(this.state.initialValues)
+        console.log(this.props.state.exhibitShow)
         return (
             <div className="ps_n3_exhibitFormContainer">
 				<Form onSubmit={this.handleSubmit}>
