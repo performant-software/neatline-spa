@@ -150,6 +150,7 @@ class ExhibitForm extends Component {
 				target: {
 					name: 'o:spatial_layer',
 					value: 0
+					// value: []
 				}
 			});
 			this.props.change('o:exhibit_type', TYPE.EXHIBIT_TYPE.MAP);
@@ -414,7 +415,8 @@ class ExhibitForm extends Component {
 									<Field id='o:spatial_layers'
 										name='o:spatial_layers'
 										component='select'
-										multiple={true} value={[]}
+										multiple={true} 
+										value={[]}
 										type="select-multiple"
 										onChange={this.enabledSpatialLayerPreview}>
 										{this.layerTypeOptions}
@@ -430,6 +432,76 @@ class ExhibitForm extends Component {
 								</div>
 							</div>
 						}
+						{/* {
+							<div className='field'>
+							<label htmlFor='o:map_focus'>Default Map Focus</label>
+							<div className='ui input'>
+							<Field 
+								value={this.props.initialValues['o:map_focus']}
+								id='o:map_focus'
+								name='o:map_focus'
+								component='input'
+								type='text'
+								/>
+							</div>
+						</div>
+						<div className='field'>
+							<label htmlFor='o:map_zoom'>Default Map Zoom</label>
+							<div className='ui input'>
+							<Field 
+								id='o:map_zoom'
+								name='o:map_zoom'
+								component='input'
+								type='number'
+								/>
+							</div>
+						</div>
+						<Button size='tiny' fluid style={{marginBottom: '1em'}}
+							onClick={console.log('clicked')}
+						>Use Current Viewport as Default</Button>
+						<div className='field'>
+							<label htmlFor='o:map_restricted_extent'>Restricted Map Extent</label>
+							<div className='ui input'>
+							<Field 
+								id='o:map_restricted_extent'
+								name='o:map_restricted_extent'
+								component='input'
+								type='text'
+								/>
+							</div>
+						</div>
+						<Button size='tiny' fluid style={{marginBottom: '1em'}}
+						
+						>Use Current Map Bounds as Max Extent</Button>
+						<div className='field'>
+							<label htmlFor='o:map_min_zoom'>Minimum Map Zoom</label>
+							<div className='ui input'>
+							<Field 
+								id='o:map_min_zoom'
+								name='o:map_min_zoom'
+								component='input'
+								type='number'
+								/>
+							</div>
+						</div>
+						<Button size='tiny' fluid style={{marginBottom: '1em'}}
+						
+						>Set Minimum Zoom to Current</Button>
+						<div className='field'>
+							<label htmlFor='o:map_max_zoom'>Maximum Map Zoom</label>
+							<div className='ui input'>
+							<Field 
+								id='o:map_max_zoom'
+								name='o:map_max_zoom'
+								component='input'
+								type='number'
+								/>
+							</div>
+						</div>
+						<Button size='tiny' fluid style={{marginBottom: '1em'}}
+						
+						>Set Maximum Zoom to Current</Button>
+						} */}
 						<div className="ps_n3_checkboxPair">
 										{/*
 							Spatial querying disabled for alpha:
@@ -444,6 +516,7 @@ class ExhibitForm extends Component {
 										onChange={this.markUnsaved} />
 							{/* </div> */}
 						</div>
+						
 						{this.exhibit && this.exhibit['o:id'] &&
 							<Field name='o:id'
 								component='input'

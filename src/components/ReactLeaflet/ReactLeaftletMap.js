@@ -36,7 +36,8 @@ class ReactLeafletMap extends Component {
 
 
   render() {
-
+console.log(this.props.selectedRecord)
+    // const style = this.props.selectedRecord['o:fill_color']
     const position = this.state.map_center
     return (
       <Map center={position} zoom={this.state.map_zoom}>
@@ -73,18 +74,28 @@ class ReactLeafletMap extends Component {
                 </LayerGroup>
             </Overlay>
         </LayersControl>
-        <FeatureGroup>
-            <EditControl
-                position='topleft'
-                onEdited={this._onEditPath}
-                onCreated={this._onCreate}
-                onDeleted={this._onDeleted}
-                draw={{
-                    rectangle: true
-                }}
-            />
-        </FeatureGroup>
-        <ViewControls />
+        {(this.props.viewMode === 'editing') && (this.props.showExhibitSettings === false) 
+        && ((typeof this.props.selectedRecord !== 'undefined' && this.props.selectedRecord !== null) || (this.props.editorNewRecord )) 
+        ?   <FeatureGroup>
+                <EditControl
+                    position='topleft'
+                    onEdited={this._onEditPath}
+                    onCreated={this._onCreate}
+                    onDeleted={this._onDeleted}
+                    draw={{
+                        rectangle: {
+                            shapeOptions: {
+                                color: '#0000FF'
+                            }
+                        }
+                        
+                    }}
+                />
+            </FeatureGroup>
+        : null}
+        {(this.props.viewMode === 'editing') && (this.props.showExhibitSettings === true)
+        ? <ViewControls />
+        : null }
        
         
         {/* <TileLayer
