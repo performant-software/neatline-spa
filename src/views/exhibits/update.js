@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ExhibitForm from '../../components/ExhibitForm';
-import MapForm from '../../components/ExhibitPublicMap/MapForm';
+import MapForm from '../../components/ExhibitForm/MapForm';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {strings} from '../../i18nLibrary';
@@ -22,16 +22,16 @@ class ExhibitUpdate extends Component {
 					}
 				</Tab.Pane>
 			},
-			// {menuItem: 'Map', render: () => 
-			// 	<Tab.Pane attached={false}>
-			// 		<MapForm exhibit={props.exhibit}
-			// 			submitLabel={strings.save_exhibit}
-			// 			disabled={props.loading} />
-			// 		{props.errored &&
-			// 			<p>{strings.update_exhibit_error}</p>
-			// 		}
-			// 	</Tab.Pane>
-			// },
+			{menuItem: 'Map', render: () => 
+				<Tab.Pane attached={false}>
+					<MapForm exhibit={props.exhibit}
+						submitLabel={strings.save_exhibit}
+						disabled={props.loading} />
+					{props.errored &&
+						<p>{strings.update_exhibit_error}</p>
+					}
+				</Tab.Pane>
+			},
 			{menuItem: 'Plugin Settings', render: () => 
 				<Tab.Pane attached={false}>
 						plugins
