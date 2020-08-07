@@ -4,7 +4,6 @@ import {Field, reduxForm, change, formValueSelector} from 'redux-form';
 import {connect} from 'react-redux';
 import {Form, Button} from 'semantic-ui-react';
 import {
-	preview_baseLayer,
 	set_availableTileLayers,
 	setUnsavedChanges,
     updateExhibitCache} from '../../actions';
@@ -23,17 +22,22 @@ const defaultValues = {
 
 class MapForm extends Component {
     constructor( props ) {
-        super( props );
-        this.exhibit = props.exhibit;
+		super(props);
+		this.set_availableTileLayers = set_availableTileLayers;
+		this.exhibit = props.exhibit;
 		this.handleSubmit = props.handleSubmit;
 		this.submitLabel = props.submitLabel;
-        this.disabled = props.disabled;
-        
-        this.state = {
-            mapValues: {}
-        };
+		this.disabled = props.disabled;
+		this.layerTypeOptions = this.buildLayerTypeOptions();
+		this.currentSlug='';
+		this.state={
+			exhibitType:TYPE.EXHIBIT_TYPE.MAP,
+			baseLayerType:TYPE.BASELAYER_TYPE.MAP,
+			isNewExhibit:true,
+		};
 
     }
+    
 
     componentDidMount() {
 		// Setup initial values
@@ -48,7 +52,49 @@ class MapForm extends Component {
     }
 
 
+    // Build layerTYPE from the set of non-deprecated maps
+	layerTYPE = () => {
+		let retval = [];
+		var availableBaseMaps = this.props.mapCache.available.baseMaps;
+		Object.keys(availableBaseMaps).forEach(function (key) {
+			let thisMap = availableBaseMaps[key];
+			if (!thisMap.deprecated) {
+				retval.push(thisMap);
+			}
+		});
+		return retval;
+	};
 
+    buildLayerTypeOptions = () => {
+		var retval = [];
+ 		let layerTYPE = this.layerTYPE();
+		Object.keys(layerTYPE).forEach(function(key) {
+			let layerType = layerTYPE[key];
+			let opt_key = `layerTypeOption-${key}`;
+			retval.push(<option value={key} key={opt_key}>{layerType.displayName}</option>);
+		});
+		return retval;
+	};
+
+
+	// Sets the unsaved changes flag
+	markUnsaved = (event) => {
+		// Update the cache
+		if(typeof event !== 'undefined'){
+			this.props.dispatch(updateExhibitCache({
+				setValues: {
+					[event.target.name]: event.target.value
+				}
+			}));
+			// this.props.dispatch(updateExhibitCache({setValues:{[name]:value}}));
+		}else{
+			console.log("Skipping cache update");
+		}
+
+		// Mark unsaved
+		this.props.dispatch(setUnsavedChanges({hasUnsavedChanges:true}));
+
+	}
 
     render() {
         console.log(this.props.state.exhibitShow)
@@ -68,6 +114,7 @@ class MapForm extends Component {
                             name='o:map_focus'
                             component='input'
                             type='text'
+                            onChange={this.markUnsaved}
                             />
                         </div>
                     </div>
@@ -79,6 +126,7 @@ class MapForm extends Component {
                             name='o:map_zoom'
                             component='input'
                             type='number'
+                            onChange={this.markUnsaved}
                             />
                         </div>
                     </div>
@@ -93,6 +141,7 @@ class MapForm extends Component {
                             name='o:map_restricted_extent'
                             component='input'
                             type='text'
+                            onChange={this.markUnsaved}
                             />
                         </div>
                     </div>
@@ -107,6 +156,7 @@ class MapForm extends Component {
                             name='o:map_min_zoom'
                             component='input'
                             type='number'
+                            onChange={this.markUnsaved}
                             />
                         </div>
                     </div>
@@ -121,6 +171,7 @@ class MapForm extends Component {
                             name='o:map_max_zoom'
                             component='input'
                             type='number'
+                            onChange={this.markUnsaved}
                             />
                         </div>
                     </div>
