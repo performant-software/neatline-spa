@@ -22,7 +22,7 @@ class ExhibitUpdate extends Component {
 					}
 				</Tab.Pane>
 			},
-			{menuItem: 'Map', render: () => 
+			{menuItem: 'Styles', render: () => 
 				<Tab.Pane attached={false}>
 					<MapForm exhibit={props.exhibit}
 						submitLabel={strings.save_exhibit}

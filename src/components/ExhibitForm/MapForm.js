@@ -103,7 +103,7 @@ class MapForm extends Component {
 				<Form onSubmit={this.handleSubmit}>
 					<fieldset disabled={this.disabled}>
 					<legend>
-						<h4>Map Settings</h4>
+						<h4>Style Settings</h4>
 					</legend>
                     <div className='field'>
                         <label htmlFor='o:map_focus'>Default Map Focus</label>
@@ -131,7 +131,7 @@ class MapForm extends Component {
                         </div>
                     </div>
                     <Button size='tiny' fluid style={{marginBottom: '1em'}}
-                        onClick={console.log('clicked')}
+
                     >Use Current Viewport as Default</Button>
                     <div className='field'>
                         <label htmlFor='o:map_restricted_extent'>Restricted Map Extent</label>
