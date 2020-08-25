@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Change directory into the neatline-3 working directory
+cd ~/neatline-3
+
+# Change branch to master a pull
+git checkout -b master
+git pull
+
+# Update yarn
+yarn install
+
+# Build and deploy
+yarn run build && yarn run deploy
