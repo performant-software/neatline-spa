@@ -1,9 +1,15 @@
 #!/bin/bash
 
-# Change directory into the neatline-3 working directory and pull in the latest changes
-cd /root/neatline-3 && git pull
+# Change directory into the root directory
+cd /root
 
-# Update yarn
+# Delete the current working directory
+rm -rf neatline-3/
+
+# Clone the repository
+git clone neatline-3.git neatline-3
+
+# Update dependencies via yarn
 yarn install
 
 # Build and deploy
