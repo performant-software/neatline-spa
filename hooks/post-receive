@@ -13,7 +13,7 @@ git clone neatline-3.git neatline-3
 cd neatline-3
 
 # Copy the .env file
-cp /root/.ev .env
+cp /root/.env .env
 
 # Update dependencies via yarn
 yarn install
