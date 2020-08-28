@@ -12,7 +12,8 @@ class DatePicker extends React.Component {
 		return (
 			<div>
 				<label 	htmlFor={this.props.fieldName}>{this.props.label}</label>
-				<Field 	name={this.props.fieldName}
+				<Field 	id={this.props.fieldName}
+						name={this.props.fieldName}
 						component='input'
 						type='hidden'/>
 

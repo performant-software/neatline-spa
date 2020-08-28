@@ -1,0 +1,323 @@
+table, table.tablesaw.neatline {
+    background: #FFFFFF;
+    margin: 1em 0em;
+    border: 1px solid rgba(34, 36, 38, 0.15);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border-radius: 0.28571429rem;
+    text-align: left;
+    color: rgba(0, 0, 0, 0.87);
+    border-collapse: separate;
+    border-spacing: 0px;
+}
+
+table.neatline-records {
+  table-layout: inherit !important;
+}  
+  
+//   table.tablesaw thead tr:first-child th {
+//     padding-top: 6px;
+//     padding-bottom: 5px;
+//     border-bottom: 1px solid #dfdfdf;
+//   }
+
+  table.tablesaw.neatline thead th {
+    cursor: pointer;
+    background: #F9FAFB;
+    text-align: inherit;
+    color: rgba(0, 0, 0, 0.87);
+    padding: 0.92857143em 0.78571429em;
+    vertical-align: inherit;
+    font-style: none;
+    font-weight: bold;
+    text-transform: none;
+    border-bottom: 1px solid rgba(34, 36, 38, 0.1);
+    border-left: none;
+}
+
+.tablesaw.neatline thead th.ascending:after {
+  position: relative;
+  top: 1pt; 
+  content: "";
+  display: inline-block;
+  width: 0.4em;
+  height: 0.4em;
+  border-right: 0.2em solid rgba(0, 0, 0, 0.87);
+  border-top: 0.2em solid rgba(0, 0, 0, 0.87);
+  transform: rotate(-45deg);
+  margin-right: 0.5em;
+  margin-left: 0.25em;
+}
+
+.tablesaw.neatline thead th.descending:after {
+  position: relative;
+  top: -2pt; 
+  content: "";
+  display: inline-block;
+  width: 0.4em;
+  height: 0.4em;
+  border-right: 0.2em solid rgba(0, 0, 0, 0.87);
+  border-top: 0.2em solid rgba(0, 0, 0, 0.87);
+  transform: rotate(135deg);
+  margin-right: 0.5em;
+  margin-left: 0.25em;
+}
+
+table.tablesaw.neatline th, table.tablesaw.neatline td {
+    padding: 1em 1em;
+}
+  
+.neatline td:first-child, .neatline th:first-child {
+    width: 50%;
+  }
+  
+  .tablesaw tr:not(:last-child) td {
+    border-bottom: 1px solid #dfdfdf;
+  }
+  
+  .neatline .tablesaw-cell-content {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    word-wrap: break-word;
+  }
+  .neatline .tablesaw-cell-content a{
+    cursor: pointer;
+  }
+  
+  table.tablesaw td:first-child a {
+    word-wrap: break-word;
+  }
+  
+  .tablesaw tr:not(:last-child) td {
+    border-bottom: 1px solid #dfdfdf;
+  }
+  
+  td, table.tablesaw td {
+    padding: 6px 0.5em 5px;
+    position: relative;
+    vertical-align: middle;
+  }
+  
+  .neatline .tablesaw-cell-content>.actions {
+    white-space: nowrap;
+  }
+  
+  .actions.neatline {
+    margin: 0 0 0 auto;
+    display: flex;
+    padding: 0;
+  }
+  
+  .actions.neatline a:before
+//   , .actions.neatline button:before 
+  {
+    text-align: right;
+  }
+  
+  .actions.neatline li {
+    list-style-type: none;
+  }
+  
+  table.tablesaw td:first-child a {
+    word-wrap: break-word;
+  }
+  
+  .actions.neatline a
+//   , .actions.neatline button 
+  {
+    opacity: .5;
+    cursor: pointer;
+  }
+  .actions.neatline a, .actions.neatline a:before 
+//   .actions.neatline button, .actions.neatline button:before 
+  {
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    vertical-align: top;
+    border: 0;
+    box-shadow: none;
+  }
+  
+  .actions.neatline a:link, .actions.neatline a:visited {
+    color: #A91919 !important;
+  }
+
+  .actions.neatline a:active, .actions.neatline a:hover {
+    color: #e34545 !important;
+    opacity: 1.0 !important;
+}
+
+  @media screen and (max-width: 640px) {
+    .tablesaw.neatline td:first-of-type .tablesaw-cell-content {
+        width: 100%;
+        max-width: 100%;
+    }
+    .tablesaw.neatline td:first-of-type {
+        width: 100%;
+        background: rgba(0,0,0,0.04);
+    }
+    .tablesaw.neatline td:first-of-type .tablesaw-cell-label {
+        width: 0;
+        overflow: hidden;
+        padding: 0;
+    }
+  }
+
+
+@media screen and (max-width: 640px) {
+    .neatline .tablesaw-cell-content {
+        display: inline-flex;
+    }
+}
+
+  
+  /*! Tablesaw - v3.0.9 - 2018-02-14
+  * https://github.com/filamentgroup/tablesaw
+  * Copyright (c) 2018 Filament Group; Licensed MIT */
+  
+  .tablesaw {
+      width: 100%;
+      max-width: 100%;
+      empty-cells: show;
+      border-collapse: collapse;
+      border: 0;
+      padding: 0;
+    }
+    
+    .tablesaw * {
+      box-sizing: border-box;
+    }
+    
+    .tablesaw-stack td .tablesaw-cell-label,
+    .tablesaw-stack th .tablesaw-cell-label {
+      display: none;
+    }
+    
+    /* Mobile first styles: Begin with the stacked presentation at narrow widths */
+    
+    /* Support note IE9+: @media only all */
+    
+    @media only all {
+      /* Show the table cells as a block level element */
+    
+      .tablesaw-stack {
+        clear: both;
+      }
+    
+      .tablesaw-stack td,
+      .tablesaw-stack th {
+        text-align: left;
+        display: block;
+      }
+    
+      .tablesaw-stack tr {
+        clear: both;
+        display: table-row;
+      }
+    
+      /* Make the label elements a percentage width */
+    
+      .tablesaw-stack td .tablesaw-cell-label,
+      .tablesaw-stack th .tablesaw-cell-label {
+        display: inline-block;
+        padding: 0 .6em 0 0;
+        width: 30%;
+      }
+    
+      /* For grouped headers, have a different style to visually separate the levels by classing the first label in each col group */
+    
+      .tablesaw-stack th .tablesaw-cell-label-top,
+      .tablesaw-stack td .tablesaw-cell-label-top {
+        display: block;
+        padding: .4em 0;
+        margin: .4em 0;
+      }
+    
+      .tablesaw-cell-label {
+        display: block;
+      }
+    
+      /* Avoid double strokes when stacked */
+    
+      .tablesaw-stack tbody th.group {
+        margin-top: -1px;
+      }
+    
+      /* Avoid double strokes when stacked */
+    
+      .tablesaw-stack th.group b.tablesaw-cell-label {
+        display: none !important;
+      }
+    }
+    
+    @media (max-width: 39.9375em) {
+      /* Table rows have a gray bottom stroke by default */
+    
+      .tablesaw-stack tbody tr {
+        display: block;
+        width: 100%;
+        border-bottom: 1px solid #dfdfdf;
+      }
+    
+      .tablesaw-stack thead td,
+      .tablesaw-stack thead th {
+        display: none;
+      }
+    
+      .tablesaw-stack tbody td,
+      .tablesaw-stack tbody th {
+        display: block;
+        float: left;
+        clear: left;
+        width: 100%;
+      }
+    
+      .tablesaw-cell-label {
+        vertical-align: top;
+      }
+    
+      .tablesaw-cell-content {
+        display: inline-block;
+        max-width: 67%;
+      }
+    
+      .tablesaw-stack .tablesaw-stack-block .tablesaw-cell-label,
+      .tablesaw-stack .tablesaw-stack-block .tablesaw-cell-content {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        padding: 0;
+      }
+    
+      .tablesaw-stack td:empty,
+      .tablesaw-stack th:empty {
+        display: none;
+      }
+    }
+    
+    /* Media query to show as a standard table at 560px (35em x 16px) or wider */
+    
+    @media (min-width: 40em) {
+      .tablesaw-stack tr {
+        display: table-row;
+      }
+    
+      /* Show the table header rows */
+    
+      .tablesaw-stack td,
+      .tablesaw-stack th,
+      .tablesaw-stack thead td,
+      .tablesaw-stack thead th {
+        display: table-cell;
+        margin: 0;
+      }
+    
+      /* Hide the labels in each cell */
+    
+      .tablesaw-stack td .tablesaw-cell-label,
+      .tablesaw-stack th .tablesaw-cell-label {
+        display: none !important;
+      }
+    }

@@ -116,7 +116,10 @@ class RecordForm extends Component {
 			return (
 				<form className='ps_n3_exhibit-form' onSubmit={this.handleSubmit}>
 
-				<ColorPicker color={this.state.colorPickerCurrentColor} isVisible={this.state.colorPickerVisible} top={this.state.colorPickerTop} handleChange={this.handleColorChange}/>
+				<ColorPicker color={this.state.colorPickerCurrentColor} isVisible={this.state.colorPickerVisible} 
+				// top={this.state.colorPickerTop} 
+				top="30px"
+				handleChange={this.handleColorChange}/>
 				<Tabs>
 
 					<TabList>
@@ -126,81 +129,85 @@ class RecordForm extends Component {
 
 					<div>
 						<TabPanel>
-							<div className="ps_n3_recordFormContainer"
-								onScroll={this.scrollEvent}>
-								<fieldset disabled={this.disabled} style={{
-										border: 'none',
-										padding: '0'
-									}}>
-									<div>
+							<div className="ps_n3_recordFormContainer" onScroll={this.scrollEvent}>
+								<fieldset disabled={this.disabled} style={{border: 'none', padding: '0' }}>
+									<legend><h4>Text Description</h4></legend>
+									<div className='field'>
 										<label 	htmlFor='o:title'>{strings.title}</label>
-										<Field 	name='o:title'
+										<div className='ui input'>
+										<Field 	id='o:title'
+												name='o:title'
 												component='textarea'
 												onChange={this.markUnsaved}/>
+										</div>
 									</div>
-									<div>
+									<div className='field'>
 										<label 	htmlFor='o:slug'>{strings.slug}</label>
-										<Field 	name='o:slug'
+										<div className='ui input'>
+										<Field 	id='o:slug'
+												name='o:slug'
 												component='input'
 												type='text'
 												onChange={this.markUnsaved}/>
+										</div>
 									</div>
-									<div>
+									<div className='field'>
 										<label 	htmlFor='o:body'>{strings.body}</label>
-										<Field 	name='o:body'
+										<div className='ui input'>
+										<Field 	id='o:body'
+												name='o:body'
 												component='textarea'
 												onChange={this.markUnsaved}/>
+										</div>
 									</div>
 								</fieldset>
 							</div>
 						</TabPanel>
 						<TabPanel>
-							<div
-								className="ps_n3_recordFormContainer"
-								onScroll={this.scrollEvent}>
+							<div className="ps_n3_recordFormContainer" onScroll={this.scrollEvent} >
 									{(typeof this.state.recordID === 'undefined') && <div>
 										<i>save record before editing style</i>
 									</div>
 									}
-
 									{(typeof this.state.recordID !== 'undefined') && <div>
-										<fieldset id="scrollArea_stylePropertyPicker" className="ps_n3_recordFormContainer" disabled={this.disabled}>
-
+										<fieldset id="scrollArea_stylePropertyPicker" disabled={this.disabled} style={{border: 'none', padding: '0' }}>
 											<div className={!isSelected ? "ps_n3_highlight":""}>
 												<div className="ps_n3_optionHeader">{strings.colors}</div>
-												<div>
+												<div className='field'>
 													<label 	htmlFor='o:fill_color'>{strings.fill_color}</label>
-
-													<div 	className="ps_n3_inputColorSwatch"
-															data-initialcolor={this.props.initialValues['o:fill_color']}
-															data-fieldname='o:fill_color'
-															onClick={(event) => this.showColorPicker(event, 'o:fill_color')}
-															style={{backgroundColor:(typeof thisRecord !== 'undefined')?thisRecord['o:fill_color']:'#0000FF'}}/>
-
+													<div className='ui input'>
 													<Field 	className="styleEditor_input"
+															id='o:fill_color'
 															name='o:fill_color'
 															component='input'
 															type='text'
 															data-enforce='hex'
 															onChange={this.inputEnforce}/>
-												</div>
-
-												<div>
-													<label 	htmlFor='o:stroke_color'>{strings.stroke_color}</label>
+													</div>
 													<div 	className="ps_n3_inputColorSwatch"
-															data-fieldname='o:stroke_color'
-															data-initialcolor={this.props.initialValues['o:stroke_color']}
-															onClick={(event) => this.showColorPicker(event, 'o:stroke_color')}
-															style={{backgroundColor:(typeof thisRecord !== 'undefined')?thisRecord['o:stroke_color']:'#0000FF'}}/>
-
+															data-initialcolor={this.props.initialValues['o:fill_color']}
+															data-fieldname='o:fill_color'
+															onClick={(event) => this.showColorPicker(event, 'o:fill_color')}
+															style={{backgroundColor:(typeof thisRecord !== 'undefined')?thisRecord['o:fill_color']:'#0000FF'}}/>
+													</div>
+												<div className='field'>
+													<label 	htmlFor='o:stroke_color'>{strings.stroke_color}</label>
+													<div className='ui input'>
 													<Field 	className="styleEditor_input"
+															id='o:stroke_color'
 															name='o:stroke_color'
 															component='input'
 															type='text'
 															data-enforce='hex'
 															onChange={this.inputEnforce}/>
+													</div>
+													<div 	className="ps_n3_inputColorSwatch"
+															data-fieldname='o:stroke_color'
+															data-initialcolor={this.props.initialValues['o:stroke_color']}
+															onClick={(event) => this.showColorPicker(event, 'o:stroke_color')}
+															style={{backgroundColor:(typeof thisRecord !== 'undefined')?thisRecord['o:stroke_color']:'#0000FF'}}
+													/>
 												</div>
-
 												<div>
 													<label htmlFor='o:fill_opacity'>{strings.fill_opacity}</label>
 													<Slider value={this.state.sliderValues['o:fill_opacity']}
@@ -210,7 +217,8 @@ class RecordForm extends Component {
 															onChange={this.slider_change}
 															onChangeComplete={this.slider_changeComplete}/>
 
-													<Field 	name='o:fill_opacity'
+													<Field 	id='o:fill_opacity'
+															name='o:fill_opacity'
 															component='input'
 															type='hidden'/>
 												</div>
@@ -223,7 +231,8 @@ class RecordForm extends Component {
 															onChange={this.slider_change}
 															onChangeComplete={this.slider_changeComplete}/>
 
-													<Field 	name='o:fill_opacity'
+													<Field 	id='o:stroke_opacity'
+															name='o:fill_opacity'
 															component='input'
 															type='hidden'/>
 												</div>
@@ -232,40 +241,42 @@ class RecordForm extends Component {
 													? "ps_n3_highlight"
 													: ""}>
 												<div className="ps_n3_optionHeader">{strings.selected}</div>
-												<div>
+												<div className='field' style={{background:'none'}}>
 													<label htmlFor='o:fill_color_select'>{strings.selected_fill_color}</label>
-
-													<div 	onClick={(event) => this.showColorPicker(event, 'o:fill_color_select')}
-															className="ps_n3_inputColorSwatch"
-															data-initialcolor={this.props.initialValues['o:fill_color_select']}
-															data-fieldname='o:fill_color_select'
-															style={{backgroundColor:(typeof thisRecord !== 'undefined')?thisRecord['o:fill_color_select']:'#0000FF'}}/>
-
+													<div className='ui input'>
 													<Field 	className="styleEditor_input"
+															id='o:fill_color_select'
 															name='o:fill_color_select'
 															component='input'
 															type='text'
 															data-enforce='hex'
 															onChange={this.inputEnforce}/>
-												</div>
-												<div>
-													<label htmlFor='o:stroke_color_select'>{strings.selected_stroke_color}</label>
-													<div 	onClick={(event) => this.showColorPicker(event, 'o:stroke_color_select')}
+													</div>
+													<div 	onClick={(event) => this.showColorPicker(event, 'o:fill_color_select')}
 															className="ps_n3_inputColorSwatch"
-															data-initialcolor={this.props.initialValues['o:stroke_color_select']}
-															data-fieldname='o:stroke_color_select'
-															style={{backgroundColor:(typeof thisRecord !== 'undefined')?thisRecord['o:stroke_color_select']:'#0000FF'}}/>
-
+															data-initialcolor={this.props.initialValues['o:fill_color_select']}
+															data-fieldname='o:fill_color_select'
+															style={{backgroundColor:(typeof thisRecord !== 'undefined')?thisRecord['o:fill_color_select']:'#0000FF'}}/>
+												</div>
+												<div className='field' style={{background:'none'}}>
+													<label htmlFor='o:stroke_color_select'>{strings.selected_stroke_color}</label>
+													<div className="ui input">
 													<Field 	className="styleEditor_input"
+															id='o:stroke_color_select'
 															name='o:stroke_color_select'
 															component='input'
 															type='text'
 															data-enforce='hex'
 															onChange={this.inputEnforce}/>
+													</div>
+													<div 	onClick={(event) => this.showColorPicker(event, 'o:stroke_color_select')}
+															className="ps_n3_inputColorSwatch"
+															data-initialcolor={this.props.initialValues['o:stroke_color_select']}
+															data-fieldname='o:stroke_color_select'
+															style={{backgroundColor:(typeof thisRecord !== 'undefined')?thisRecord['o:stroke_color_select']:'#0000FF'}}/>
 												</div>
 												<div>
 													<label htmlFor='o:stroke_opacity_select'>{strings.selected_stroke_opacity}</label>
-
 													<Slider value={this.state.sliderValues['o:stroke_opacity_select']}
 															min={0.1} max={1.0} step={0.01}
 															orientation="horizontal"
@@ -273,7 +284,8 @@ class RecordForm extends Component {
 															onChange={this.slider_change}
 															onChangeComplete={this.slider_changeComplete}/>
 
-													<Field 	name='o:stroke_opacity_select'
+													<Field 	id='o:stroke_opacity_select'
+															name='o:stroke_opacity_select'
 															component='input'
 															type='hidden'/>
 												</div>
@@ -285,12 +297,12 @@ class RecordForm extends Component {
 															onChangeStart={() => this.slider_changeStart('o:fill_opacity_select')}
 															onChange={this.slider_change}
 															onChangeComplete={this.slider_changeComplete}/>
-													<Field 	name='o:fill_opacity_select'
+													<Field 	id='o:fill_opacity_select'
+															name='o:fill_opacity_select'
 															component='input'
 															type='hidden'/>
 												</div>
 											</div>
-
 											<div className="ps_n3_optionHeader">{strings.dimensions}</div>
 											<div>
 												<label htmlFor='o:stroke_width'>{strings.stroke_width}</label>
@@ -300,47 +312,56 @@ class RecordForm extends Component {
 														onChangeStart={() => this.slider_changeStart('o:stroke_width')}
 														onChange={this.slider_change}
 														onChangeComplete={this.slider_changeComplete}/>
-												<Field 	name='o:stroke_width'
+												<Field 	id='o:stroke_width'
+														name='o:stroke_width'
 														component='hidden'/>
 											</div>
-											<div>
+											<div className='field'>
 												<label htmlFor='o:point_radius'>{strings.point_radius}</label>
+												<div className="ui input">
 												<Field 	className="styleEditor_input"
+														id='o:point_radius'
 														name='o:point_radius'
 														component='input'
 														type='number'
 														data-enforce='float'
 														onChange={this.inputEnforce}/>
+												</div>
 											</div>
-											<div>
+											<div className='field'>
 												<label htmlFor='o:zindex'>{strings.z_index}</label>
+												<div className="ui input">
 												<Field 	className="styleEditor_input"
+														id='o:zindex'
 														name='o:zindex'
 														component='input'
 														type='number'
 														data-enforce='float'
 														onChange={this.inputEnforce}/>
+												</div>
 											</div>
-											<div>
+											<div className='field'>
 												<label htmlFor='o:weight'>{strings.order_weight}</label>
+												<div className="ui input">
 												<Field 	className="styleEditor_input"
+														id='o:weight'
 														name='o:weight'
 														component='input'
 														type='number'
 														data-enforce='float'
 														onChange={this.inputEnforce}/>
+												</div>
 											</div>
-
 											<div className="ps_n3_optionHeader">{strings.dates}</div>
-											<div>
-												<DatePicker fieldName='o:end_date'
+											<div className='field'>
+												<DatePicker fieldName='o:start_date'
 															value={(typeof thisRecord !== 'undefined')? thisRecord['o:start_date']: ''}
 															label={strings.start_date}
 															formatDate={formatDate}
 															parseDate={parseDate}
 															onDayChange={this.markUnsaved}/>
 											</div>
-											<div>
+											<div className='field'>
 												<DatePicker fieldName='o:end_date'
 															value={(typeof thisRecord !== 'undefined')? thisRecord['o:end_date']: ''}
 															label={strings.end_date}
@@ -348,14 +369,14 @@ class RecordForm extends Component {
 															parseDate={parseDate}
 															onDayChange={this.markUnsaved}/>
 											</div>
-											<div>
+											<div className='field'>
 												<DatePicker fieldName='o:after_date' value={(typeof thisRecord !== 'undefined')? thisRecord['o:after_date']: ''}
 															label={strings.after_date}
 															formatDate={formatDate}
 															parseDate={parseDate}
 															onDayChange={this.markUnsaved}/>
 											</div>
-											<div>
+											<div className='field'>
 												<DatePicker fieldName='o:before_date'
 															value={(typeof thisRecord !== 'undefined')? thisRecord['o:before_date']: ''}
 															label={strings.before_date}
@@ -363,53 +384,68 @@ class RecordForm extends Component {
 															parseDate={parseDate}
 															onDayChange={this.markUnsaved}/>
 											</div>
-
 											<div className="ps_n3_optionHeader">{strings.imagery}</div>
-											<div>
+											<div className='field'>
 												<label htmlFor='o:point_image'>{strings.point_image}</label>
+												<div className="ui input">
 												<Field 	className="styleEditor_input"
+														id='o:point_image'
 														name='o:point_image'
 														component='input'
 														type='text'
 														onChange={this.markUnsaved}/>
+												</div>
 											</div>
-											<div>
+											<div className='field'>
 												<label htmlFor='o:wms_address'>{strings.wms_address}</label>
+												<div className="ui input">
 												<Field 	className="styleEditor_input"
+														id='o:wms_address'
 														name='o:wms_address'
 														component='input'
 														type='text'
 														onChange={this.markUnsaved}/>
+												</div>
 											</div>
-											<div>
+											<div className='field'>
 												<label htmlFor='o:wms_layers'>{strings.wms_layers}</label>
+												<div className="ui input">
 												<Field 	className="styleEditor_input"
+														id='o:wms_layers'
 														name='o:wms_layers'
 														component='input'
 														type='text'
 														onChange={this.markUnsaved}/>
+												</div>
 											</div>
 											{/*
 												Zoom/Visibility disabled for alpha
 												Issue: https://github.com/performant-software/neatline-3/issues/30
 
 												<div className="ps_n3_optionHeader">{strings.visibility}</div>
-												<div>
+												<div className='field'>
 													<label htmlFor='o:min_zoom'>{strings.min_zoom}</label>
-													<Field className="styleEditor_input" name='o:min_zoom' component='input' type='number' onChange={this.markUnsaved}/>
+													<div className="ui input">
+													<Field className="styleEditor_input" id='o:min_zoom' name='o:min_zoom' component='input' type='number' onChange={this.markUnsaved}/>
+													</div>
 												</div>
-												<div>
+												<div className='field'>
 													<label htmlFor='o:max_zoom'>{strings.max_zoom}</label>
-													<Field className="styleEditor_input" name='o:max_zoom' component='input' type='number' onChange={this.markUnsaved}/>
+													<div className="ui input">
+													<Field className="styleEditor_input" id='o:max_zoom' name='o:max_zoom' component='input' type='number' onChange={this.markUnsaved}/>
+													</div>
 												</div>
-												<div>
+												<div className='field'>
 													<label htmlFor='o:map_zoom'>{strings.default_zoom}</label>
-													<Field className="styleEditor_input" name='o:map_zoom' component='input' type='number' onChange={this.markUnsaved}/>
+													<div className="ui input">
+													<Field className="styleEditor_input" id='o:map_zoom' name='o:map_zoom' component='input' type='number' onChange={this.markUnsaved}/>
+													</div>
 												</div>
-
-												<div>
+												<div className='field'>
 													<label htmlFor='o:map_focus'>{strings.default_focus}</label>
-													<Field className="styleEditor_input" name='o:map_focus' component='input' type='text' onChange={this.markUnsaved}/>
+													<div className="ui input">
+													<Field className="styleEditor_input" id='o:map_focus' name='o:map_focus' component='input' type='text' onChange={this.markUnsaved}/>
+													</div>
 												</div>
 											*/}
 										</fieldset>

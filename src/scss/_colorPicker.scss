@@ -1,20 +1,20 @@
 .ps_n3_inputColorSwatch {
 	box-sizing: content-box;
 	top: 0;
-	margin: -2rem 0 0;
+	margin: -36px 0 0;
 	padding: 0;
 	position: relative;
-	left: 16rem;
-	top: 2.91rem;
-	height: 2.2rem;
-	width: 2.2rem;
-	border: 1px solid grey;
+	left: calc(100% - 36px);
+	height: 36px;
+	width: 36px;
+	border: 1px solid rgba(34, 36, 38, 0.15);
+	cursor: pointer;
 }
 
 /* FIXME: this is a patch until we sort out the parent CSS, don't use !important, kids */
-input.styleEditor_input {
-	width: 98% !important;
-}
+// input.styleEditor_input {
+// 	width: 98% !important;
+// }
 
 #ps_n3_colorPickerComponent {
 	left: 3rem;
