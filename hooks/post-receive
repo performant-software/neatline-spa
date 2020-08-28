@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Change directory into the root directory
+cd /root
+
+# Delete the current working directory
+rm -rf neatline-3/
+
+# Clone the repository
+git clone neatline-3.git neatline-3
+
+# Change into new working directory
+cd neatline-3
+
+# Copy the .env file
+cp /root/.env .env
+
+# Update dependencies via yarn
+yarn install
+
+# Build and deploy
+yarn run build && yarn run deploy
