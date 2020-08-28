@@ -3,8 +3,8 @@ import { selectRecord, filterRecords, removeRecordFromCache, deleteRecord} from 
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import { strings } from '../../i18nLibrary';
-import { Grid, Button, Table, Search, Card } from 'semantic-ui-react';
-import _ from 'lodash';
+import { Icon, Button, Search, Card } from 'semantic-ui-react';
+// import _ from 'lodash';
 
 class Records extends Component {
 	constructor(props){
@@ -12,6 +12,7 @@ class Records extends Component {
 		this.state = { activeCard: null };
 	}
 	componentWillMount() {
+		this.setState({ column: null, direction: null});
 		this.resetSearch();
 	}
 	resetSearch = () => this.setState({ results: this.props.filteredRecords, column: null, direction: null, 'searchTerm': '' });
@@ -20,20 +21,34 @@ class Records extends Component {
 		if (d.value.length < 1) return this.resetSearch()
 		this.setState({'searchTerm': d.value})
 	}
+
 	handleSort = clickedColumn => () => {
 		const { column, results, direction } = this.state
 
 		if (column !== clickedColumn) {
 			this.setState({
 				column: clickedColumn,
-				results: _.sortBy(results, [clickedColumn]),
+				results: results.sort(function(a, b) {
+					if (a[clickedColumn] != null && b[clickedColumn] != null) {
+						if (clickedColumn === 'o:title'){
+						 return a[clickedColumn].toUpperCase().localeCompare(b[clickedColumn].toUpperCase());
+						} 
+						if (clickedColumn === 'o:added'){
+						 return new Date(a[clickedColumn]) - new Date(b[clickedColumn]);
+						} else {
+						 return new Date(a['o:added']) - new Date(b['o:added']);
+						}
+					} else {
+						return new Date(a['o:added']) - new Date(b['o:added']);
+					}
+				}),
 				direction: 'ascending',
 			})
 			return
 		}
 
 		this.setState({
-			results: results.reverse(),
+			results: this.props.filteredRecords.reverse(),
 			direction: direction === 'ascending' ? 'descending' : 'ascending',
 		})
 	}
@@ -51,107 +66,100 @@ class Records extends Component {
 		const props = this.props;
 		const state = this.state;
 		return(
-
-			<div style={{ overflowY: 'auto', height: '90vh', overflowX: 'hidden', 'padding': '1rem' }}>
-				<Grid>
-					<Grid.Row>
-						{this.props.viewMode === 'editing' ?
-						<Grid.Column width={4}>
-
-
-								<Button size='small'
-									onClick={() => { props.setRecordEditorType('new'); props.setShowRecords(false) }}>
-									{strings.new_record}
-								</Button>
-
-
-						</Grid.Column>
-							: null}
-						<Grid.Column width={ this.props.viewMode === 'editing' ? 9:15}>
-							<Search
-								fluid
-								onSearchChange={(e, d) => this.searchChange(e, d)}
-								showNoResults={false}
-								size='small'
-								onKeyDown={(e, d) => this.mouseClick(e, d)}
-								placeholder='Press enter to submit'
-							/>
-						</Grid.Column>
-					</Grid.Row>
-					{ this.props.viewMode === 'editing' ?
-
-					<Grid.Row>
-					<Table celled selectable sortable	>
-						<Table.Header>
-							<Table.Row>
-								<Table.HeaderCell
-									sorted={state.column === 'o:title' ? state.direction : null}
-									onClick={this.handleSort('o:title')}
-									>Record Title</Table.HeaderCell>
-								<Table.HeaderCell
-									sorted={state.column === 'o:added' ? state.direction : null}
-									onClick={this.handleSort('o:added')}
-								>Record Created</Table.HeaderCell>
-								<Table.HeaderCell />
-							</Table.Row>
-						</Table.Header>
-						<Table.Body>
-							{props.filteredRecords.map(record => (
-								<Table.Row key={'record-' + record['o:id']} >
-									<Table.Cell style={{
-										fontWeight: record === props.selectedRecord ? 'bold' : 'normal'
-									}}>
-										<div
-											style={{ textOverflow: 'ellipsis', maxWidth: '8vw', whiteSpace: 'nowrap', overflow: 'hidden'}}
-											onClick={() => { props.selectRecord({ record: record }); props.setShowRecords(false); props.setRecordEditorType('edit') }}
-														>
-											{record['o:title'] === null ? "???" : record['o:title']}
-										</div>
-									</Table.Cell>
-									<Table.Cell>
-                    <div>
-										  {record['o:added'] === null ? "???" : record['o:added'].toString()}
-                    </div>
-									</Table.Cell>
-									<Table.Cell>
-											<Button size='mini' onClick={() => { props.selectRecord({ record: record }); props.setShowRecords(false); props.setRecordEditorType('edit') }}>
-											edit
-										</Button>
-										<Button
-											size='mini'
+			<div className="nl-records-editor">
+			{this.props.viewMode === 'editing' ?
+			<div>
+				<Search
+					fluid
+					onSearchChange={(e, d) => this.searchChange(e, d)}
+					showNoResults={false}
+					size='small'
+					onKeyDown={(e, d) => this.mouseClick(e, d)}
+					placeholder='Press enter to submit'
+				/>
+				<Button size='medium' fluid icon color='blue'
+					onClick={() => { props.setRecordEditorType('new'); props.setShowRecords(false) }}>
+					{strings.new_record} <Icon name="sticky note outline" /></Button>
+				</div>
+			: null }
+			{ this.props.viewMode === 'editing' ?
+				<table className="tablesaw neatline tablesaw-stack neatline-records">
+				<thead>
+					<tr>
+						<th
+							className={state.column === 'o:title' ? state.direction : null}
+							onClick={this.handleSort('o:title')}
+							>Record Title</th>
+						<th
+							className={state.column === 'o:added' ? state.direction : null}
+							onClick={this.handleSort('o:added')}
+						>Record Created</th>
+					</tr>
+				</thead>
+				<tbody>
+					{props.filteredRecords.map(record => (
+						<tr key={'record-' + record['o:id']} >
+							<td style={{
+								fontWeight: record === props.selectedRecord ? 'bold' : 'normal'
+							}}>
+								<b className="tablesaw-cell-label">Record Title</b>
+								<span className="tablesaw-cell-content">
+									<a 
+										className='ps_n3_exhibitTitle'
+										onClick={() => { props.selectRecord({ record: record }); props.setShowRecords(false); props.setRecordEditorType('edit') }}
+									>{record['o:title'] === null ? "???" : record['o:title']}
+									</a>
+									<ul className="actions neatline">
+										<li>
+											<a title="Edit Record" onClick={() => { props.selectRecord({ record: record }); props.setShowRecords(false); props.setRecordEditorType('edit') }} aria-label="Edit Record">
+											<Icon name="pencil alternate" /></a>
+										</li>
+										{props.userSignedIn &&
+										<li>
+											<a
 											onClick={() => {
 												this.props.dispatch(this.props.removeRecordFromCache(record['o:id']));
 												this.props.deleteRecord(record);
 											}}
-										>
-										delete
-										</Button>
-									</Table.Cell>
-								</Table.Row>
-							))
-							}
-						</Table.Body>
-					</Table>
-					</Grid.Row> :
-					<Grid.Row>
-						{props.filteredRecords.map( record => (
-							<Card
-								style={{marginRight: '1.5em', marginLeft: '1.5em'}}
-								fluid
-								key={record['o:id']}
-								color={((this.props.selectedRecord !== null) && (record['o:id'] === this.props.selectedRecord['o:id']) )? 'blue': null }
+											disabled={props.deleteInProgress}
+											><Icon name="trash alternate"/>
+											</a>
+										</li>
+										}
+									</ul>
+								</span>
+							</td>
+							<td>
+								<b className="tablesaw-cell-label">Record Created</b>
+								<span className="tablesaw-cell-content">
+									{record['o:added'] === null ? "???" : record['o:added'].toString()}
+								</span>
+							</td>
+						</tr>
+					))
+					}
+				</tbody>
+			</table> 
+			: <div className="ps_n3_exhibitFormContainer">
+			{props.filteredRecords.map( record => (
+					<Card
+						style={{marginTop:'4px'}}
+						fluid
+						key={record['o:id']}
+						color={((this.props.selectedRecord !== null) && (record['o:id'] === this.props.selectedRecord['o:id']) )? 'blue': null }
+					>
+						<Card.Content
+							onClick={() => { this.setActiveCard(record['o:id']); props.selectRecord({ record: record }); }}
 							>
-								<Card.Content
-									style={{ textOverflow: 'ellipsis', maxWidth: '8vw', whiteSpace: 'nowrap', overflow: 'hidden' }}
-									onClick={() => { this.setActiveCard(record['o:id']); props.selectRecord({ record: record }); }}
-									>
-									<Card.Header>{record['o:title']}</Card.Header>
-									<Card.Description>{record['o:body']}</Card.Description>
-								</Card.Content>
-							</Card>
-						))}
-					</Grid.Row> }
-				</Grid>
+							<Card.Header>{record['o:title']}</Card.Header>
+							<Card.Description
+							 style={{whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}
+							>{record['o:body']}</Card.Description>
+						</Card.Content>
+					</Card>
+				))}
+				</div>
+			}
 			</div>
 		);
 	}

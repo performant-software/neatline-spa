@@ -1,25 +1,26 @@
+
 #ps_n3_body {
 	// overflow: hidden;
 	font-family: "Lato",sans-serif;
 	font-size: 1rem;
 	line-height: 1rem !important;
 	height: 100vh;
-	margin: 0;
-	padding: 0 0 0 0.5rem !important;
+	margin: 0 0.5rem;
+	// padding: 0 0 0 0.5rem !important;
 	box-sizing: content-box !important;
 }
 
-#ps_n3_body button {
-	background-color: #dedede;
-	border-radius: 2px;
-	padding: 7.6px;
-	display: inline-block;
-	appearance: none;
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	border: 0;
-	cursor: pointer;
-}
+// #ps_n3_body button {
+// 	background-color: #dedede;
+// 	border-radius: 2px;
+// 	padding: 7.6px;
+// 	display: inline-block;
+// 	appearance: none;
+// 	-webkit-appearance: none;
+// 	-moz-appearance: none;
+// 	border: 0;
+// 	cursor: pointer;
+// }
 
 #ps_n3_body a:link {
 	text-decoration: none;
@@ -52,7 +53,6 @@
 	border: 1px solid #0000000f;
 	background-color: white;
 	font-size: 1.2rem;
-	// font-family: "Open Sans";
 	margin: 0.5rem;
 	height: calc(100vh - 1rem);
 	line-height: 1rem;
@@ -66,30 +66,30 @@
 	opacity: 0;
 }
 
-.ps_n3_button {
-	background-color: #dedede;
-	border-radius: 2px;
-	padding: 7.6px;
-	display: inline-block;
-	appearance: none;
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	border: 0;
-	cursor: pointer;
-	margin: 0 0 0 0.3rem;
-}
+// .ps_n3_button {
+// 	background-color: #dedede;
+// 	border-radius: 2px;
+// 	padding: 7.6px;
+// 	display: inline-block;
+// 	appearance: none;
+// 	-webkit-appearance: none;
+// 	-moz-appearance: none;
+// 	border: 0;
+// 	cursor: pointer;
+// 	margin: 0 0 0 0.3rem;
+// }
 
-.ps_n3_button:hover {
-	background-color: #cdcdcd;
-	color: black;
-}
+// .ps_n3_button:hover {
+// 	background-color: #cdcdcd;
+// 	color: black;
+// }
 
-.ps_n3_button.save {
-	left: 16rem;
-	margin: 0.5rem 0 0;
-	position: relative;
-	z-index: 9000;
-}
+// .ps_n3_button.save {
+// 	left: 16rem;
+// 	margin: 0.5rem 0 0;
+// 	position: relative;
+// 	z-index: 9000;
+// }
 
 .ps_n3_exhibitTitle {
   font-weight: bold;
@@ -97,10 +97,28 @@
 
 label {
 	padding: 0;
-	margin: 0;
+	// margin: 0;
+	margin: 0 0 5px 0;
 }
 
-h3 {
-	border: 0;
-	margin: 1rem 0;
+.neatline-subhead {
+	color: #676767;
+	font-weight: bold;
+    text-transform: uppercase;
+    font-size: 18px; //16px
+    padding: 0 6px;
+    line-height: 36px;
+    vertical-align: middle;
+    margin: 0 12px 0 0;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.neatline-title {
+	font-size: 24px;
+	line-height: 36px;
+	color: #676767;
+	font-weight: bold;
+	vertical-align: middle;
+	margin: 0;
 }

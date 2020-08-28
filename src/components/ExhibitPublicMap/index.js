@@ -34,7 +34,7 @@ class ExhibitPublicMap extends Component {
 		// FIXME: Move these to exhibit settings
 		// Issue: https://github.com/performant-software/neatline-3/issues/110
 		this.state ={
-			map_center:[51.505, -0.09],
+			map_center:[38.036, -78.505],
 			map_zoom:13
 		};
 		// Render flags, used because we can't use standard react logic
@@ -48,7 +48,7 @@ class ExhibitPublicMap extends Component {
 
 	// Stub for leaflet to attach to
 	render() {
-		return (<div id='leafletMap' style={{minHeight: '400px'}}/>)
+		return (<div id='leafletMap' style={{height: '500px'}}/>)
 	}
 
 	// enables/disables render
