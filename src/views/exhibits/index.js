@@ -12,8 +12,8 @@ import {fetchExhibits} from '../../actions';
 
 class Exhibits extends Component {
   componentWillMount() {
-		this.props.dispatch(fetchExhibits());
-    this.props.dispatch(resetExhibit());
+    this.props.fetchExhibits();
+    this.props.resetExhibit();
   }
 
   createExhibitView =  () => {
