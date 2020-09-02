@@ -14,8 +14,8 @@ import _ from 'lodash';
 class Exhibits extends Component {
 
   componentWillMount() {
-		this.props.dispatch(fetchExhibits());
-    this.props.dispatch(resetExhibit());
+    this.props.fetchExhibits();
+    this.props.resetExhibit();
     this.setState({ column: null, direction: null});
   }
 
