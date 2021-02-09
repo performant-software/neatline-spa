@@ -3,12 +3,15 @@ import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Menu, Button, Icon } from 'semantic-ui-react';
-//import { fetchExhibits } from '../../reducers/not_refactored/exhibits';
-import { resetExhibit } from '../../actions';
-import { deleteExhibit } from '../../actions';
+import {
+  deleteExhibit,
+  fetchExhibits,
+  resetExhibit,
+  userLogout
+} from '../../actions';
 import { strings } from '../../i18nLibrary';
 import history from '../../history';
-import {fetchExhibits} from '../../actions';
+import { isEmpty } from '../../utilities';
 import _ from 'lodash';
 
 class Exhibits extends Component {
@@ -96,6 +99,13 @@ class Exhibits extends Component {
                 </Button>
               }
           {lngButtons}
+          { props.userSignedIn && isEmpty(window.baseRoute) && (
+            <Button
+              content='Logout'
+              icon='log out'
+              onClick={() => this.props.userLogout()}
+            />
+          )}
         </div></Menu.Item>
         </Menu>
         <table className="tablesaw neatline tablesaw-stack" > 
@@ -178,6 +188,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   fetchExhibits,
   resetExhibit,
   deleteExhibit,
+  userLogout,
   dispatch
 }, dispatch);
 
