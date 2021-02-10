@@ -99,6 +99,16 @@ class Exhibits extends Component {
                 </Button>
               }
           {lngButtons}
+          { !props.userSignedIn && isEmpty(window.baseRoute) && (
+            <Button
+              onClick={() => history.push('/login')}
+            >
+              Login
+              <Icon
+                name='arrow alternate circle right outline'
+              />
+            </Button>
+          )}
           { props.userSignedIn && isEmpty(window.baseRoute) && (
             <Button
               content='Logout'

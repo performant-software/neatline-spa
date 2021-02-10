@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Container, Form, Header, Icon, Message, Segment } from 'semantic-ui-react';
+import { Button, Container, Form, Header, Icon, Message, Segment } from 'semantic-ui-react';
 import { bindActionCreators } from 'redux';
 import { userLogin } from '../../actions';
 import { connect } from 'react-redux';
+import history from '../../history';
 
 const Login = (props) => {
   const [email, setEmail] = useState(null);
@@ -64,9 +65,9 @@ const Login = (props) => {
             onChange={(e, { value }) => setPassword(value)}
             type='password'
           />
-          <div
+          <Form.Group
             style={{
-              textAlign: 'right'
+              justifyContent: 'flex-end'
             }}
           >
             <Form.Button
@@ -81,7 +82,14 @@ const Login = (props) => {
                 name={props.login ? 'spinner' : 'arrow alternate circle right outline'}
               />
             </Form.Button>
-          </div>
+            <Form.Button
+              content="Exhibits"
+              icon='map outline'
+              inverted
+              primary
+              onClick={() => history.push('/')}
+            />
+          </Form.Group>
         </Form>
       </Segment>
     </Container>
