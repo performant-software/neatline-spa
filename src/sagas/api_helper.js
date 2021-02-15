@@ -12,7 +12,7 @@ export const urlFormat = (endpoint, params = {}, id = null) => {
     url += '/' + id;
   }
 
-  const jwt = session.restore();
+  const jwt = session.restore() || '';
   const urlParams = new URLSearchParams({ ...params, jwt });
 
   let paramsString = urlParams.toString();
