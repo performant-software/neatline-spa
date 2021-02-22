@@ -1,20 +1,26 @@
 import {format} from 'date-fns';
+import session from '../services/session';
 
 export const exhibitsEndpoint = 'neatline_exhibits';
 export const recordsEndpoint = 'neatline_records';
 
+const API_ROOT = '/api/';
+
 export const urlFormat = (endpoint, params = {}, id = null) => {
-	const apiRoot = '/api/';
-	if (window.jwt && !params.hasOwnProperty('jwt') && (window.jwt !== null && window.jwt !== 'null') )
-		params.jwt = window.jwt;
-	const urlParams = new URLSearchParams(params);
-	let url = apiRoot + endpoint;
-	if (id)
-		url += '/' + id;
-	let paramsString = urlParams.toString();
-	if (paramsString.length > 0)
-		url += '?' + paramsString;
-	return url;
+  let url = `${API_ROOT}${endpoint}`;
+  if (id) {
+    url += '/' + id;
+  }
+
+  const jwt = session.restore() || '';
+  const urlParams = new URLSearchParams({ ...params, jwt });
+
+  let paramsString = urlParams.toString();
+  if (paramsString.length > 0) {
+    url += '?' + paramsString;
+  }
+
+  return url;
 }
 
 export const parseExhibitsJSON = response => {

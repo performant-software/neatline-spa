@@ -50,6 +50,9 @@ export const setShowExhibitSettings = (payload) => action(ACTION_TYPE.SHOW_EXHIB
 
 export const setRecordEditorType = (payload) => action(ACTION_TYPE.RECORD_EDITOR_TYPE, payload);
 
+export const userLogin = (payload) => action(ACTION_TYPE.USER_LOGIN, payload);
+export const userLogout = (payload) => action(ACTION_TYPE.USER_LOGOUT, payload);
+
 // FIXME:  Here be dragons
 // The code below is old and needs to be refactored so that it behaves like proper action dispatcher + saga (follow pattern above)
 export const deleteExhibit = (exhibit) => {

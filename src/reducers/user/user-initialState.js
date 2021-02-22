@@ -1,3 +1,7 @@
+import session from '../../services/session';
+
 export default {
-  userSignedIn: (window.jwt !== null && window.jwt !== 'null' && window.jwt !== undefined)
-}
+  login: false,
+  loginError: false,
+  userSignedIn: session.isAuthenticated()
+};
