@@ -1,6 +1,7 @@
 import * as ACTION_TYPE from '../actions/action-types';
 import {urlFormat, recordsEndpoint, exhibitsEndpoint, parseRecordsJSON,parseExhibitsJSON} from './api_helper.js';
 import {put, takeLatest, all, select} from 'redux-saga/effects';
+import session from '../services/session';
 import {strings} from '../i18nLibrary';
 import history from '../history';
 const JSON_HEADERS = {
@@ -46,7 +47,13 @@ export default function* rootSaga() {
 		takeLatest(ACTION_TYPE.EXHIBIT_CACHE_SAVE, saveCacheToDatabase),
 
 		takeLatest(ACTION_TYPE.EVENT_REFRESH_MAP_GEOMETRY, requestMapRefreshGeometry),
-		takeLatest(ACTION_TYPE.EVENT_REFRESH_MAP, requestMapRefresh)
+		takeLatest(ACTION_TYPE.EVENT_REFRESH_MAP, requestMapRefresh),
+
+    takeLatest(ACTION_TYPE.USER_LOGIN, userLogin),
+    takeLatest(ACTION_TYPE.USER_LOGIN_SUCCESS, userLoginSuccess),
+
+    takeLatest(ACTION_TYPE.USER_LOGOUT, userLogout),
+    takeLatest(ACTION_TYPE.USER_LOGOUT_SUCCESS, userLogoutSuccess)
 
     // commenting out for now as HAS_UNSAVED_CHANGES fires frequently during editing and doesn't appear to require a map refresh in most cases (akstuhl)
 		// takeLatest(ACTION_TYPE.HAS_UNSAVED_CHANGES, requestMapRefresh)
@@ -408,4 +415,77 @@ function* saveCacheToDatabase(action) {
 
 	yield put({type: ACTION_TYPE.LEAFLET_IS_SAVING, payload: false});
 
+}
+
+function * userLogin(action) {
+  // Make API call
+  try {
+    let url = urlFormat('login');
+    const response = yield fetch(url, {
+      method: 'POST',
+      headers: JSON_HEADERS,
+      body: JSON.stringify(action.payload)
+    });
+
+    if (response.status === 200) {
+      let payload = yield response.json();
+
+      yield put({
+        type: ACTION_TYPE.USER_LOGIN_SUCCESS,
+        payload
+      });
+    } else {
+      yield put({
+        type: ACTION_TYPE.USER_LOGIN_ERRORED
+      });
+    }
+
+    // Failed on the fetch call (timeout, etc)
+  } catch (e) {
+    yield put({
+      type: ACTION_TYPE.USER_LOGIN_ERRORED,
+      payload: {
+        error: e
+      }
+    });
+  }
+}
+
+function userLoginSuccess(action) {
+  const user = action.payload;
+  session.create(user['o:token']);
+  history.replace('/');
+}
+
+function * userLogout(action) {
+  // Make API call
+  try {
+    let url = urlFormat('logout');
+    const response = yield fetch(url, {
+      method: 'POST',
+      headers: JSON_HEADERS,
+      body: JSON.stringify(action.payload)
+    });
+
+    let payload = yield response.json();
+
+    yield put({
+      type: ACTION_TYPE.USER_LOGOUT_SUCCESS,
+      payload
+    });
+
+    // Failed on the fetch call (timeout, etc)
+  } catch (e) {
+    yield put({
+      type: ACTION_TYPE.USER_LOGOUT_ERRORED,
+      payload: {
+        error: e
+      }
+    });
+  }
+}
+
+function userLogoutSuccess(action) {
+  session.destroy();
+  history.replace('/login');
 }
