@@ -269,12 +269,25 @@ class ExhibitPublicMap extends Component {
 			this.isDrawing=false;
 			if(this.ls_hasEditToSave){
 				let geojsonData = this.ls_fg.toGeoJSON();
-				if(geojsonData.features.length === 0){
-					// FIXME: This is not really the way to store empty geometries, but it deals with the backend
-					geojsonData={"type": "MultiLineString", "coordinates": []};
+        let coverage = true;
+        
+        if (!geojsonData.features || geojsonData.features.length === 0){
+          geojsonData = {
+            type: 'FeatureCollection',
+            features: [{
+              type: 'Feature',
+              properties: {},
+              geometry: {
+                type: 'Point',
+                coordinates: [0, 0]
+              }
+            }]
+          };
+
+          coverage = false;
 				}
-				//this.ls_fg.clearLayers();
-				saveChanges(selectedRecord,geojsonData);
+
+        saveChanges(selectedRecord, geojsonData, coverage);
 			}
 			this.allowRender=true;
 		});
@@ -422,7 +435,7 @@ class ExhibitPublicMap extends Component {
 	//////////////////////////////////////
 	// Event handlers
 	//////////////////////////////////////
-	syncDrawWithReact = (selectedRecord,geojsonData) => {
+	syncDrawWithReact = (selectedRecord, geojsonData, coverage = true) => {
 		if(typeof this.props.records === 'undefined'){
 			return;
 		}
@@ -434,7 +447,7 @@ class ExhibitPublicMap extends Component {
 			setValues: {
 				'o:id': recordId,
 				'o:coverage': geojsonData,
-				'o:is_coverage': true
+				'o:is_coverage': coverage
 			},
 			selectedRecord:selectedRecord
 		});
