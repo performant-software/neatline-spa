@@ -78,14 +78,12 @@ class ExhibitPublicMap extends Component {
 
 	// Custom event listeners are stopgaps until this gets refactored to follow redux store
 	componentDidMount(){
-		document.addEventListener("refreshMapGeometry", this.event_refreshMapGeometry);
 		document.addEventListener("refreshMap", this.event_refreshMap);
     this.firstUpdate = true;
     this.forceUpdate();
 	}
 
 	componentWillUnmount(){
-		document.removeEventListener("refreshMapGeometry", this.event_refreshMapGeometry);
 		document.removeEventListener("refreshMap", this.event_refreshMap);
 	}
 
@@ -264,11 +262,11 @@ class ExhibitPublicMap extends Component {
 			this.ls_hasEditToSave=false;
 		});
 
-		mapInstance.on('draw:deletestop', (e) => {
-			this.props.leafletIsEditing(false);
-			this.isDrawing=false;
-			if(this.ls_hasEditToSave){
-				let geojsonData = this.ls_fg.toGeoJSON();
+    mapInstance.on('draw:deletestop', (e) => {
+      this.props.leafletIsEditing(false);
+      this.isDrawing=false;
+      if(this.ls_hasEditToSave){
+        let geojsonData = this.ls_fg.toGeoJSON();
         let coverage = true;
         
         if (!geojsonData.features || geojsonData.features.length === 0){
@@ -285,12 +283,12 @@ class ExhibitPublicMap extends Component {
           };
 
           coverage = false;
-				}
+        }
 
         saveChanges(selectedRecord, geojsonData, coverage);
-			}
-			this.allowRender=true;
-		});
+      }
+      this.allowRender=true;
+    });
 
 		mapInstance.on('draw:editstart', (e) =>{
 			this.allowRender=false;
