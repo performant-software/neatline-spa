@@ -160,11 +160,19 @@ class ExhibitForm extends Component {
 	markUnsaved = (event) => {
 		// Update the cache
 		if(typeof event !== 'undefined'){
-			this.props.dispatch(updateExhibitCache({
-				setValues: {
-					[event.target.name]: event.target.value
-				}
-			}));
+			if(event.target.selectedOptions){
+				this.props.dispatch(updateExhibitCache({
+					setValues: {
+						[event.target.name]: Array.from(event.target.selectedOptions, option => option.value)
+					}
+				}));
+			}else{
+				this.props.dispatch(updateExhibitCache({
+					setValues: {
+						[event.target.name]: event.target.value
+					}
+				}));
+			}
 			// this.props.dispatch(updateExhibitCache({setValues:{[name]:value}}));
 		}else{
 			console.log("Skipping cache update");
