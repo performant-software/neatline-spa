@@ -157,13 +157,13 @@ class ExhibitForm extends Component {
 	}
 
 	// Sets the unsaved changes flag
-	markUnsaved = (event) => {
+	markUnsaved = (event, data) => {
 		// Update the cache
 		if(typeof event !== 'undefined'){
-			if(event.target.selectedOptions){
+			if(data && data.value){
 				this.props.dispatch(updateExhibitCache({
 					setValues: {
-						[event.target.name]: Array.from(event.target.selectedOptions, option => option.value)
+						[event.target.name]: data.value
 					}
 				}));
 			}else{
