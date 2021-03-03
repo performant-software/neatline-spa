@@ -320,10 +320,13 @@ class ExhibitPublicMap extends Component {
 
 		mapInstance.on('draw:drawstop', (e) => {
 			this.props.leafletIsEditing(false);
+      let geojsonData = this.ls_fg.toGeoJSON();
+      saveChanges(selectedRecord, geojsonData);
       // crude fix for events firing in non-intuitive sequence -- delay prevents the mouse action from getting treated as a mapClick and deselecting the record
-			window.setTimeout(function() {
-        this.isDrawing=false;
-      }.bind(this), 200);
+			// window.setTimeout(function() {
+      //
+      // }.bind(this), 200);
+      this.isDrawing=false;
 			this.allowRender=true;
 		});
 
