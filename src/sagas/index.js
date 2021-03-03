@@ -90,7 +90,7 @@ function* createRecord(action) {
 }
 
 function* selectRecord(action) {
-  const { redirect } = action.payload;
+  const { redirect } = (action.payload || {});
   if (redirect) {
     let exhibit = yield select(getExhibitCache);
     let slug = exhibit['o:slug'];
@@ -101,7 +101,7 @@ function* selectRecord(action) {
 }
 
 function* deselectRecord(action) {
-  const { redirect } = action.payload;
+  const { redirect } = (action.payload || {});
   if (redirect) {
     let exhibit = yield select(getExhibitCache);
     let slug = exhibit['o:slug'];
