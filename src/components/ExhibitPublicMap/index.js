@@ -78,14 +78,12 @@ class ExhibitPublicMap extends Component {
 
 	// Custom event listeners are stopgaps until this gets refactored to follow redux store
 	componentDidMount(){
-		document.addEventListener("refreshMapGeometry", this.event_refreshMapGeometry);
 		document.addEventListener("refreshMap", this.event_refreshMap);
     this.firstUpdate = true;
     this.forceUpdate();
 	}
 
 	componentWillUnmount(){
-		document.removeEventListener("refreshMapGeometry", this.event_refreshMapGeometry);
 		document.removeEventListener("refreshMap", this.event_refreshMap);
 	}
 
@@ -264,20 +262,33 @@ class ExhibitPublicMap extends Component {
 			this.ls_hasEditToSave=false;
 		});
 
-		mapInstance.on('draw:deletestop', (e) => {
-			this.props.leafletIsEditing(false);
-			this.isDrawing=false;
-			if(this.ls_hasEditToSave){
-				let geojsonData = this.ls_fg.toGeoJSON();
-				if(geojsonData.features.length === 0){
-					// FIXME: This is not really the way to store empty geometries, but it deals with the backend
-					geojsonData={"type": "MultiLineString", "coordinates": []};
-				}
-				//this.ls_fg.clearLayers();
-				saveChanges(selectedRecord,geojsonData);
-			}
-			this.allowRender=true;
-		});
+    mapInstance.on('draw:deletestop', (e) => {
+      this.props.leafletIsEditing(false);
+      this.isDrawing=false;
+      if(this.ls_hasEditToSave){
+        let geojsonData = this.ls_fg.toGeoJSON();
+        let coverage = true;
+        
+        if (!geojsonData.features || geojsonData.features.length === 0){
+          geojsonData = {
+            type: 'FeatureCollection',
+            features: [{
+              type: 'Feature',
+              properties: {},
+              geometry: {
+                type: 'Point',
+                coordinates: [0, 0]
+              }
+            }]
+          };
+
+          coverage = false;
+        }
+
+        saveChanges(selectedRecord, geojsonData, coverage);
+      }
+      this.allowRender=true;
+    });
 
 		mapInstance.on('draw:editstart', (e) =>{
 			this.allowRender=false;
@@ -422,7 +433,7 @@ class ExhibitPublicMap extends Component {
 	//////////////////////////////////////
 	// Event handlers
 	//////////////////////////////////////
-	syncDrawWithReact = (selectedRecord,geojsonData) => {
+	syncDrawWithReact = (selectedRecord, geojsonData, coverage = true) => {
 		if(typeof this.props.records === 'undefined'){
 			return;
 		}
@@ -434,7 +445,7 @@ class ExhibitPublicMap extends Component {
 			setValues: {
 				'o:id': recordId,
 				'o:coverage': geojsonData,
-				'o:is_coverage': true
+				'o:is_coverage': coverage
 			},
 			selectedRecord:selectedRecord
 		});

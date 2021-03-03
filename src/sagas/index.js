@@ -46,7 +46,6 @@ export default function* rootSaga() {
 		takeLatest(ACTION_TYPE.RECORD_CACHE_UPDATE_AND_SAVE, updateRecordCacheAndSave),
 		takeLatest(ACTION_TYPE.EXHIBIT_CACHE_SAVE, saveCacheToDatabase),
 
-		takeLatest(ACTION_TYPE.EVENT_REFRESH_MAP_GEOMETRY, requestMapRefreshGeometry),
 		takeLatest(ACTION_TYPE.EVENT_REFRESH_MAP, requestMapRefresh),
 
     takeLatest(ACTION_TYPE.USER_LOGIN, userLogin),
@@ -101,7 +100,6 @@ function* deselectRecord(){
 	let url = (typeof window.baseRoute !== 'undefined')?`${window.baseRoute}`:"";
 	    url += `/show/${slug}`;
 	history.replace(url);
-	yield put({type: ACTION_TYPE.EVENT_REFRESH_MAP_GEOMETRY});
 }
 
 function* createRecordResponseReceived(action) {
@@ -205,10 +203,6 @@ function* updateRecordResponseReceived(action) {
 	yield put({type: ACTION_TYPE.LEAFLET_IS_EDITING, payload: false});
 }
 
-function requestMapRefreshGeometry(action){
-	var event = new CustomEvent("refreshMapGeometry");
-	document.dispatchEvent(event);
-}
 function requestMapRefresh(action){
 	var event = new CustomEvent("refreshMap");
 	document.dispatchEvent(event);
@@ -367,7 +361,6 @@ function* fetchRecordsResponseReceived(action) {
 function* updateRecordCacheAndSave(action) {
 	yield put({type: ACTION_TYPE.RECORD_CACHE_UPDATE, payload:action.payload});
 	yield put({type: ACTION_TYPE.EXHIBIT_CACHE_SAVE, payload:action.payload});
-	yield put({type: ACTION_TYPE.EVENT_REFRESH_MAP_GEOMETRY});
 }
 
 function* saveCacheToDatabase(action) {
