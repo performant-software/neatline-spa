@@ -7,11 +7,14 @@ function RecordInfoPanel(props) {
   const record = selectedRecord || previewedRecord;
 
   if (record) {
+	  let className = props.mapCache.hasUnsavedChanges
+      ? 'ps_n3_info_component_withWarning'
+      : 'ps_n3_info_component';
 
-	  let className = props.mapCache.hasUnsavedChanges?"ps_n3_info_component_withWarning":"ps_n3_info_component";
-	  	  className = props.isVisible?className:"hidden";
+    className = props.isVisible ? className : 'hidden';
+
     return (
-      <div className={className}>
+      <div className={className} style={props.style}>
         <div style={{ marginRight: '20px' }}>{record['o:title']}</div>
         {selectedRecord &&
           <div>

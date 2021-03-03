@@ -44,11 +44,12 @@ class ExhibitPublicMap extends Component {
 		this.isDrawing=false;
 		this.Draw = Draw; /* Suppresses include warning */
 		this.geoClick=false;
+		this.mapId = 'leafletMap';
 	}
 
 	// Stub for leaflet to attach to
 	render() {
-		return (<div id='leafletMap' style={{height: '500px'}}/>)
+		return (<div id={this.mapId} style={{height: '500px'}}/>)
 	}
 
 	// enables/disables render
@@ -70,9 +71,9 @@ class ExhibitPublicMap extends Component {
 		}
 
 		if(this.props.hasWarning){
-			document.getElementById('leafletMap').classList.add('ps_n3_mapComponent_withWarning');
+			document.getElementById(this.mapId).classList.add('ps_n3_mapComponent_withWarning');
 		}else{
-			document.getElementById('leafletMap').classList.remove('ps_n3_mapComponent_withWarning');
+			document.getElementById(this.mapId).classList.remove('ps_n3_mapComponent_withWarning');
 		}
 	}
 
@@ -91,13 +92,13 @@ class ExhibitPublicMap extends Component {
 	// Leaflet
 	//////////////////////////////////////
 	ls_mapInit = () => {
-		document.getElementById('leafletMap').classList.add('ps_n3_leafletMap');
+	  console.log(this.mapId);
+		document.getElementById(this.mapId).classList.add('ps_n3_leafletMap');
 		if(typeof this.map === 'undefined'){
-			this.map = L.map('leafletMap');
+			this.map = L.map(this.mapId);
 		}else{
 			if(typeof this.initialBaselayer !== 'undefined'){
 				this.initialBaselayer.remove();
-
 			}
 		}
 		let baselayerType = this.props.mapCache.current.type;
@@ -440,7 +441,7 @@ class ExhibitPublicMap extends Component {
 		let recordId = (typeof selectedRecord !== 'undefined' && selectedRecord !== null && selectedRecord['o:id'])?selectedRecord['o:id']:TYPE.NEW_UNSAVED_RECORD;
 		this.props.change('record', 'o:coverage', geojsonData);
 		this.props.change('record', 'o:is_coverage', true);
-		this.props.deselectRecord();
+		this.props.deselectRecord({ redirect: this.props.redirect });
 		this.props.updateRecordCacheAndSave({
 			setValues: {
 				'o:id': recordId,
@@ -473,7 +474,7 @@ class ExhibitPublicMap extends Component {
 			// this.props.showExhibitSettings
 		){return;}
 		L.DomEvent.stop(event);
-		this.props.selectRecord({record:record});
+		this.props.selectRecord({ record:record, redirect: this.props.redirect });
 		if (this.props.viewMode === 'editing'){
 			this.props.setShowRecords(false);
       this.props.setShowExhibitSettings(false);
@@ -487,7 +488,7 @@ class ExhibitPublicMap extends Component {
 		if(typeof this.props.records === 'undefined' || this.isDrawing){return;}
 		this.map.removeControl(this.ls_drawControl);
     this.props.setShowRecords(true);
-		this.props.deselectRecord();
+		this.props.deselectRecord({ redirect: this.props.redirect });
 		this.forceUpdate();
 	}
 }
@@ -505,5 +506,10 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 	setShowRecords,
   setShowExhibitSettings
 }, dispatch);
+
+ExhibitPublicMap.defaultProps = {
+  key: '',
+  redirect: false
+};
 
 export default connect(null,mapDispatchToProps)(ExhibitPublicMap);

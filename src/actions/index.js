@@ -53,6 +53,8 @@ export const setRecordEditorType = (payload) => action(ACTION_TYPE.RECORD_EDITOR
 export const userLogin = (payload) => action(ACTION_TYPE.USER_LOGIN, payload);
 export const userLogout = (payload) => action(ACTION_TYPE.USER_LOGOUT, payload);
 
+export const fetchMap = (payload) => action(ACTION_TYPE.MAP_FETCH, payload);
+
 // FIXME:  Here be dragons
 // The code below is old and needs to be refactored so that it behaves like proper action dispatcher + saga (follow pattern above)
 export const deleteExhibit = (exhibit) => {
