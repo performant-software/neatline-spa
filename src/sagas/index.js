@@ -109,7 +109,6 @@ function* deselectRecord(action) {
     url += `/show/${ slug }`;
     history.replace(url);
   }
-  yield put({type: ACTION_TYPE.EVENT_REFRESH_MAP_GEOMETRY});
 }
 
 function* createRecordResponseReceived(action) {
