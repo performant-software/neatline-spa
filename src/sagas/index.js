@@ -53,7 +53,9 @@ export default function* rootSaga() {
     takeLatest(ACTION_TYPE.USER_LOGIN_SUCCESS, userLoginSuccess),
 
     takeLatest(ACTION_TYPE.USER_LOGOUT, userLogout),
-    takeLatest(ACTION_TYPE.USER_LOGOUT_SUCCESS, userLogoutSuccess)
+    takeLatest(ACTION_TYPE.USER_LOGOUT_SUCCESS, userLogoutSuccess),
+
+    takeLatest(ACTION_TYPE.SET_AVAILABLE_TILELAYERS, requestMapRefresh)
 
     // commenting out for now as HAS_UNSAVED_CHANGES fires frequently during editing and doesn't appear to require a map refresh in most cases (akstuhl)
 		// takeLatest(ACTION_TYPE.HAS_UNSAVED_CHANGES, requestMapRefresh)
