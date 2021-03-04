@@ -7,7 +7,7 @@ export const recordsEndpoint = 'neatline_records';
 const API_ROOT = '/api/';
 
 export const urlFormat = (endpoint, params = {}, id = null) => {
-  let url = `${API_ROOT}${endpoint}`;
+  let url = `${window.baseUrl}${API_ROOT}${endpoint}`;
   if (id) {
     url += '/' + id;
   }

@@ -11,6 +11,7 @@ import exhibitCache from './exhibit/exhibitCache-reducer.js';
 import record from './record/record-reducer.js';
 
 import mapCache from './map/mapCache-reducer.js';
+import mapShow from './map/mapShow-reducer.js';
 
 import leaflet from './leaflet/leaflet-reducer.js';
 
@@ -22,6 +23,7 @@ export default combineReducers({
   exhibitShow,
   exhibitDelete,
   record,
+  mapShow,
 
   mapCache,
   exhibitCache

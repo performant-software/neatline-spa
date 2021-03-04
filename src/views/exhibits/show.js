@@ -241,6 +241,7 @@ class ExhibitShow extends Component {
   									viewMode={this.state.viewMode}
   									setRecordEditorType={this.props.setRecordEditorType}
   									setShowRecords={this.props.setShowRecords}
+                    redirect
   								/>
   								<RecordInfoPanel isVisible={!this.props.showExhibitSettings && !this.props.leaflet.isEditing} />
   						</Grid.Column>

@@ -44,11 +44,12 @@ class ExhibitPublicMap extends Component {
 		this.isDrawing=false;
 		this.Draw = Draw; /* Suppresses include warning */
 		this.geoClick=false;
+		this.mapId = 'leafletMap';
 	}
 
 	// Stub for leaflet to attach to
 	render() {
-		return (<div id='leafletMap' style={{height: '500px'}}/>)
+		return (<div id={this.mapId} style={{height: '500px'}}/>)
 	}
 
 	// enables/disables render
@@ -70,22 +71,20 @@ class ExhibitPublicMap extends Component {
 		}
 
 		if(this.props.hasWarning){
-			document.getElementById('leafletMap').classList.add('ps_n3_mapComponent_withWarning');
+			document.getElementById(this.mapId).classList.add('ps_n3_mapComponent_withWarning');
 		}else{
-			document.getElementById('leafletMap').classList.remove('ps_n3_mapComponent_withWarning');
+			document.getElementById(this.mapId).classList.remove('ps_n3_mapComponent_withWarning');
 		}
 	}
 
 	// Custom event listeners are stopgaps until this gets refactored to follow redux store
 	componentDidMount(){
-		document.addEventListener("refreshMapGeometry", this.event_refreshMapGeometry);
 		document.addEventListener("refreshMap", this.event_refreshMap);
     this.firstUpdate = true;
     this.forceUpdate();
 	}
 
 	componentWillUnmount(){
-		document.removeEventListener("refreshMapGeometry", this.event_refreshMapGeometry);
 		document.removeEventListener("refreshMap", this.event_refreshMap);
 	}
 
@@ -93,13 +92,13 @@ class ExhibitPublicMap extends Component {
 	// Leaflet
 	//////////////////////////////////////
 	ls_mapInit = () => {
-		document.getElementById('leafletMap').classList.add('ps_n3_leafletMap');
+	  console.log(this.mapId);
+		document.getElementById(this.mapId).classList.add('ps_n3_leafletMap');
 		if(typeof this.map === 'undefined'){
-			this.map = L.map('leafletMap');
+			this.map = L.map(this.mapId);
 		}else{
 			if(typeof this.initialBaselayer !== 'undefined'){
 				this.initialBaselayer.remove();
-
 			}
 		}
 		let baselayerType = this.props.mapCache.current.type;
@@ -264,20 +263,33 @@ class ExhibitPublicMap extends Component {
 			this.ls_hasEditToSave=false;
 		});
 
-		mapInstance.on('draw:deletestop', (e) => {
-			this.props.leafletIsEditing(false);
-			this.isDrawing=false;
-			if(this.ls_hasEditToSave){
-				let geojsonData = this.ls_fg.toGeoJSON();
-				if(geojsonData.features.length === 0){
-					// FIXME: This is not really the way to store empty geometries, but it deals with the backend
-					geojsonData={"type": "MultiLineString", "coordinates": []};
-				}
-				//this.ls_fg.clearLayers();
-				saveChanges(selectedRecord,geojsonData);
-			}
-			this.allowRender=true;
-		});
+    mapInstance.on('draw:deletestop', (e) => {
+      this.props.leafletIsEditing(false);
+      this.isDrawing=false;
+      if(this.ls_hasEditToSave){
+        let geojsonData = this.ls_fg.toGeoJSON();
+        let coverage = true;
+        
+        if (!geojsonData.features || geojsonData.features.length === 0){
+          geojsonData = {
+            type: 'FeatureCollection',
+            features: [{
+              type: 'Feature',
+              properties: {},
+              geometry: {
+                type: 'Point',
+                coordinates: [0, 0]
+              }
+            }]
+          };
+
+          coverage = false;
+        }
+
+        saveChanges(selectedRecord, geojsonData, coverage);
+      }
+      this.allowRender=true;
+    });
 
 		mapInstance.on('draw:editstart', (e) =>{
 			this.allowRender=false;
@@ -422,19 +434,19 @@ class ExhibitPublicMap extends Component {
 	//////////////////////////////////////
 	// Event handlers
 	//////////////////////////////////////
-	syncDrawWithReact = (selectedRecord,geojsonData) => {
+	syncDrawWithReact = (selectedRecord, geojsonData, coverage = true) => {
 		if(typeof this.props.records === 'undefined'){
 			return;
 		}
 		let recordId = (typeof selectedRecord !== 'undefined' && selectedRecord !== null && selectedRecord['o:id'])?selectedRecord['o:id']:TYPE.NEW_UNSAVED_RECORD;
 		this.props.change('record', 'o:coverage', geojsonData);
 		this.props.change('record', 'o:is_coverage', true);
-		this.props.deselectRecord();
+		this.props.deselectRecord({ redirect: this.props.redirect });
 		this.props.updateRecordCacheAndSave({
 			setValues: {
 				'o:id': recordId,
 				'o:coverage': geojsonData,
-				'o:is_coverage': true
+				'o:is_coverage': coverage
 			},
 			selectedRecord:selectedRecord
 		});
@@ -462,7 +474,7 @@ class ExhibitPublicMap extends Component {
 			// this.props.showExhibitSettings
 		){return;}
 		L.DomEvent.stop(event);
-		this.props.selectRecord({record:record});
+		this.props.selectRecord({ record:record, redirect: this.props.redirect });
 		if (this.props.viewMode === 'editing'){
 			this.props.setShowRecords(false);
       this.props.setShowExhibitSettings(false);
@@ -476,7 +488,7 @@ class ExhibitPublicMap extends Component {
 		if(typeof this.props.records === 'undefined' || this.isDrawing){return;}
 		this.map.removeControl(this.ls_drawControl);
     this.props.setShowRecords(true);
-		this.props.deselectRecord();
+		this.props.deselectRecord({ redirect: this.props.redirect });
 		this.forceUpdate();
 	}
 }
@@ -494,5 +506,10 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 	setShowRecords,
   setShowExhibitSettings
 }, dispatch);
+
+ExhibitPublicMap.defaultProps = {
+  key: '',
+  redirect: false
+};
 
 export default connect(null,mapDispatchToProps)(ExhibitPublicMap);
