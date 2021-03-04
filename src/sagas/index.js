@@ -326,7 +326,12 @@ function* fetchRecordsBySlug(action) {
 						wms_layers: exhibit['o:wms_layers']
 					}});
 
-
+    yield put({
+      type: ACTION_TYPE.SET_AVAILABLE_TILELAYERS,
+      payload: {
+        ids: exhibit['o:spatial_layers'] && Object.values(exhibit['o:spatial_layers'])
+      }
+    });
 	}
 }
 
