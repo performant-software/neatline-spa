@@ -55,7 +55,9 @@ export default function* rootSaga() {
     takeLatest(ACTION_TYPE.USER_LOGOUT_SUCCESS, userLogoutSuccess),
 
     takeLatest(ACTION_TYPE.MAP_FETCH, fetchMap),
-    takeLatest(ACTION_TYPE.MAP_RECORDS_FETCH, fetchMapRecords)
+    takeLatest(ACTION_TYPE.MAP_RECORDS_FETCH, fetchMapRecords),
+
+    takeLatest(ACTION_TYPE.SET_AVAILABLE_TILELAYERS, requestMapRefresh)
 
     // commenting out for now as HAS_UNSAVED_CHANGES fires frequently during editing and doesn't appear to require a map refresh in most cases (akstuhl)
 		// takeLatest(ACTION_TYPE.HAS_UNSAVED_CHANGES, requestMapRefresh)
@@ -327,7 +329,12 @@ function* fetchRecordsBySlug(action) {
 						wms_layers: exhibit['o:wms_layers']
 					}});
 
-
+    yield put({
+      type: ACTION_TYPE.SET_AVAILABLE_TILELAYERS,
+      payload: {
+        ids: exhibit['o:spatial_layers'] && Object.values(exhibit['o:spatial_layers'])
+      }
+    });
 	}
 }
 
