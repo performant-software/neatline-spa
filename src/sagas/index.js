@@ -1,6 +1,6 @@
 import * as ACTION_TYPE from '../actions/action-types';
 import {urlFormat, recordsEndpoint, exhibitsEndpoint, parseRecordsJSON,parseExhibitsJSON} from './api_helper.js';
-import {put, takeLatest, all, select} from 'redux-saga/effects';
+import {put, takeEvery, takeLatest, all, select} from 'redux-saga/effects';
 import session from '../services/session';
 import {strings} from '../i18nLibrary';
 import history from '../history';
@@ -46,14 +46,18 @@ export default function* rootSaga() {
 		takeLatest(ACTION_TYPE.RECORD_CACHE_UPDATE_AND_SAVE, updateRecordCacheAndSave),
 		takeLatest(ACTION_TYPE.EXHIBIT_CACHE_SAVE, saveCacheToDatabase),
 
-		takeLatest(ACTION_TYPE.EVENT_REFRESH_MAP_GEOMETRY, requestMapRefreshGeometry),
 		takeLatest(ACTION_TYPE.EVENT_REFRESH_MAP, requestMapRefresh),
 
     takeLatest(ACTION_TYPE.USER_LOGIN, userLogin),
     takeLatest(ACTION_TYPE.USER_LOGIN_SUCCESS, userLoginSuccess),
 
     takeLatest(ACTION_TYPE.USER_LOGOUT, userLogout),
-    takeLatest(ACTION_TYPE.USER_LOGOUT_SUCCESS, userLogoutSuccess)
+    takeLatest(ACTION_TYPE.USER_LOGOUT_SUCCESS, userLogoutSuccess),
+
+    takeLatest(ACTION_TYPE.MAP_FETCH, fetchMap),
+    takeLatest(ACTION_TYPE.MAP_RECORDS_FETCH, fetchMapRecords),
+
+    takeLatest(ACTION_TYPE.SET_AVAILABLE_TILELAYERS, requestMapRefresh)
 
     // commenting out for now as HAS_UNSAVED_CHANGES fires frequently during editing and doesn't appear to require a map refresh in most cases (akstuhl)
 		// takeLatest(ACTION_TYPE.HAS_UNSAVED_CHANGES, requestMapRefresh)
@@ -87,21 +91,26 @@ function* createRecord(action) {
 
 }
 
-function* selectRecord(action){
-	let exhibit = yield select(getExhibitCache);
-	let slug = exhibit['o:slug'];
-	let url = (typeof window.baseRoute !== 'undefined')?`${window.baseRoute}`:"";
-	    url += `/show/${slug}/edit/${action.payload.record['o:id']}`;
-	history.replace(url);
+function* selectRecord(action) {
+  const { redirect } = (action.payload || {});
+  if (redirect) {
+    let exhibit = yield select(getExhibitCache);
+    let slug = exhibit['o:slug'];
+    let url = (typeof window.baseRoute !== 'undefined')?`${window.baseRoute}`:"";
+    url += `/show/${slug}/edit/${action.payload.record['o:id']}`;
+    history.replace(url);
+  }
 }
 
-function* deselectRecord(){
-	let exhibit = yield select(getExhibitCache);
-	let slug = exhibit['o:slug'];
-	let url = (typeof window.baseRoute !== 'undefined')?`${window.baseRoute}`:"";
-	    url += `/show/${slug}`;
-	history.replace(url);
-	yield put({type: ACTION_TYPE.EVENT_REFRESH_MAP_GEOMETRY});
+function* deselectRecord(action) {
+  const { redirect } = (action.payload || {});
+  if (redirect) {
+    let exhibit = yield select(getExhibitCache);
+    let slug = exhibit['o:slug'];
+    let url = (typeof window.baseRoute !== 'undefined') ? `${ window.baseRoute }` : "";
+    url += `/show/${ slug }`;
+    history.replace(url);
+  }
 }
 
 function* createRecordResponseReceived(action) {
@@ -205,10 +214,6 @@ function* updateRecordResponseReceived(action) {
 	yield put({type: ACTION_TYPE.LEAFLET_IS_EDITING, payload: false});
 }
 
-function requestMapRefreshGeometry(action){
-	var event = new CustomEvent("refreshMapGeometry");
-	document.dispatchEvent(event);
-}
 function requestMapRefresh(action){
 	var event = new CustomEvent("refreshMap");
 	document.dispatchEvent(event);
@@ -324,7 +329,12 @@ function* fetchRecordsBySlug(action) {
 						wms_layers: exhibit['o:wms_layers']
 					}});
 
-
+    yield put({
+      type: ACTION_TYPE.SET_AVAILABLE_TILELAYERS,
+      payload: {
+        ids: exhibit['o:spatial_layers'] && Object.values(exhibit['o:spatial_layers'])
+      }
+    });
 	}
 }
 
@@ -367,7 +377,6 @@ function* fetchRecordsResponseReceived(action) {
 function* updateRecordCacheAndSave(action) {
 	yield put({type: ACTION_TYPE.RECORD_CACHE_UPDATE, payload:action.payload});
 	yield put({type: ACTION_TYPE.EXHIBIT_CACHE_SAVE, payload:action.payload});
-	yield put({type: ACTION_TYPE.EVENT_REFRESH_MAP_GEOMETRY});
 }
 
 function* saveCacheToDatabase(action) {
@@ -473,8 +482,6 @@ function * userLogout(action) {
       type: ACTION_TYPE.USER_LOGOUT_SUCCESS,
       payload
     });
-
-    // Failed on the fetch call (timeout, etc)
   } catch (e) {
     yield put({
       type: ACTION_TYPE.USER_LOGOUT_ERRORED,
@@ -488,4 +495,57 @@ function * userLogout(action) {
 function userLogoutSuccess(action) {
   session.destroy();
   history.replace('/login');
+}
+
+function * fetchMap(action) {
+  const id = action.payload;
+
+  try {
+    const url = urlFormat(exhibitsEndpoint, {}, id);
+    const response = yield fetch(url);
+    const payload = yield response.json();
+
+    yield put({
+      type: ACTION_TYPE.MAP_FETCH_SUCCESS,
+      payload
+    });
+
+    yield put({
+      type: ACTION_TYPE.MAP_RECORDS_FETCH,
+      payload
+    });
+  } catch (e) {
+    yield put({
+      type: ACTION_TYPE.MAP_FETCH_ERROR,
+      error: e
+    });
+  }
+}
+
+function * fetchMapRecords(action) {
+  try {
+    const url = urlFormat(recordsEndpoint, { exhibit_id: action.payload['o:id'] });
+    const response = yield fetch(url);
+    const payload = yield parseRecordsJSON(response);
+
+    yield put({
+      type: ACTION_TYPE.MAP_RECORDS_FETCH_SUCCESS,
+      payload
+    });
+
+    yield put({
+      type: ACTION_TYPE.RECORD_CACHE_UPDATE,
+      payload
+    });
+
+    yield put({
+      type: ACTION_TYPE.RECORDS_FILTER,
+      payload
+    });
+  } catch (e) {
+    yield put({
+      type: ACTION_TYPE.MAP_RECORDS_FETCH_ERROR,
+      error: e
+    });
+  }
 }

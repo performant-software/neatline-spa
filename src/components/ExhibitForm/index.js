@@ -3,7 +3,7 @@ import {bindActionCreators} from 'redux';
 import history from '../../history';
 import {Field, reduxForm, change, formValueSelector} from 'redux-form'
 import {connect} from 'react-redux';
-import { Button, Form } from 'semantic-ui-react'
+import { Button, Dropdown, Form } from 'semantic-ui-react';
 import {
 	preview_baseLayer,
 	set_availableTileLayers,
@@ -121,9 +121,10 @@ class ExhibitForm extends Component {
 		);
 	}
 
-	enabledSpatialLayerPreview = (event, data) => {
-		this.props.dispatch(this.set_availableTileLayers({ids: data}));
-		this.markUnsaved(event,{name:'o:spatial_layers',value:data});
+	enabledSpatialLayerPreview = (event, { value }) => {
+    this.props.change('o:spatial_layers', value);
+		this.props.dispatch(this.set_availableTileLayers({ ids: value }));
+		this.markUnsaved(event, { name:'o:spatial_layers', value });
 	}
 
 	// Switches between map and image
@@ -156,24 +157,33 @@ class ExhibitForm extends Component {
 		}
 	}
 
-	// Sets the unsaved changes flag
-	markUnsaved = (event) => {
-		// Update the cache
-		if(typeof event !== 'undefined'){
-			this.props.dispatch(updateExhibitCache({
-				setValues: {
-					[event.target.name]: event.target.value
-				}
-			}));
-			// this.props.dispatch(updateExhibitCache({setValues:{[name]:value}}));
-		}else{
-			console.log("Skipping cache update");
-		}
+  // Sets the unsaved changes flag
+  markUnsaved = (event, data) => {
+    // Update the cache
+    let name, value;
 
-		// Mark unsaved
-		this.props.dispatch(setUnsavedChanges({hasUnsavedChanges:true}));
+    if (typeof event !== 'undefined') {
+      if (data && data.name && data.value) {
+        name = data.name;
+        value = data.value;
+      } else if (data && data.value) {
+        name = event.target.name;
+        value = data.value;
+      } else {
+        name = event.target.name;
+        value = event.target.value;
+      }
 
-	}
+      this.props.dispatch(updateExhibitCache({
+        setValues: { [name]: value }
+      }));
+    } else {
+      console.log("Skipping cache update");
+    }
+
+    // Mark unsaved
+    this.props.dispatch(setUnsavedChanges({ hasUnsavedChanges: true }));
+  }
 
 	// Build layerTYPE from the set of non-deprecated maps
 	layerTYPE = () => {
@@ -189,16 +199,19 @@ class ExhibitForm extends Component {
 	};
 
 	buildLayerTypeOptions = () => {
-		var retval = [];
- 		let layerTYPE = this.layerTYPE();
-		Object.keys(layerTYPE).forEach(function(key) {
-			let layerType = layerTYPE[key];
-			let opt_key = `layerTypeOption-${key}`;
-			retval.push(<option value={key} key={opt_key}>{layerType.displayName}</option>);
-		});
-		return retval;
-	};
-
+    var retval = [];
+    let layerTYPE = this.layerTYPE();
+    Object.keys(layerTYPE).forEach(function(key) {
+      let layerType = layerTYPE[key];
+      let opt_key = `layerTypeOption-${key}`;
+      retval.push({
+        value: key,
+        key: opt_key,
+        text: layerType.displayName
+      });
+    });
+    return retval;
+  }
 
 	componentWillReceiveProps(nextprops){
 		if(typeof nextprops.exhibit !== 'undefined'){
@@ -322,7 +335,14 @@ class ExhibitForm extends Component {
 									component='select'
 									onChange={this.onSpatialLayerInfoChange}>
 									<optgroup label='Default Layers'>
-										{this.layerTypeOptions}
+                    { this.layerTypeOptions.map((o) => (
+                      <option
+                        value={o.value}
+                        key={o.key}
+                      >
+                        { o.text }
+                      </option>
+                    ))}
 										<option value={TYPE.BASELAYER_TYPE.TILE}>Custom: Tile Layer</option>
 										<option value={TYPE.BASELAYER_TYPE.WMS}>Custom: WMS Layer</option>
 									</optgroup>
@@ -410,13 +430,19 @@ class ExhibitForm extends Component {
 							<div>
 								<div className='field'>
 									<label htmlFor='o:spatial_layers'>Additional Layers</label>
-									<Field id='o:spatial_layers'
-										name='o:spatial_layers'
-										component='select'
-										multiple="multiple"
-										onChange={this.enabledSpatialLayerPreview}>
-										{this.layerTypeOptions}
-									</Field>
+                  <Field
+                    id='o:spatial_layers'
+                    name='o:spatial_layers'
+                    component={() => (
+                      <Dropdown
+                        onChange={this.enabledSpatialLayerPreview.bind(this)}
+                        options={this.layerTypeOptions}
+                        multiple
+                        selection
+                        value={formSelector(this.props.state, 'o:spatial_layers')}
+                      />
+                    )}
+                  />
 								</div>
 								<div className='field'>
 									<label htmlFor='o:zoom_levels'>Zoom Levels</label>
